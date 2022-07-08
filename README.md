@@ -35,3 +35,8 @@ Blog: https://achefthatcodes.com/
 - Head and Body Image with colorized indicators
 - Graphs to show punch stats round-by-round
 - Graphs to show punch stats total post-Fight
+
+
+### Notes:
+- Boxer conditioning affects most actions, as humans with low rate of recovery will perform actions weaker over a shorter period of time. In this program it represent a percentage of the highest possible value.
+  - example: if strength = 100, condition is 60, the highest strength value is 100 but the lowest on any random punch can be as low as 60.
