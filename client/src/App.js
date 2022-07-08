@@ -18,21 +18,15 @@ function App() {
   );
 
 
-  //
+  // user.pepTalk.youGottaGo()
+  console.log(user.attack(), enemy.defend())
 
-  // console.log(user.pow, enemy.maxCon)
-  console.log(enemy.con, enemy.maxHp, enemy.hp)
-  console.log(enemy.attack())
-  console.log(user.con, enemy.con, enemy.hp)
-  console.log(enemy.attack(), enemy.roundRecovery())
-  console.log(user.con, enemy.con, enemy.hp)
-
+  // user.pepTalk.relax()
 
 
   return (
     <div className="App">
 
-      LETS GO
 
     </div>
   );
