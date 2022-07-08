@@ -1,5 +1,6 @@
 import './App.css';
-import Boxer from './Components/Boxer/BoxerClass.js';
+import Boxer from './Components/Boxer/BoxerClass';
+import fightEngine from './Components/Helpers/FightEngine'
 
 function App() {
 
@@ -18,15 +19,17 @@ function App() {
   );
 
 
-  // user.pepTalk.youGottaGo()
-  console.log(user.attack(), enemy.defend())
 
-  // user.pepTalk.relax()
+
 
 
   return (
     <div className="App">
 
+      {user.hp} {enemy.hp}
+
+
+      {fightEngine(user, enemy)}
 
     </div>
   );

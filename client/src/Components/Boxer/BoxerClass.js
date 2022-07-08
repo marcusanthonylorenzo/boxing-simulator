@@ -25,7 +25,7 @@ class Boxer {
     this.maxCon = ((this.sta*0.8)+(this.heart*0.2))/100
     this.con = this.maxCon
 
-    this.maxHp = (this.sta + this.chin + this.heart + this.str)*100
+    this.maxHp = Math.round( (this.sta + this.chin + this.heart + this.str)*12 )
     this.hp = this.maxHp;
 
     this.win = 0;
@@ -93,9 +93,15 @@ class Boxer {
     }
   }
 
+  record = {
+
   //update wins/loss in endFight function
-  updateLoss = () => this.loss += 1
-  updateWin = () => this.win += 1 
+    updateLoss: () => this.loss += 1,
+    updateWin: () => this.win += 1 
+    
+  }
+
+
 
 /***
 
