@@ -94,6 +94,8 @@ class Boxer {
     }
   }
 
+  lifeLeft = () => this.hp/this.maxHp
+
   record = {
 
   //update wins/loss in endFight function

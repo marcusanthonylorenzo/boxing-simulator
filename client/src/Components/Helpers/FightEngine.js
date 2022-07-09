@@ -1,5 +1,9 @@
 import { useState } from 'react'
-import SelectMenu from '../Interface/SelectMenu/SelectMenu'
+import './Helpers.css'
+import Navbar from '../Interface/Navbar/Navbar'
+import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
+import Display from '../Interface/Display/Display'
+import oppBody from '../../assets/images/oppBody.png'
 // import Commentary from './Commentary'
 
 const FightEngine = ({ user, enemy }) => {
@@ -42,9 +46,7 @@ const FightEngine = ({ user, enemy }) => {
   }
 
 
-  //engagement determines who initiates the attack
-
-  const engagement = (user, opp) => {
+  const engagement = (user, opp) => {  //engagement determines who initiates the attack
     
     let userOffense = user.engage();
     let oppOffense = opp.engage();
@@ -58,19 +60,47 @@ const FightEngine = ({ user, enemy }) => {
     }
   }
 
-  const fightBtn = <button className="fight-button" onClick={()=> {
-      engagement(user, enemy)
-      setUserHp(user.hp) }}><h4>Fight</h4>
-      </button>
+  const fightBtn =
+    <button className="fight-button" onClick={()=> {
+
+      for (let i = 0; i < 12; i++){
+        let k = i;
+        setTimeout(()=>{
+
+          engagement(user, enemy)
+
+        }, 100*(k + 1), ); //This third argument is a second callback that runs once after timeout, use for modal etc.
+      }
+    }}>
+        
+          <h4>Fight</h4>
+
+    </button>
+      
 
   return (
-    <>
 
-      {userHp} {enemyHp}
+    <div class="fight-engine-wrap">
 
-      <SelectMenu show={true} buttons={fightBtn} />
-      
-    </>
+      <Navbar buttons={fightBtn}/>
+
+      <div className="main-container">
+
+        <BoxerCard boxer={user} path={oppBody}/>
+
+        <div className="inner-container">
+
+          <Display />
+
+
+        </div>
+
+        <BoxerCard boxer={enemy} path={oppBody}/>
+
+      </div>
+
+    </div>
+
   )
 
 }

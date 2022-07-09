@@ -1,0 +1,39 @@
+.BoxerCard {
+  /* margin: 6%; */
+  background-color: rgb(255, 255, 255);
+  height: 95%;
+  width: 95%;
+  border-radius: 2px;
+  box-shadow: 1px 1px 0px 1px rgba(73, 71, 71, 0.5);
+  opacity: 98%;
+}
+
+.BoxerCard:hover {
+  background-color: rgb(255, 215, 215);
+}
+
+.boxer-condition-body {
+  display: flex;
+  margin: 5% auto;
+  /* align-items: center; */
+  height: 6rem;
+  width: 80%;
+}
+
+.boxer-info, .boxer-info-profile h5 {
+  text-align: left;
+  margin: 0 6%;
+}
+
+.boxer-info > * {
+  margin: 2%;
+}
+
+.info-titles {
+  font-weight: 400;
+}
+
+.name {
+  margin-bottom: 3%;
+  font-size: 1.5rem;
+}

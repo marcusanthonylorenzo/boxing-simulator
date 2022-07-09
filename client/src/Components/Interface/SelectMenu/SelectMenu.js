@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react'
 
-const SelectMenu = ( props ) => {
+const SelectMenu = ( { buttons }) => {
 
   //To reuse, pass props as buttons={ whateverProp to render return below }
   
-  const [show, setShow] = useState(props.show);
+  // const [show, setShow] = useState(show);
 
-  useEffect(() => {
-      setTimeout(() => {
-        setShow(false);
-      }, 3000);
-    });
+  // useEffect(() => {
+  //     setTimeout(() => {
+  //       setShow(false);
+  //     }, 3000);
+  //   });
+
+  console.log(buttons.fightBtn)
 
   return (
 
-    <div className={show ? "SelectMenu display-block" : "SelectMenu display-none"}>
       <div className="select-menu">
-        {props.buttons}
+        {buttons}
       </div>
-    </div>
 
   );
 

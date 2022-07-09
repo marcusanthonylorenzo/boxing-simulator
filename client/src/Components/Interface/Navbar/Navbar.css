@@ -1,0 +1,21 @@
+.Navbar {
+  background-color: rgba(10, 10, 41, 1);
+  height: 15vh;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: left;
+  align-items: center;
+  padding-left: 5vw;
+  opacity: 97%;
+  box-shadow: 1px 0px 0px 1px rgba(2, 2, 3, 0.366);
+}
+
+
+.Navbar h2 {
+  margin: 0;
+  color: rgba(245, 245, 245, 0.98);
+  padding: 0 1%;
+  font-size: 2.7rem;
+  font-style: italic;
+}

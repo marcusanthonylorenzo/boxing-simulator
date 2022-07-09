@@ -1,0 +1,11 @@
+.main-container {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  place-items: center;
+  margin: 0 12%;
+  /* margin-top: -1%; */
+  background-color: rgba(57, 52, 52, 0.98);
+  height: 80vh;
+  transform: scale(0.95);
+  box-shadow: 2px 0 2px 2px rgba(0, 0, 0, 0.5);
+}

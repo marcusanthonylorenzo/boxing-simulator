@@ -1,0 +1,7 @@
+.Display {
+  display: flex;
+  background-color: rgba(244, 240, 240, 0.905);
+  margin: 2%;
+  height: 60vh;
+  width: 40vw;
+}
