@@ -1,9 +1,9 @@
+import { useState } from 'react'
 import './App.css';
 import Boxer from './Components/Boxer/BoxerClass';
-import fightEngine from './Components/Helpers/FightEngine'
+import FightEngine from './Components/Helpers/FightEngine'
 
 function App() {
-
 
   //Test boxers
   const user = new Boxer(
@@ -18,18 +18,20 @@ function App() {
     81, 79, 73, 83, 85  //stamina, agressivness, agility, strength, defense
   );
 
+  const [userHp, setUserHp] = useState(user.hp);
+  const [enemyHp, setEnemyHp] = useState(enemy.hp);
 
-
-
-
+  console.log(user.hp, enemy.hp)
 
   return (
     <div className="App">
 
-      {user.hp} {enemy.hp}
-
-
-      {fightEngine(user, enemy)}
+      <div>
+        <FightEngine
+          user={user} enemy={enemy}
+          userHp={userHp} enemyHp={enemyHp}
+          setUserHp={setUserHp} setEnemyHp={setEnemyHp}/>
+      </div>
 
     </div>
   );
