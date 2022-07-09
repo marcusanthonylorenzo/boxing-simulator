@@ -1,0 +1,13 @@
+.SelectMenu {
+  display: flex;
+  background-color: rgb(48, 58, 58);
+  height: 600px;
+}
+
+.display-block {
+  display: block;
+}
+
+.display-none {
+  display: none;
+}

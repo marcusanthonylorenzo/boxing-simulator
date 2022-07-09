@@ -25,7 +25,7 @@ class Boxer {
     this.maxCon = ((this.sta*0.8)+(this.heart*0.2))/100
     this.con = this.maxCon
 
-    this.maxHp = Math.round( (this.sta + this.chin + this.heart + this.str))
+    this.maxHp = (this.sta + this.chin + this.heart + this.str)
     this.hp = this.maxHp;
 
     this.win = 0;
@@ -46,24 +46,25 @@ class Boxer {
 
 
   //determines who attacks first
-  engage = () => Math.round( ((this.agr*0.6)+(this.heart*0.2)+(this.sta*0.2))*this.con )
+  engage = () => ((this.agr*0.6)+(this.heart*0.2)+(this.sta*0.2))*this.con
 
   //determines the damage output
   attack = () => {
     this.lowEnergyWarning();
     let min = this.pow*this.con
     let rand = randomizer(min, this.pow);
+    console.log(rand)
     this.energyLoss();
-    return rand*this.con;
+    return rand;
   }
 
   //determines the ability to reduce damage input
   defend = () => {
     let defense = ((this.def*0.8)+(this.chin*0.2))
     let minDef = defense*this.con
-    this.energyLoss();
     let defRand = randomizer(minDef, defense)
-    return defRand*this.con
+    this.energyLoss();
+    return defRand
   }
 
   energyLoss = () => this.con -= (this.con/100)
