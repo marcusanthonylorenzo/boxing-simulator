@@ -1,14 +1,19 @@
-.SelectMenu {
+.select-menu {
   display: flex;
-  background-color: rgb(48, 58, 58);
-  height: 100%;
-  width: 20vw;
-}
-/* 
-.display-block {
-  display: block;
+  position: absolute;
+  height: 6vh;
+  /* width: 20vw; */
 }
 
-.display-none {
+.fight-button h4 {
+  display: flex;
+  margin: 0 auto;
+}
+
+.hide {
   display: none;
-} */
+}
+
+.show {
+  display: block;
+}

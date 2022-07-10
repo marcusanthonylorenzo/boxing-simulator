@@ -53,7 +53,6 @@ class Boxer {
     this.lowEnergyWarning();
     let min = this.pow*this.con
     let rand = randomizer(min, this.pow);
-    console.log(rand)
     this.energyLoss();
     return rand;
   }

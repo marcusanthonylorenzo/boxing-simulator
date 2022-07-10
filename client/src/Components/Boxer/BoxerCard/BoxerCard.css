@@ -1,43 +1,65 @@
 .BoxerCard {
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
-  height: 68.5vh;
-  width: 95%;
-  padding: 3%;
+  place-items: center;
+  height: 70vh;
+  width: 90%;
+  /* padding: 1rem; */
   border-radius: 2px;
   box-shadow: 1px 1px 0px 1px rgba(73, 71, 71, 0.1);
   opacity: 97%;
-  color: rgba(10, 10, 41, 1);
+  color: rgb(255, 255, 255);
 }
 
-.BoxerCard:hover {
-  background-color: rgb(255, 215, 215);
+.BoxerCard > div {
+  border-radius: 4px;
+}
+
+.BoxerCard > div:hover {
+  background-color: rgba(250, 250, 250, 0.975);
+  color: rgb(253, 239, 135);
+  cursor: default;
 }
 
 .boxer-corner {
   margin: 0;
 }
 
+.boxer-info-name h4 {
+  margin: 0 auto;
+}
+
 .boxer-condition-body {
   display: flex;
-  margin: 5% auto;
+  justify-content: center;
+  position: relative;
+  right: -40%;
+  margin: 5% 0;
   height: 6rem;
+  width: 22%;
   border-radius: 2px;
+  transition-timing-function: ease-out;
 }
+
+.flip {
+  display: flex;
+  position: relative;
+  transform: scaleX(-1);
+  left: 40%;
+}
+
 
 .boxer-info, .boxer-info-profile h5 {
   text-align: left;
-  margin: 0 3.5%;
+  margin: 0;
 }
 
-.boxer-info > * {
-  margin: 0 2%;
-}
 
 .boxer-info {
   background-color: rgb(255, 255, 255);
-  margin-top: 5%;
-  padding: 3%;
+  margin-top: 2%;
+  /* padding: 2%; */
+  width: 100%;
 }
 
 
@@ -48,14 +70,26 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 0 auto;
-  width: calc(88%);
+  margin: 0;
+  width: 100%;
+  height: 100%;
 }
+
+.boxer-info-profile {
+  align-items: left;
+}
+
+.boxer-pic {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .fight-stats {
   /* padding: 2.5%; */
-  margin: 1% auto;
-
+  margin: 0;
 }
 
 .info-titles {
@@ -66,5 +100,11 @@
   display: flex;
   margin-bottom: 3%;
   font-size: 1.3rem;
+  justify-content: center;
+  color: white;
+}
+
+#nickname {
+  display: flex;
   justify-content: center;
 }
