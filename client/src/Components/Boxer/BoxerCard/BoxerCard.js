@@ -1,15 +1,17 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
+import goldBelt from '../../../assets/images/goldBelt.png'
 
-const BoxerCard = ({ boxer, path }) => {
+const BoxerCard = ({ boxer, path, corner }) => {
 
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
-  const energy = Math.round((boxer.con*100)+55);
+  const energy = Math.round((boxer.con*100)+52);
+  const cornerColor = corner();
 
-  // const [damageColor] = useState(life);
-  // const [opac, setOpac] = useState(life);
+  console.log(cornerColor)
+
 
   const changeColor = (life) => {
     if (life <= 100 && life >= 75) {
@@ -28,51 +30,65 @@ const BoxerCard = ({ boxer, path }) => {
     }
   }
   
+  
 
 
   return (
 
-    <div className="BoxerCard">
+    <div className="BoxerCard" style={{backgroundColor: cornerColor.cornerColor}}>
 
+      {/* <h4 className={`boxer-corner`} style={{color: cornerColor.cornerColor}}>
+      <span>{cornerColor.cornerColor}</span> Corner</h4> */}
 
-      <div className="boxer-info">
-        <h4 className={'name'}><em>{boxer.firstName} "{boxer.nickname}"</em></h4>
+      <div className="boxer-info border padded">
+
+        <h4 className={'name'}><em>{boxer.firstName}</em></h4>
+        <h4 className={'name'} style={{ fontWeight: `300px`}}><em>"{boxer.nickname}"</em></h4>
         <h4 className={'name'}><em>{boxer.lastName}</em></h4>
-      </div>
 
 
-      <div className="boxer-condition">
-        <div className="boxer-condition-body" style={{
-          backgroundColor: changeColor(life), //Change phyiscal condition by color, red is near knockout
-          backgroundImage: `url('${path}')`,
-          opacity: `${energy}%`
-      }}>
+        <div className="boxer-condition">
+          <div className="boxer-condition-body" style={{
+            backgroundColor: changeColor(life), //Change phyiscal condition by color, red is near knockout
+            backgroundImage: `url('${path}')`,
+            opacity: `${energy}%`}}>
 
-        <img src={path} alt={'boxer body'}/>
-        
-        <h5>{Math.round(boxer.hp)} {life} {Math.round((boxer.con*100))}</h5>
+            <img src={path} alt={'boxer body'}/>
+            
+            <h5>{Math.round(boxer.hp)} {life} {Math.round((boxer.con*100))}</h5>
 
+          </div>
         </div>
+
+
       </div>
 
 
-      <div className={'boxer-info-profile'}>
+      <div className={`fight-stats border padded`}>
+        <h3>Fight stats brought to you by Modelo.</h3>
+      </div>
+
+
+      <div className={'boxer-info-profile border padded'}>
+
+        <h5 className={`info-titles`}>Height / Weight / Reach:</h5>
+        <h5> Height {boxer.weightClass} Reach </h5>
 
         <h5 className={`info-titles`}>Fighting out of:</h5>
           <h5 className={'info-details'}><em>{boxer.hometown}</em></h5>
           
         <h5 className={`info-titles`}>Record:</h5>
-          <h5 className={'info-details'}>{boxer.win} {boxer.loss}</h5>
+          <h5 className={'info-details'}>{boxer.win} - {boxer.loss}</h5>
           
         <h5 className={`info-titles`}>Rank:</h5>
-          <h5 className={'info-details'}>{boxer.rank} ({ commentary.weightClassName(boxer) })</h5>
+          {/* <h5 className={'info-details'}>{boxer.rank} ({ commentary.weightClassName(boxer) })</h5> */}
+
+        { boxer.champion ? <span className={`champ`}><h5>CHAMPION</h5><img src={goldBelt} id={`champ`} alt="CHAMPION"/> </span> : <h5 className={'info-details'}>{boxer.rank} ({ commentary.weightClassName(boxer) })</h5> }
 
       </div>
 
     </div>
-
   )
-
 }
 
 export default BoxerCard

@@ -1,7 +1,11 @@
 .Display {
   display: flex;
-  background-color: rgba(244, 240, 240, 0.905);
-  margin: 2%;
-  height: 60vh;
-  width: 40vw;
+  background-color: rgba(244, 236, 236, 0.99);
+  background-size: contain;
+  margin: 2% auto;
+  height: 52vh;
+  width: 27vw;
+  box-shadow: inset 0px 1px 3px 3px rgba(77, 76, 76, 0.3);
+  padding: 5% auto;
+  border-radius: 1px;
 }

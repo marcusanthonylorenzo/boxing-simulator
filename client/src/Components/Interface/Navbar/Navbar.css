@@ -1,6 +1,6 @@
 .Navbar {
-  background-color: rgba(10, 10, 41, 1);
-  height: 15vh;
+  background-color: rgba(10, 10, 55, 1);
+  height: 19%;
   width: 100vw;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -18,4 +18,42 @@
   padding: 0 1%;
   font-size: 2.7rem;
   font-style: italic;
+}
+
+.navbar-container {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  height: 10%;
+  margin: 0;
+  left: 1%;
+}
+
+.navbar-title h5 {
+  color:azure;
+  font-weight: 500;
+  font-style: italic;
+  margin: 0;
+}
+
+.navbar-title {
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.navbar-logo {
+  display: flex;
+}
+
+#logo {
+  display: flex;
+  margin: 0 10%;
+  height: 7rem;
+  transform: scale(0.7);
+  background-color: #74ffff;
+  padding: 5%;
+  filter: invert(1);
+  border-radius: 5px;
 }

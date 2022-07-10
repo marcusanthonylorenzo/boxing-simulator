@@ -11,7 +11,6 @@ const FightEngine = ({ user, enemy }) => {
   const [userHp, setUserHp] = useState();
   const [enemyHp, setEnemyHp] = useState();
 
-
   //exchange() determines who wins the trading of blows
 
   const exchange = (attacker, defender) => {
@@ -60,6 +59,7 @@ const FightEngine = ({ user, enemy }) => {
     }
   }
 
+
   const fightBtn =
     <button className="fight-button" onClick={()=> {
 
@@ -71,31 +71,39 @@ const FightEngine = ({ user, enemy }) => {
 
         }, 100*(k + 1), ); //This third argument is a second callback that runs once after timeout, use for modal etc.
       }
-    }}>
-        
-          <h4>Fight</h4>
+    }}><h4>Fight</h4></button>
 
-    </button>
+
+  // Use Composition to restructure boxer object
+  const setCorner = (fighter, color, champion) => {
+    return {
+      ...fighter,
+      cornerColor: color,
+      champion: champion
+    }
+  }
+
+  //corner color picker
+  const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
       
 
   return (
 
-    <div class="fight-engine-wrap">
+    <div className="fight-engine-wrap">
 
       <Navbar buttons={fightBtn}/>
 
       <div className="main-container">
 
-        <BoxerCard boxer={user} path={oppBody}/>
+        <BoxerCard boxer={user} path={oppBody} corner={() => setCorner(user, cornerColor.red)}/>
 
         <div className="inner-container">
 
           <Display />
 
-
         </div>
 
-        <BoxerCard boxer={enemy} path={oppBody}/>
+        <BoxerCard boxer={enemy} path={oppBody} corner={() => setCorner(enemy, cornerColor.blue, true)}/>
 
       </div>
 
