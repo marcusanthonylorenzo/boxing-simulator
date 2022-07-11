@@ -1,8 +1,6 @@
-
 const Commentary = () => {
 
   const weightClassName = (boxer) => {
-
     const weight = parseInt(boxer.weightClass);
 
     if (weight >= 108 && weight < 112){
@@ -64,9 +62,7 @@ const epicIntros =(whatToIntro) => {
   })
 }
 
-
 return { weightClassName, setIntros}
-
 }
 
 export default Commentary

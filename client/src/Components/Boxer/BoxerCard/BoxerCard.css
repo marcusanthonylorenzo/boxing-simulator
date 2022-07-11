@@ -11,6 +11,21 @@
   color: rgb(255, 255, 255);
 }
 
+/* PREFIGHT Boxer Card **/
+.intros {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  margin: 10% auto;
+  padding: 5%;
+  height: 60vh;
+  background-color: rgb(255, 255, 255);
+  color: black;
+  box-shadow: 1px 0px 4px 3px rgba(15, 11, 11, 0.4);
+  text-align: left;
+}
+
 .BoxerCard > div {
   border-radius: 2px;
   border: none;
@@ -34,10 +49,6 @@
 
 
 /*** boxer logo/condition container ***/
-
-/* .boxer-condition {
-  background-color: rgb(200, 72, 72);
-} */
 
 .boxer-condition-body {
   display: flex;
@@ -137,4 +148,12 @@
 .champ:hover {
   color:rgba(238, 236, 104, 0.975);
   background-color:rgba(73, 71, 71, 0.7);
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
 }

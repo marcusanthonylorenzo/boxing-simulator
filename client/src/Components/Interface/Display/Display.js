@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect} from 'react'
+import React, { useRef, useEffect} from 'react'
 import './Display.css'
 import SelectMenu from '../SelectMenu/SelectMenu'
 import Textbox from '../../Interface/Textbox/Textbox'
@@ -26,32 +26,6 @@ const Display = ({ buttons, pbp, user, opp }) => {
     })
   }
 
-  // const setIntros = (person, colorOfTrunks) => {
-  //   const arrayIntro = [
-  //     <h4>IN the <span style={{color: person.cornerColor, opacity: `90%`}}>{person.cornerColorLabel} corner</span>.</h4>,
-  //     <h4>Wearing the {colorOfTrunks} trunks.</h4>,
-  //     <h4>{ !person.champion ? <h4>The {person.weightClass} CHAMPION of the WORLD</h4> : <h4>The number {person.rank} ranked fighter in the {person.weightClass} division...</h4> }</h4>,
-  //     <h4>Fighting out of {person.hometown.toUpperCase()}...</h4>,
-  //     <h3>{person.firstName.toUpperCase()}</h3>,
-  //     <h3>{person.nickname}</h3>, 
-  //     <h3>{person.lastName.toUpperCase()}</h3>
-  //   ];
-  //   return epicIntros(arrayIntro)
-  // }
-
-  // const epicIntros =(whatToIntro) => {
-  //   //remember not to use index as keys next time!
-  //   return whatToIntro.map((item, i) => {
-  //     return (
-  //       <div className="intro-text-box" key={i}>
-  //         {item}
-  //       </div>
-  //     )
-  //   })
-  // } 
-
-  // const getOppIntro = setIntros(opp, "black and gold");
-  // const getUserIntro = setIntros(user, "blue");
 
   return (
     <>
@@ -60,9 +34,14 @@ const Display = ({ buttons, pbp, user, opp }) => {
       <div className="display-container">
         <h4>It's Fight Night</h4>
 
-        <div className="intros"> {/*Fighter intros!*/}
-          {/* {getUserIntro} */}
-        </div>
+
+          <div className="ref-talk">
+            <h3>Gentlemen, you know the rules.</h3>
+            <h3>I want a good, clean fight - are we clear?</h3>
+            <h3>You break when I say you break, keep your punches above the belt.</h3>
+            <h3>Protect yourself at all times!</h3>
+            <h3>We ready? Touch em.</h3>
+          </div>
 
           {mapPbp()}         
       </div>

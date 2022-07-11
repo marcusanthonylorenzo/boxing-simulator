@@ -5,13 +5,13 @@ class Boxer {
   constructor(
 
     firstName, nickname, lastName,
-    hometown, weightClass,
+    hometown, weightClass, favoriteColor,
     sta, agr, agi, str, def,
 
   ){
 
     this.firstName = firstName; this.nickname = nickname; this.lastName = lastName;
-    this.hometown = hometown; this.weightClass = weightClass;
+    this.hometown = hometown; this.weightClass = weightClass; this.favoriteColor = favoriteColor;
     
     this.sta = sta; this.agr = agr; this.agi = agi; this.str = str; this.def = def;
 
