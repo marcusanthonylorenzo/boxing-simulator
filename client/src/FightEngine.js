@@ -3,8 +3,6 @@ import './Components/Helpers/Helpers.css'
 import Navbar from './Components/Interface/Navbar/Navbar'
 import BoxerCard from './Components/Boxer/BoxerCard/BoxerCard'
 import Display from './Components/Interface/Display/Display'
-// import SelectMenu from '../Interface/SelectMenu/SelectMenu'
-// import Textbox from './Components/Interface/Textbox/Textbox'
 import leftBoxer from './assets/images/redgloves.png'
 import oppBody from './assets/images/oppBody.png'
 import SelectMenu from './Components/Interface/SelectMenu/SelectMenu'
@@ -18,6 +16,7 @@ const FightEngine = ({ user, enemy }) => {
   const [pbp, setPbp] = useState([]);
   const [ko, setKo] = useState(false);
   const [roundCount, setRoundCount] = useState(0);
+  const [fightStart, setFightStart] = useState(false);
 
   useEffect(() => {
     setUserActive(userReady);
@@ -48,7 +47,6 @@ const FightEngine = ({ user, enemy }) => {
       defender: defender,
       text: 'The fighters clinch'
     };
-
     let hit;
 
     if (attacker.hp <= 0 || defender.hp <= 0){ //check for knockout
@@ -123,28 +121,28 @@ const FightEngine = ({ user, enemy }) => {
 
   const fightBtn =
     <button className="fight-button" onClick={()=> {
-      for (let i = 0; i < 12; i++){ //loop to begin action
-        let k = i;
-        if (k === 1) { //updates the next round, if iterator starting from 0.
-          let newRnd = roundCount + 1
-          setRoundCount(newRnd)
-        }
-        setTimeout(()=>{
-          let activity;
-          if (ko === true || user.hp <= 0 || enemy.hp <= 0){ //check for knockout
-            let over = "THIS FIGHT IS OVER";
-            setPbp(prev => [...prev, {text: over, round: roundCount, attacker: ``, defender: ``} ] )
-            return;
+      setFightStart(true);
+      // setTimeout(() => {
+        for (let i = 0; i < 12; i++){ //loop to begin action
+          let k = i;
+          if (k === 1) { //updates the next round, if iterator starting from 0.
+            let newRnd = roundCount + 1
+            setRoundCount(newRnd)
           }
-          let fight = engagement(user, enemy)
-          activity = setObj(fight, "round", roundCount)
-          setPbp((prev) => [...prev, activity]);
-        }, 200*(k + 1),);
-        //This third argument is a second callback that runs once after timeout, use for modal etc.
-      };
+          setTimeout(()=>{
+            let activity;
+            if (ko === true || user.hp <= 0 || enemy.hp <= 0){ //check for knockout
+              let over = "THIS FIGHT IS OVER";
+              setPbp(prev => [...prev, {text: over, round: roundCount, attacker: ``, defender: ``} ] )
+              return;
+            }
+            let fight = engagement(user, enemy)
+            activity = setObj(fight, "round", roundCount)
+            setPbp((prev) => [...prev, activity]);
+          }, 200*(k + 1),); //This third argument is a second callback that runs once after timeout, use for modal etc.
+        };
+      // }, 1000);
     }}><h4>Fight</h4></button>
-
-    console.log(userActive, oppActive)
 
   return (
     <div className="fight-engine-wrap">
@@ -156,7 +154,7 @@ const FightEngine = ({ user, enemy }) => {
           corner={() => userReady}/>
 
         <div className="inner-container">
-          <Display pbp={pbp} user={userReady} opp={oppReady} roundCount={roundCount}/>
+          <Display pbp={pbp} user={userReady} opp={oppReady} roundCount={roundCount} fightStart={fightStart}/>
           
           <div className="display-options">
             <SelectMenu  buttons={fightBtn} />

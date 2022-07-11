@@ -30,24 +30,24 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
 
       setTimeout(() => {
       setFade(`75%`);
-      },  5200);
+      },  4000);
 
       setTimeout(() => {
         setShow(`hide`);
-      }, 9000);
+      }, 7200);
 
     } else if (cornerColor.side === "left"){ //timing delays for user
       setTimeout(() => {
         setShow(`show`);
-      },  4800);
+      },  3000);
 
       setTimeout(() => {
         setFade(`75%`);
-      },  8500);
+      },  5400);
 
       setTimeout(() => {
         setShow(`hide`);
-      }, 9200);
+      }, 7200);
     }
     }, []);
 

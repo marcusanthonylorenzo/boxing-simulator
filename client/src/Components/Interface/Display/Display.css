@@ -5,7 +5,6 @@
   margin: 10% auto;
   height: 40vh;
   width: 24vw;
-  box-shadow: inset 0px 1px 3px 3px rgba(77, 76, 76, 0.3);
   padding: 5% auto;
   border-radius: 1px;
 
@@ -13,11 +12,12 @@
   justify-content: center;
   align-items: center;
 
-  overflow: auto;
+  overflow: hidden;
   scroll-behavior: smooth;
   animation-timing-function: ease-in-out;
   position: relative;
   bottom: 0;
+  box-shadow: inset 1px 1px 3px 3px rgba(77, 76, 76, 0.6);
 }
 
 .inner-container {
@@ -47,7 +47,7 @@
 .display-container {
   background-color: rgba(255, 255, 255, 0.9);
   width: 70%;
-  margin: 0 1%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -71,9 +71,11 @@
 }
 
 #walk-ins {
+  display: flex;
   color: white;
   margin: 0 auto;
-  padding-bottom: 100%;
+  position: absolute;
+  /* padding: 10%; */
 }
 
 .ref-talk {
@@ -82,8 +84,18 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  /* position: relative; */
+  padding-bottom: 25%;
+  /* margin: 15%; */
   padding-top: 300%;
-  width: 150%;
-  height: 150%;
+  width: 110%;
+  height: 90%;
   color: rgb(49, 10, 10);
+  box-shadow: inset 1px 1px 3px 3px rgba(77, 76, 76, 0.6);
+}
+
+.ref-talk h3 {
+  font-size: 1rem;
+  width: 85%;
+  margin: 3% auto;
 }
