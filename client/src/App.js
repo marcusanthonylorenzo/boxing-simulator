@@ -1,14 +1,10 @@
-import { useState } from 'react'
+import React from 'react'
 import './App.css';
 import FightEngine from './FightEngine'
 import temp from './Components/Helpers/Data'
 
-
-
 function App() {
-
   const { user, enemy } = temp();
-  // console.log( user.hp, enemy.hp )
 
   return (
     <div className="App">
@@ -18,5 +14,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

@@ -70,13 +70,19 @@
   display: block;
 }
 
+#walk-ins {
+  color: white;
+  margin: 0 auto;
+  padding-bottom: 100%;
+}
+
 .ref-talk {
   background-color: rgb(255, 253, 253);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0;
+  padding-top: 300%;
   width: 150%;
   height: 150%;
   color: rgb(49, 10, 10);

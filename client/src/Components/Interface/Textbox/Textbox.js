@@ -25,7 +25,6 @@ const Textbox = ({ input, getAttacker, user, opp }) => {
   //   })
   // };
 
-
   let getMatch = filterByName()
   // const checkReturnFire = filterByKeyword(getMatch[0].firstName)
 

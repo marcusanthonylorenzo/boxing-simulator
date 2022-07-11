@@ -2,18 +2,21 @@ import React, { useState, useEffect } from 'react'
 import './SelectMenu.css'
 
 const SelectMenu = ( { buttons }) => {
-
-  //To reuse, pass props as buttons={ whateverProp to render return below }
   
-  // const [show, setShow] = useState(show);
+  const [show, setShow] = useState(`show`);
+  const showHide = () => {
+    if (show) {
+      setShow(`hide`);
+    } else if (!show) {
+      setShow(`show`);
+    }
+  }
 
   // useEffect(() => {
   //     setTimeout(() => {
   //       setShow(false);
   //     }, 3000);
   //   });
-
-  // console.log(buttons.fightBtn)
 
   return (
 

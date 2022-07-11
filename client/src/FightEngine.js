@@ -7,7 +7,7 @@ import Display from './Components/Interface/Display/Display'
 // import Textbox from './Components/Interface/Textbox/Textbox'
 import leftBoxer from './assets/images/redgloves.png'
 import oppBody from './assets/images/oppBody.png'
-// import Commentary from './Commentary'
+import SelectMenu from './Components/Interface/SelectMenu/SelectMenu'
 
 const FightEngine = ({ user, enemy }) => {
 
@@ -120,6 +120,7 @@ const FightEngine = ({ user, enemy }) => {
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
   const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", true, oppDmgScale)
 
+
   const fightBtn =
     <button className="fight-button" onClick={()=> {
       for (let i = 0; i < 12; i++){ //loop to begin action
@@ -155,7 +156,11 @@ const FightEngine = ({ user, enemy }) => {
           corner={() => userReady}/>
 
         <div className="inner-container">
-          <Display pbp={pbp} user={userReady} opp={oppReady} buttons={fightBtn} roundCount={roundCount}/>
+          <Display pbp={pbp} user={userReady} opp={oppReady} roundCount={roundCount}/>
+          
+          <div className="display-options">
+            <SelectMenu  buttons={fightBtn} />
+          </div>
         </div>
 
         <BoxerCard boxer={enemy} path={oppBody} pbp={pbp} roundCount={roundCount}

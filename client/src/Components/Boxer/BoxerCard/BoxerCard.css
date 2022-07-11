@@ -12,17 +12,33 @@
 }
 
 /* PREFIGHT Boxer Card **/
-.intros {
+.intros-right {
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: absolute;
   margin: 10% auto;
   padding: 5%;
-  height: 60vh;
+  height: 56vh;
   background-color: rgb(255, 255, 255);
   color: black;
   box-shadow: 1px 0px 4px 3px rgba(15, 11, 11, 0.4);
+  border-radius: 1px;
+  text-align: left;
+}
+
+.intros-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  margin: 10% auto;
+  padding: 5%;
+  height: 56vh;
+  background-color: rgb(255, 255, 255);
+  color: black;
+  box-shadow: 1px 0px 4px 3px rgba(15, 11, 11, 0.4);
+  border-radius: 1px;
   text-align: left;
 }
 

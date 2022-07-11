@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect} from 'react'
 import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
@@ -11,6 +11,46 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
   const cornerColor = corner(); //boxers ready with extra fight properties compared to normal user/enemy
   const dmgScale = cornerColor.dmgScale(); //scales animation properties based on health
   const getColor = cornerColor.cornerColor; //color of corner
+  const [show, setShow] = useState(`hide`);
+  const [fade, setFade] = useState(``);
+
+  const showHide = (show, set) => {
+    if (show) {
+      set(`hide`);
+    } else if (!show) {
+      set(`show`);
+    }
+  }
+
+  useEffect(() => {
+    if (cornerColor.side === "right"){ //timing delays for opponent
+      setTimeout(() => {
+        setShow(`show`);
+      },  1000);
+
+      setTimeout(() => {
+      setFade(`75%`);
+      },  5200);
+
+      setTimeout(() => {
+        setShow(`hide`);
+      }, 9000);
+
+    } else if (cornerColor.side === "left"){ //timing delays for user
+      setTimeout(() => {
+        setShow(`show`);
+      },  4800);
+
+      setTimeout(() => {
+        setFade(`75%`);
+      },  8500);
+
+      setTimeout(() => {
+        setShow(`hide`);
+      }, 9200);
+    }
+    }, []);
+
 
   const changeColor = (life) => {
     if (life <= 100 && life >= 75) {
@@ -107,21 +147,15 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
     </>
     )}
 
-    const [show, setShow] = useState(`show`);
-    const showHide = () => {
-      if (show) {
-        setShow(`hide`);
-      } else if (!show) {
-        setShow(`show`);
-      }
-    }
 
   return (
     <>
     <div className={`BoxerCard`}>
 
       { //if round count is 0, fight has not begun, display intro cards first
-      roundCount === 0 ? <div className={`intros ${show}`}  onClick={(e) => {
+      roundCount === 0 ? <div className={`intros-${cornerColor.side} ${show}`}
+      style={{opacity: fade}}
+      onClick={(e) => {
         e.preventDefault();
         showHide();
       }}>

@@ -1,22 +1,26 @@
-import React, { useRef, useEffect} from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import './Display.css'
-import SelectMenu from '../SelectMenu/SelectMenu'
+// import SelectMenu from '../SelectMenu/SelectMenu'
 import Textbox from '../../Interface/Textbox/Textbox'
 
 const Display = ({ buttons, pbp, user, opp }) => {
 
-  // const [userIntro, setUserIntro] = useState([]);
-  // const [oppIntro, setOppIntro] = useState([]);
+  const [fade, setFade] = useState(`gray`)
+
+  setTimeout(() => {
+    setFade(`white`);
+  },  10000);
 
   const displayDiv = useRef(null)
   useEffect(() => {
+    setTimeout(() => {
     displayDiv.current.scrollTop = displayDiv.current.scrollHeight; //auto scroll to bottom
-  })
-
+    }, 10000);
+  });
 
   const mapPbp = () => { 
     return pbp.map((scrap, i) => {
-      let getAttacker = scrap.attacker
+      let getAttacker = scrap.attacker;
       //SHOULDNT use key for React child, but for MVP I will.
       return (
         <>
@@ -26,16 +30,14 @@ const Display = ({ buttons, pbp, user, opp }) => {
     })
   }
 
-
   return (
     <>
-    <div ref={displayDiv} className="Display">
+    <div ref={displayDiv} className={"Display"}>
  
       <div className="display-container">
-        <h4>It's Fight Night</h4>
+          <div className="ref-talk" style={{backgroundColor: fade}}>
+            <h4 id="walk-ins">The fighters walk into the ring...</h4>
 
-
-          <div className="ref-talk">
             <h3>Gentlemen, you know the rules.</h3>
             <h3>I want a good, clean fight - are we clear?</h3>
             <h3>You break when I say you break, keep your punches above the belt.</h3>
@@ -46,9 +48,9 @@ const Display = ({ buttons, pbp, user, opp }) => {
           {mapPbp()}         
       </div>
 
-      <div className="display-options">
+      {/* <div className="display-options">
         <SelectMenu buttons={buttons} />
-      </div>
+      </div> */}
 
     </div> 
   </>
