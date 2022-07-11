@@ -13,7 +13,7 @@ const SelectMenu = ( { buttons }) => {
   //     }, 3000);
   //   });
 
-  console.log(buttons.fightBtn)
+  // console.log(buttons.fightBtn)
 
   return (
 

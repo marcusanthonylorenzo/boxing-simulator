@@ -1,5 +1,6 @@
 import React from 'react'
 import './Navbar.css'
+// import Ticker from 'react-ticker'
 import oppBody from '../../../assets/images/oppBody.png'
 
 const Navbar = () => {
@@ -18,6 +19,10 @@ const Navbar = () => {
           <img src={oppBody} alt={"Ringcraft"} id={`logo`}/>
         </div>
 
+      </div>
+
+      <div className="navbar-ticker">
+        
       </div>
     
     </div>

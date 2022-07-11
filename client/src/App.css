@@ -10,9 +10,9 @@
   background-position-y: center;
 }
 
-.App::after {
+/* .App::after {
   background-color:rgba(105, 105, 105, 0.4);
-}
+} */
 
 .border {
   border: 1px solid rgba(105, 105, 105, 0.4);

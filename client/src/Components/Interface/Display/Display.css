@@ -12,6 +12,21 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  overflow: auto;
+  scroll-behavior: smooth;
+  position: relative;
+  bottom: 0;
+}
+
+.display-container {
+  width: 75%;
+  margin: 0 1%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  scroll-behavior: smooth;
 }
 
 .display-options {

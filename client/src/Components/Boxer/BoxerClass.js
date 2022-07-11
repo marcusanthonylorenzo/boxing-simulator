@@ -36,17 +36,19 @@ class Boxer {
 
   }
 
-
-
   /***
   
   FIGHT WORKFLOW
 
   ***/
 
-
   //determines who attacks first
-  engage = () => ((this.agr*0.6)+(this.heart*0.2)+(this.sta*0.2))*this.con
+  engage = () =>{
+    let initiative = ((this.agr*0.6)+(this.heart*0.2)+(this.sta*0.2))
+    let minInitiative = initiative*this.con;
+    this.energyLoss()
+    return randomizer(minInitiative, initiative)
+  }
 
   //determines the damage output
   attack = () => {
@@ -103,15 +105,11 @@ class Boxer {
 
   }
 
-
-
 /***
 
   GYM METHODS
 
  ***/
-
-
 
   //increase attributes during fight week
   train = {

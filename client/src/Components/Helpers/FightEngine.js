@@ -1,109 +1,115 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import './Helpers.css'
 import Navbar from '../Interface/Navbar/Navbar'
 import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
 import Display from '../Interface/Display/Display'
 // import SelectMenu from '../Interface/SelectMenu/SelectMenu'
-import leftside from '../../assets/images/leftside.png'
+import Textbox from '../Interface/Textbox/Textbox'
+import leftBoxer from '../../assets/images/redgloves.png'
 import oppBody from '../../assets/images/oppBody.png'
 // import Commentary from './Commentary'
 
 const FightEngine = ({ user, enemy }) => {
 
-  const [userHp, setUserHp] = useState();
-  const [enemyHp, setEnemyHp] = useState();
+  // const [userHp, setUserHp] = useState();
+  // const [enemyHp, setEnemyHp] = useState();
   const [userDmgScale, setUserDmgScale] = useState();
   const [oppDmgScale, setOppDmgScale] = useState();
 
+  const [pbp, setPbp] = useState([]);
+  const [ko, setKo] = useState(false);
+  const [roundCount, setRoundCount] = useState(1);
 
-  const exchange = (attacker, defender) => { //exchange() determines who wins the trading of blows
-    
+  const setObj = (resultObj, key, value) => { //Composition create key
+    return {
+      ...resultObj,
+      [key]: value
+    }
+  };
+
+
+ //Phase 1 = exchange() determines who wins the trading of blows
+  const exchange = (attacker, defender) => {
     let atk = attacker.attack();
     let def = defender.defend();
     let difference = atk - def;
+    return difference
+  };
+  
 
-    //first conditions will check negative difference, if true, attacker pays a price for attacking first
-    //COMMENTARY GOES HERE
+ //Phase 2 = wrap both attack and defense with output text in one single obj, easier to package for output
+  const determineDmg = (attacker, defender, difference) => {
+
+    let result = {
+      attacker: attacker,
+      defender: defender,
+      text: 'The fighters clinch'
+    };
+
+    let hit;
+
+    if (attacker.hp <= 0 || defender.hp <= 0){ //check for knockout
+      setKo(true)
+      result.text = `THIS FIGHT IS OVER.`
+      return;
+    }
 
     if (difference <= -5){
-      attacker.hp += difference;
-      console.log(attacker.hp, `${defender.firstName} returning heavy fire!`)
-      return difference;
+      hit = attacker.hp += difference;
+      setObj(attacker, "hp", hit)
+      result.text = `${defender.firstName} returning heavy fire!`;
 
     } else if (difference >= -5 && difference <= -1){
-      attacker.hp += difference;
-      console.log(attacker.hp, `${defender.firstName} making ${attacker.firstName} pay on the way in`)
-      return difference;
+      hit = attacker.hp += difference;
+      setObj(attacker, "hp", hit)
+      result.text = `${defender.firstName} making ${attacker.firstName} pay on the way in`;
 
     }else if (difference === 0) {
-      defender.hp -= 0;
-      console.log(`${attacker.firstName} misses! ${defender.hp}`);
-      return difference;
+      hit = defender.hp -= 0;
+      setObj(defender, "hp", hit)
+      result.text = `${attacker.firstName} misses! ${defender.hp}`;
 
     } else if (difference >= 1 && difference <= 5) {
       defender.hp -= difference;
-      console.log(`good back and forth action.`);
-
-      return difference
+      setObj(defender, "hp", hit)
+      result.text = `good back and forth action.`;
 
     } else if (difference > 5) {
       defender.hp -= difference;
-      console.log(`${attacker.firstName} laying on the hurt!`);
-
-      return difference
+      setObj(defender, "hp", hit)
+      result.text = `${attacker.firstName} laying on the hurt!`;
 
     }
-  }
+    return result
+  };
 
 
   const engagement = (user, opp) => {  //engagement determines who initiates the attack
     
     let userOffense = user.engage();
     let oppOffense = opp.engage();
-
-    console.log(oppOffense, userOffense)
-    let userDmg;
-    let oppDmg;
+    let resultDmg;
 
     if (userOffense > oppOffense) {
-      userDmg = exchange(user, opp)
-      setEnemyHp(opp.hp)
+      let userDmg = exchange(user, opp)
+      resultDmg = determineDmg(user, opp, userDmg) //determines resulting dmg after engage and exchange
       setUserDmgScale(userDmg)
-      console.log("user")
+      console.log(opp.hp)
+
     } else if (oppOffense > userOffense) {
-      oppDmg = exchange(opp, user)
-      setUserHp(user.hp)
+      let oppDmg = exchange(opp, user)
+      resultDmg = determineDmg(opp, user, oppDmg) //determines resulting dmg after engage and exchange
       setOppDmgScale(oppDmg)
-      console.log("enemy")
+      // setUserHp(user.hp)
 
+    } else if (oppOffense === userOffense) {
+      console.log("cancel")
     }
-    return engagement
-  }
+    return resultDmg
+  };
 
 
-  const fightBtn =
-    <button className="fight-button" onClick={()=> {
-
-      for (let i = 0; i < 12; i++){
-        let k = i;
-        setTimeout(()=>{
-
-          if (user.hp <= 0 || enemy.hp <= 0){ //check for knockout
-            console.log("THIS FIGHT IS OVER");
-            return;
-          }
-
-          engagement(user, enemy)
-          engagement(enemy, user)
-
-        }, 200*(k + 1), ); //This third argument is a second callback that runs once after timeout, use for modal etc.
-      }
-    }}><h4>Fight</h4></button>
-
-
-
-  // Use Composition to restructure boxer object
-  const setCorner = (fighter, color, side, champion, dmg) => {
+  const setCorner = (fighter, color, side, champion, dmg) => { //set fight corner, color, champ status
     return {
       ...fighter,
       cornerColor: color,
@@ -111,38 +117,70 @@ const FightEngine = ({ user, enemy }) => {
       champion: champion,
       dmgScale: () => dmg
     }
-  }
+  };
 
   //corner color picker
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
 
 
-  return (
+  /*
+   *  userReady and oppReady is the final obj to store in pbp (the primary fight log)
+   *  use these to pass as props/context
+   */
 
+  const userReady = setCorner(user, cornerColor.red, "left", false, userDmgScale)
+  const oppReady = setCorner(enemy, cornerColor.blue, "right", true, oppDmgScale)
+
+
+  const fightBtn =
+    <button className="fight-button" onClick={()=> {
+
+      for (let i = 0; i < 12; i++){ //loop to begin action
+        let k = i;
+        if (k === 1) { //updates the next round, if iterator starting from 0.
+          let newRnd = roundCount + 1
+          setRoundCount(newRnd)
+        }
+
+        setTimeout(()=>{
+          let activity;
+
+          if (ko === true || user.hp <= 0 || enemy.hp <= 0){ //check for knockout
+            let over = "THIS FIGHT IS OVER";
+            setPbp(prev => [...prev, {text: over, round: roundCount, attacker: ``, defender: ``} ] )
+            return;
+          }
+
+          let fight = engagement(user, enemy)
+          activity = setObj(fight, "round", roundCount)
+          setPbp((prev) => [...prev, activity]);
+
+        }, 200*(k + 1),);
+        //This third argument is a second callback that runs once after timeout, use for modal etc.
+      };
+    }}><h4>Fight</h4></button>
+
+
+  return (
     <div className="fight-engine-wrap">
 
       <Navbar/>
 
       <div className="main-container">
-
-        <BoxerCard boxer={user} path={oppBody} corner={() => setCorner(user, cornerColor.red, "left", false, userDmgScale)}/>
+        <BoxerCard boxer={user} path={leftBoxer}
+          corner={() => userReady}/>
 
         <div className="inner-container">
-
-          <Display buttons={fightBtn}/>
-{/* 
-          <SelectMenu show={true} buttons={fightBtn} /> */}
-
+          <Display pbp={pbp} user={userReady} opp={oppReady} buttons={fightBtn}/>
         </div>
 
-        <BoxerCard boxer={enemy} path={oppBody} corner={() => setCorner(enemy, cornerColor.blue, "right", true, oppDmgScale)}/>
+        <BoxerCard boxer={enemy} path={oppBody}
+          corner={() => oppReady}/>
 
       </div>
 
     </div>
-
   )
-
 }
 
 export default FightEngine

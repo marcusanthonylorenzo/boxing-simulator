@@ -12,7 +12,7 @@ const temp = () => {
   const enemy = new Boxer(
     "Allan", "Loser", "Volvo", //first, nickname, last
     "Melbourne, Australia", "195",  //Hometown, Weight (string)
-    81, 79, 73, 83, 85  //stamina, agressivness, agility, strength, defense
+    81, 83, 73, 83, 85  //stamina, agressivness, agility, strength, defense
   );
 
   return { user, enemy }

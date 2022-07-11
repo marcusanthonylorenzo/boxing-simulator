@@ -1,9 +1,9 @@
-import React, {useState} from 'react'
+import React from 'react'
 import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
 
-const BoxerCard = ({ boxer, path, side, corner }) => {
+const BoxerCard = ({ boxer, path, corner }) => {
 
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
@@ -11,8 +11,6 @@ const BoxerCard = ({ boxer, path, side, corner }) => {
   const cornerColor = corner();
   const dmgScale = cornerColor.dmgScale();
   const getColor = cornerColor.cornerColor;
-
-  console.log(energy)
 
 
   const changeColor = (life) => {
@@ -31,12 +29,11 @@ const BoxerCard = ({ boxer, path, side, corner }) => {
 
   
   const koColor = (energy) => boxer.hp <= 0 ? `50%` : `${energy}%`
-  const flip = () => cornerColor.side === 'left' ? 'flip' : ''
+  const flip = () => cornerColor.side !== 'left' ? '' : ''
 
   
   const dmgScaleRegulator = () => {
     let descale = 100 - dmgScale;
-    console.log(boxer.firstName, descale)
     if (descale >= 100) {
       descale = 100
     } else {
@@ -48,14 +45,11 @@ const BoxerCard = ({ boxer, path, side, corner }) => {
 
   return (
 
-    <div className="BoxerCard"
-     style={{ backgroundColor: getColor}}
-     >
+    <div className="BoxerCard">
 
       <div className="boxer-info border padded" >
 
         <div className="boxer-info-name">
-
           <h4 className={'name'} style={{
             backgroundColor: cornerColor.cornerColor }}>
             <em>{boxer.firstName}</em>
@@ -71,16 +65,18 @@ const BoxerCard = ({ boxer, path, side, corner }) => {
 
 
         <div className="boxer-condition">
-          <div className={`boxer-condition-body ${flip()}`} style={{
-            backgroundColor: changeColor(life), //Change phyiscal condition by color, red is near knockout
-            backgroundImage: `url('${path}')`,
-            opacity: koColor(energy),
-            transform: `scale(${dmgScaleRegulator()}% -1)`
-            }}>
+          <div className={`boxer-condition-body ${flip()}`}
+              style={{
+                backgroundColor: changeColor(life), //Change phyiscal condition by color, red is near knockout
+                backgroundImage: `url('${path}')`,
+                opacity: koColor(energy),
+                transform: `scale(${dmgScaleRegulator()}% -1)`
+          }}>
 
-            <img src={path} alt={'boxer body'} className="boxer-pic" style={{ 
-              transform: `scale(${dmgScaleRegulator()}%)`,
-              opacity: koColor(),
+            <img src={path} alt={'boxer body'} className="boxer-pic"
+              style={{ 
+                transform: `scale(${dmgScaleRegulator()}%)`,
+                opacity: koColor(),
             }}/>
             
             <h5 style={{display: 'flex', position: 'absolute', color: `white`}}>
@@ -93,10 +89,11 @@ const BoxerCard = ({ boxer, path, side, corner }) => {
       </div>
 
 
+
       <div className={`fight-stats border padded`}
       // style={{ backgroundColor: getColor}}
       >
-        <h3 style={{ color: getColor }}>Fight stats brought to you by Modelo.</h3>
+        <h3 style={{ color: getColor, filter: `brightness(1.5)`}}>Fight stats brought to you by Modelo.</h3>
       </div>
 
 
@@ -114,7 +111,7 @@ const BoxerCard = ({ boxer, path, side, corner }) => {
         <h5 className={`info-titles`}>Rank:</h5>
           {/* <h5 className={'info-details'}>{boxer.rank} ({ commentary.weightClassName(boxer) })</h5> */}
 
-        { boxer.champion ? <span className={`champ`}><h5>CHAMPION</h5><img src={goldBelt} id={`champ`} alt="CHAMPION"/> </span> : <h5 className={'info-details'}>{boxer.rank} ({ commentary.weightClassName(boxer) })</h5> }
+        { !boxer.champion ? <span className={`champ`}><h5>CHAMPION</h5><img src={goldBelt} id={`champ`} alt="CHAMPION"/> </span> : <h5 className={'info-details'}>{boxer.rank} <em style={{marginLeft: `3%`}}>({ commentary.weightClassName(boxer) })</em></h5> }
 
       </div>
 

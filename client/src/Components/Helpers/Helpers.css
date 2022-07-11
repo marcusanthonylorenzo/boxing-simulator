@@ -4,14 +4,14 @@
   place-items: center;
   margin: 0 15%;
 
-  background-color: rgba(75, 68, 68, 0.859);
+  background-color: rgba(75, 68, 68, 0.109);
   background-image: url('https://i.guim.co.uk/img/media/f130d023bbec5b75bff7ed8c2be00a4df65f3ff0/0_0_4091_4094/master/4091.jpg?width=1300&quality=85&fit=max&s=50c28d753fcf4168b7e23cd6d4eb6c4f');
-  background-size: 70%;
+  background-size: 69%;
   background-repeat: no-repeat;
   background-position-x: center;
   background-position-y: center;
 
-  width: 75%;
+  width: 75vw;
   height: 70vh;
   transform: scale(0.96);
   box-shadow: 2px 0 2px 2px rgba(0, 0, 0, 0.5);

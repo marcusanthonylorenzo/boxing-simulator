@@ -51,7 +51,7 @@ OPPONENTS
 ***/
 
 
-app.get("/opponents", (req, res) => {
+app.get("/getOpponents", (req, res) => {
 
   OpponentModel.find({}, (err, result) => {
     if (err) {
