@@ -1,12 +1,12 @@
 import { useState, useRef } from 'react'
-import './Helpers.css'
-import Navbar from '../Interface/Navbar/Navbar'
-import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
-import Display from '../Interface/Display/Display'
+import './Components/Helpers/Helpers.css'
+import Navbar from './Components/Interface/Navbar/Navbar'
+import BoxerCard from './Components/Boxer/BoxerCard/BoxerCard'
+import Display from './Components/Interface/Display/Display'
 // import SelectMenu from '../Interface/SelectMenu/SelectMenu'
-import Textbox from '../Interface/Textbox/Textbox'
-import leftBoxer from '../../assets/images/redgloves.png'
-import oppBody from '../../assets/images/oppBody.png'
+// import Textbox from './Components/Interface/Textbox/Textbox'
+import leftBoxer from './assets/images/redgloves.png'
+import oppBody from './assets/images/oppBody.png'
 // import Commentary from './Commentary'
 
 const FightEngine = ({ user, enemy }) => {
@@ -18,7 +18,7 @@ const FightEngine = ({ user, enemy }) => {
 
   const [pbp, setPbp] = useState([]);
   const [ko, setKo] = useState(false);
-  const [roundCount, setRoundCount] = useState(1);
+  const [roundCount, setRoundCount] = useState(0);
 
   const setObj = (resultObj, key, value) => { //Composition create key
     return {
@@ -84,6 +84,7 @@ const FightEngine = ({ user, enemy }) => {
   };
 
 
+  //Phase 3: tie everything together
   const engagement = (user, opp) => {  //engagement determines who initiates the attack
     
     let userOffense = user.engage();
@@ -109,27 +110,21 @@ const FightEngine = ({ user, enemy }) => {
   };
 
 
-  const setCorner = (fighter, color, side, champion, dmg) => { //set fight corner, color, champ status
+  const setCorner = (fighter, color, cornerColorLabel, side, champion, dmg) => { //set fight corner, color, champ status
     return {
       ...fighter,
       cornerColor: color,
+      cornerColorLabel: cornerColorLabel,
       side: side,
       champion: champion,
       dmgScale: () => dmg
     }
   };
 
-  //corner color picker
+  //HERE is where you set the fighters extra stats, randomize cornerColors in future, change before each new fight!
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
-
-
-  /*
-   *  userReady and oppReady is the final obj to store in pbp (the primary fight log)
-   *  use these to pass as props/context
-   */
-
-  const userReady = setCorner(user, cornerColor.red, "left", false, userDmgScale)
-  const oppReady = setCorner(enemy, cornerColor.blue, "right", true, oppDmgScale)
+  const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
+  const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", true, oppDmgScale)
 
 
   const fightBtn =
@@ -158,6 +153,7 @@ const FightEngine = ({ user, enemy }) => {
         }, 200*(k + 1),);
         //This third argument is a second callback that runs once after timeout, use for modal etc.
       };
+
     }}><h4>Fight</h4></button>
 
 
@@ -167,14 +163,14 @@ const FightEngine = ({ user, enemy }) => {
       <Navbar/>
 
       <div className="main-container">
-        <BoxerCard boxer={user} path={leftBoxer}
+        <BoxerCard boxer={user} path={leftBoxer} pbp={pbp} roundCount={roundCount}
           corner={() => userReady}/>
 
         <div className="inner-container">
           <Display pbp={pbp} user={userReady} opp={oppReady} buttons={fightBtn}/>
         </div>
 
-        <BoxerCard boxer={enemy} path={oppBody}
+        <BoxerCard boxer={enemy} path={oppBody} pbp={pbp} roundCount={roundCount}
           corner={() => oppReady}/>
 
       </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css';
-import FightEngine from './Components/Helpers/FightEngine'
+import FightEngine from './FightEngine'
 import temp from './Components/Helpers/Data'
 
 

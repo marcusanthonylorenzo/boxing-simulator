@@ -2,17 +2,22 @@
 .App {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.8);
+ /* background-image: url('https://i.guim.co.uk/img/media/f130d023bbec5b75bff7ed8c2be00a4df65f3ff0/0_0_4091_4094/master/4091.jpg?width=1300&quality=85&fit=max&s=50c28d753fcf4168b7e23cd6d4eb6c4f'); */
   background-image: url('https://www.matchroomboxing.com/app/uploads/2020/07/Untitled-1-1.jpg');
-  /* https://actionpush.com/wp-content/uploads/2021/08/BOXING-LIVE-The-fights-of-the-night.jpg */
+  /*https://actionpush.com/wp-content/uploads/2021/08/BOXING-LIVE-The-fights-of-the-night.jpg */
   background-size: cover;
   background-repeat: no-repeat;
   background-position-x: center;
   background-position-y: center;
+
+  /* background-size: 90vw; */
+  /* background-repeat: no-repeat;
+  background-position-x: center;
+  background-position-y: center; */
+  /* height: 85vh;
+  transform: scale(0.9); */
 }
 
-/* .App::after {
-  background-color:rgba(105, 105, 105, 0.4);
-} */
 
 .border {
   border: 1px solid rgba(105, 105, 105, 0.4);
