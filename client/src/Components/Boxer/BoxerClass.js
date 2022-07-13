@@ -69,7 +69,29 @@ class Boxer {
   }
 
   energyLoss = () => this.con -= (this.con/100)
-  roundRecovery = () => this.train.rest();
+
+  roundRecovery = () => {
+    let rest = this.train.rest();
+    return rest*this.cond;
+  }
+
+  handSpeed = () => {
+    let min = this.agi*this.con;
+    return randomizer(min, this.agi)
+  }
+
+  ko = (defender) => { //if ko > defender.chin
+    let lowKO = this.pow*(defender.chin/100);
+    let randKO = randomizer(lowKO, this.pow);
+    this.energyLoss();
+    return randKO;
+  }
+
+  getUp = () => { //if getUp > boxerHealth%
+    this.energyLoss();
+    let weak = (this.chin+this.heart)*this.con;
+    return randomizer(weak, this.heart);
+  }
 
 
   //increase attributes between rounds, with 1 or 2 negative effects

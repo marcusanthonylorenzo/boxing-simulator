@@ -2,9 +2,10 @@
   display: flex;
   background-color: rgba(8, 6, 6, 0.194);
   background-size: contain;
-  margin: 10% auto;
-  height: 40vh;
-  width: 24vw;
+  margin: 1% auto;
+  margin-top: 15%;
+  height: 48vh;
+  width: 21vw;
   padding: 5% auto;
   border-radius: 1px;
 
@@ -12,7 +13,7 @@
   justify-content: center;
   align-items: center;
 
-  overflow: hidden;
+  overflow: auto;
   scroll-behavior: smooth;
   animation-timing-function: ease-in-out;
   position: relative;
@@ -21,7 +22,8 @@
 }
 
 .inner-container {
-  height: 70%;
+  margin-top: -50%;
+  height: 50%;
 }
 
 .main-container {
@@ -29,9 +31,9 @@
   grid-template-columns: 1fr 2fr 1fr;
   place-items: center;
   margin: 1% 15%;
-  margin-left: 25%;
+  /* margin-left: 20%; */
 
-  background-color: rgba(75, 68, 68, 0.109);
+  background-color: rgba(75, 68, 68, .109);
   background-image: url('https://i.guim.co.uk/img/media/f130d023bbec5b75bff7ed8c2be00a4df65f3ff0/0_0_4091_4094/master/4091.jpg?width=1300&quality=85&fit=max&s=50c28d753fcf4168b7e23cd6d4eb6c4f');
   background-size: 85%;
   background-repeat: no-repeat;
@@ -39,27 +41,27 @@
   background-position-y: center;
 
   width: 50vw;
-  height: 70vh;
-  transform: scale(0.96);
+  height: 72vh;
+  transform: scale(0.92);
   box-shadow: 2px 0 2px 2px rgba(0, 0, 0, 0.5);
 }
 
 .display-container {
-  background-color: rgba(255, 255, 255, 0.9);
-  width: 70%;
+  background-color: rgba(235, 224, 224, 0.9);
+  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
 }
 
 .display-options {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 5% auto;
+  margin: 0 auto;
 }
 
 .hide {
@@ -68,6 +70,10 @@
 
 .show {
   display: block;
+}
+
+.hideRefTalk {
+  color: gray;
 }
 
 #walk-ins {
@@ -90,7 +96,7 @@
   padding-top: 300%;
   width: 110%;
   height: 90%;
-  color: rgb(49, 10, 10);
+  /* color: rgb(49, 10, 10); */
   box-shadow: inset 1px 1px 3px 3px rgba(77, 76, 76, 0.6);
 }
 

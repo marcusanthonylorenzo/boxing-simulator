@@ -50,9 +50,19 @@ const setIntros = (person, colorOfTrunks) => {
   ];
   return epicIntros(arrayIntro)
 }
-
+ 
 const epicIntros =(whatToIntro) => {
-  //remember not to use index as keys next time!
+  
+  // for (let i = 0; i < whatToIntro.length; i++) {
+  //   setTimeout(() => {
+  //     return (
+  //       <div className="intro-text-box">
+  //         {whatToIntro[i]}
+  //       </div>
+  //     )
+  //   }, 300)
+  // }
+
   return whatToIntro.map((item, i) => {
     return (
       <div className="intro-text-box" key={i}>

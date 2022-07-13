@@ -3,7 +3,7 @@ import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
 
-const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
+const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
 
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
@@ -11,8 +11,13 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
   const cornerColor = corner(); //boxers ready with extra fight properties compared to normal user/enemy
   const dmgScale = cornerColor.dmgScale(); //scales animation properties based on health
   const getColor = cornerColor.cornerColor; //color of corner
+  const favColor = cornerColor.favoriteColor;
   const [show, setShow] = useState(`hide`);
   const [fade, setFade] = useState(``);
+
+  const boxerName = boxer.firstName;
+  const [dmgTracker, setDmgTracker] = useState([]) //tracks each punch for graphs
+  const [engagementCount, setPunchCount] = useState(0)
 
   const showHide = (show, set) => {
     if (show) {
@@ -22,19 +27,30 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
     }
   }
 
+  useEffect(() =>{
+    setPunchCount(engagementCount + 1)
+    const dmgDealt = setDmgTracker((dmgTracker) => 
+        [...dmgTracker, { boxerName, roundCount, engagementCount, exchangeCount, dmgScale }]);
+    console.log(boxer.firstName, dmgTracker)
+  }, [dmgScale, exchangeCount])
+
+  console.log(boxerName, dmgTracker.reduce((totalDmg, each) => totalDmg + each.dmgScale, 0))
+
+  /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
+
   useEffect(() => {
     if (cornerColor.side === "right"){ //timing delays for opponent
       setTimeout(() => {
-        setShow(`show`);
+        setShow(`show`); //show, fade, hide
       },  1000);
 
       setTimeout(() => {
       setFade(`75%`);
-      },  4000);
+      }, 3600);
 
-      setTimeout(() => {
-        setShow(`hide`);
-      }, 7200);
+      // setTimeout(() => {
+      //   setShow(`hide`);
+      // }, 9000);
 
     } else if (cornerColor.side === "left"){ //timing delays for user
       setTimeout(() => {
@@ -43,11 +59,11 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
 
       setTimeout(() => {
         setFade(`75%`);
-      },  5400);
+      },  7300);
 
-      setTimeout(() => {
-        setShow(`hide`);
-      }, 7200);
+      // setTimeout(() => {
+      //   setShow(`hide`);
+      // }, 9000);
     }
     }, []);
 
@@ -86,18 +102,18 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
 
           <div className="boxer-info-name">
             <h4 className={'name'} style={{
-              backgroundColor: cornerColor.cornerColor }}>
+              backgroundColor: cornerColor.favoriteColor }}>
               <em>{boxer.firstName}</em>
             </h4>
 
             <h4 id={`nickname`} style={{
               fontWeight: `200px`,
-              backgroundColor: getColor}}>
+              backgroundColor: favColor}}>
               <em>"{boxer.nickname}"</em>
             </h4>
 
             <h4 className={'name'} style={{
-              backgroundColor: getColor }}>
+              backgroundColor: favColor }}>
               <em>{boxer.lastName}</em>
             </h4>
           </div>
@@ -123,12 +139,12 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
         </div>
 
         <div className={`fight-stats border padded`}>
-          <h3 style={{ color: getColor, filter: `brightness(1.5)`}}>
+          <h3 style={{ color: favColor, filter: `brightness(1.5)`}}>
             Fight stats brought to you by Modelo.
           </h3>
         </div>
 
-        <div className={'boxer-info-profile border padded'} style={{ backgroundColor: getColor}}>
+        <div className={'boxer-info-profile border padded'} style={{ backgroundColor: favColor}}>
           <h5 className={`info-titles`}>Height / Weight / Reach:</h5>
           <h5> Height {boxer.weightClass} Reach </h5>
           <h5 className={`info-titles`}>Fighting out of:</h5>
@@ -154,7 +170,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount }) => {
 
       { //if round count is 0, fight has not begun, display intro cards first
       roundCount === 0 ? <div className={`intros-${cornerColor.side} ${show}`}
-      style={{opacity: fade}}
+      style={{opacity: fade, color: boxer.favoriteColor}}
       onClick={(e) => {
         e.preventDefault();
         showHide();

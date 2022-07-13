@@ -3,14 +3,14 @@ import './SelectMenu.css'
 
 const SelectMenu = ( { buttons }) => {
   
-  const [show, setShow] = useState(`show`);
-  const showHide = () => {
-    if (show) {
-      setShow(`hide`);
-    } else if (!show) {
-      setShow(`show`);
-    }
-  }
+  // const [show, setShow] = useState(`show`);
+  // const showHide = () => {
+  //   if (show) {
+  //     setShow(`hide`);
+  //   } else if (!show) {
+  //     setShow(`show`);
+  //   }
+  // }
 
   // useEffect(() => {
   //     setTimeout(() => {
