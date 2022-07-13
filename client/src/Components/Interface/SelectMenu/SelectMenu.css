@@ -10,20 +10,35 @@
 }
 
 .fight-button {
-  border-radius: 10px;
+  display: flex;
+  border-radius: 5px;
+  width: 100%;
   background-color: rgb(208, 77, 62);
   border: none;
   box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.5);
+  align-items: center;
   color: white;
   font-style: italic;
   opacity: 95%;
 }
 
 .fight-button:hover {
-  transform: scale(0.92);
+  transform: scale(0.99);
+  background-color: rgb(207, 76, 61);
   cursor: pointer;
   animation-timing-function: 150ms;
   box-shadow: inset 1px 1px 2px rgba(189, 190, 90, 0.723)
+}
+
+.fight-button:active {
+  transform: scale(0.94);
+  transition: ease-in-out;
+}
+
+.fight-button:disabled {
+  opacity: 80%;
+  transform: scale(1);
+  box-shadow: none;
 }
 
 .fight-button h4 {

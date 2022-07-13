@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './SelectMenu.css'
 
-const SelectMenu = ( { buttons }) => {
+const SelectMenu = ( { buttons, fightStart }) => {
   
   // const [show, setShow] = useState(`show`);
   // const showHide = () => {

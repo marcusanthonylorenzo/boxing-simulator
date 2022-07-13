@@ -1,8 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './Display.css'
-// import SelectMenu from '../SelectMenu/SelectMenu'
-import Textbox from '../../Interface/Textbox/Textbox'
-// import touch from '../../../assets/images/touchGloves.jpg'
 
 const Display = ({ ko, pbp, user, opp, fightStart, roundCount }) => {
 
@@ -26,19 +23,42 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundCount }) => {
     displayDiv.current.scrollTop = displayDiv.current.scrollHeight;
     }, 1000);
   });
-  
+
 
   const mapPbp = () => { 
+    console.log(ko)
     return pbp.map((scrap, i) => {
+    
       let getAttacker = {
         ...scrap.attacker,
         cornerColor: scrap.favoriteColor,
       }
-      ; //remember to change all keys! no indexes when shipping
-      return ( 
-         <Textbox key={i} ko={ko} input={scrap} getAttacker={getAttacker} user={user} opp={opp} pbp={pbp}/>   
+
+      const isKoed = !ko ?
+      <div className={`textbox`} style={{ backgroundColor: getAttacker.favoriteColor}}>
+        {scrap.text}
+      </div>
+      : returnOptions(scrap.text)
+
+      console.log(scrap)
+      return (
+        <>
+        { 
+          isKoed
+        }
+        </>
       )
     })
+  }
+
+  const returnOptions = (text) => {
+    return (
+      <>
+        <div className={`options`} style={{ backgroundColor: `gray`}}>
+          <h4>{text}</h4>
+        </div>
+      </>
+    )
   }
 
   return (
@@ -59,7 +79,7 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundCount }) => {
           {mapPbp()}         
       </div>
     </div> 
-  </>
+  </> 
   )
 }
 

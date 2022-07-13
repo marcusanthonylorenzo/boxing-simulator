@@ -105,3 +105,27 @@
   width: 85%;
   margin: 3% auto;
 }
+
+
+.textbox {
+  background-color: white;
+  margin: 1% 0;
+  border-radius: 3px;
+  opacity: 99%;
+  width: fit-content;
+
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 4%;
+  transform: scale(0.95);
+}
+
+.options {
+  display: flex;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}

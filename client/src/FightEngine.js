@@ -16,9 +16,11 @@ const FightEngine = ({ user, enemy }) => {
   const [pbp, setPbp] = useState([]);
   const [ko, setKo] = useState(false);
 
+  const [disable, setDisable] = useState(false)
   const [roundCount, setRoundCount] = useState(0);
   const [fightStart, setFightStart] = useState(false);
   const [exchangeCount, setExchangeCount] = useState(0);
+  const [delay, setDelay] = useState(500);
 
 
   useEffect(() => {
@@ -46,14 +48,31 @@ const FightEngine = ({ user, enemy }) => {
   const determinePowerShot = (off, def, diff) => {
     let powerShot = off.ko(def); //determine powershot, then if KO
     let takesAShot = def.getUp();
+    
     if (powerShot > def.chin){  //check if powershot is stronger than chin
-      console.log(`A BIG SHOT BY ${off.firstName}`)
+      pbp.forEach((el, i) => el.text = `A BIG SHOT BY ${off.firstName}`)
+
       if (powerShot > takesAShot){  //check if powershot is stronger than def ability to getUp (take a shot)
         setKo(true);
-        console.log(`${def.firstName} GOES DOWN.`)
-        def.hp = 0
+        pbp.forEach((el, i) => { //change text again
+          el.text = `${def.firstName} GOES DOWN.`;
+          setPbp(prev => [prev, { text: `WILL ${def.firstName} GET UP?`}])
+          def.con = 0.1;
+
+          //This is where the AI decides if it can get up
+          const getUp = def.getUp();
+          if (getUp > takesAShot) {
+            setPbp(prev => [prev, { text: `${def.firstName} stands back up!`}])
+            setKo(false)
+            def.hp = pbp.defender.hp*def.con;
+          } else {
+            setPbp(prev => [prev, {text: `THIS FIGHT IS OVER. ${off.firstName} PUTS ${def.firstName} AWAY`}])
+            return;
+          }
+          console.log(off.firstName, def.firstName)
+        })
       }
-      console.log(powerShot, takesAShot, powerShot + diff)
+
       return powerShot + diff //if not return a heavier shot
     } else {
       return diff
@@ -72,44 +91,55 @@ const FightEngine = ({ user, enemy }) => {
     };
     let hit;
     let normalOrPowerPunch;
+    let finished;
+    const takesAShot = defender.getUp();
+    const getUp = defender.getUp();
 
     if (attacker.hp <= 0) { //check for knockout
       setKo(true)
-      result.text = `${attacker.firstName} hits the canvas!`;
+      finished = `${attacker.firstName} hits the canvas!`;
+      setPbp(prev => [...prev, {text: finished, round: roundCount, attacker: ``, defender: ``} ] )
+
+      const getUp = defender.getUp();
+      if (getUp > takesAShot) {
+        setPbp(prev => [prev, { text: `${defender.firstName} stands back up!`}])
+      } else {
+        setPbp(prev => [prev, {text: `THIS FIGHT IS OVER. ${attacker.firstName} PUTS ${defender.firstName} AWAY`}])
+        return;
+      }
       return;
 
     } else if (defender.hp <= 0) {
       setKo(true);
-      result.text = `${defender.firstName} is down!`;
+      finished = `${defender.firstName} is down!`;
+      setPbp(prev => [...prev, {text: finished, round: roundCount, attacker: ``, defender: ``} ] )
 
-      //this is where you use the algo for the fighter to getUp
+      if (getUp > takesAShot) {
+        setPbp(prev => [prev, { text: `${defender.firstName} stands back up!`}])
+      } else {
+        setPbp(prev => [prev, {text: `THIS FIGHT IS OVER. ${attacker.firstName} PUTS ${defender.firstName} AWAY`}])
+        return;
+      }
       return;
     }
 
-    if (difference <= -5){
+    if (difference <= -5){ //if counter is too high
 
-      normalOrPowerPunch = determinePowerShot(defender, attacker, difference)
-      console.log(normalOrPowerPunch)
-      hit = attacker.hp += normalOrPowerPunch; //reduce health
-      setObj(attacker, "hp", hit)
-
-      result.totalDmg = normalOrPowerPunch //log dmg value for boxerCard volume
+      hit = attacker.hp += difference; //reduce health
+      setObj(attacker, "hp", hit);
+      result.totalDmg = difference //log dmg value for boxerCard volume
       result.text = `${defender.firstName} returning heavy fire!`;
 
     } else if (difference >= -5 && difference <= -1){
 
-      normalOrPowerPunch = determinePowerShot(defender, attacker, difference)
-      console.log(normalOrPowerPunch)
-      hit = attacker.hp += normalOrPowerPunch; //reduce health
-      setObj(attacker, "hp", hit)
-
-      result.totalDmg = normalOrPowerPunch
+      hit = attacker.hp += difference; //reduce health
+      setObj(attacker, "hp", hit);
+      result.totalDmg = difference;
       result.text = `${defender.firstName} making ${attacker.firstName} pay on the way in`;
 
     }else if (difference === 0) {
       hit = defender.hp -= 0;
-      setObj(defender, "hp", hit)
-
+      setObj(defender, "hp", hit);
       result.totalDmg = 0;
       result.text = `${attacker.firstName} swinging for air!`;
 
@@ -153,7 +183,7 @@ const FightEngine = ({ user, enemy }) => {
       setOppDmgScale(oppDmg)
 
     } else if (oppOffense === userOffense) {
-      console.log("cancel")
+      resultDmg = 0;
     }
     console.log(resultDmg)
     return resultDmg
@@ -189,51 +219,47 @@ const FightEngine = ({ user, enemy }) => {
           setRoundCount(newRnd)
         }
 
-        setTimeout(()=>{
+        const fightAction = setTimeout(()=>{
           let activity;
-          if (ko === true){ //check for knockout
 
-               let over = "THIS FIGHT IS OVER";
-                      
+          //*** WHAT TO DO WHEN A BOXER IS DOWN AND NEEDS TO GET UP ***/
+          if (ko === true){ //check for knockout
+              let over;
+
               if (user.hp <= 0) { //check for knockout
                 setKo(true)
-                over = `${user.firstName} hits the canvas!`;
+                over = `${user.firstName} hits the canvas! a`;
 
                 return;
               } else if (enemy.hp <= 0) {
                 setKo(true);
-                over = `${enemy.firstName} is down!`;
+                over = `${enemy.firstName} is down! x`;
 
-                //this is where you use .getUp
-                return;
               }
+              setPbp(prev => [...prev, {text: over, round: roundCount, attacker: ``, defender: ``} ] )
+              clearTimeout(fightAction);
+              return;
 
-            setPbp(prev => [...prev, {text: over, round: roundCount, attacker: ``, defender: ``} ] )
-            return fight;
+          } else {
+            /***  FIGHT WORKFLOW ***/
+            let fightUnderway = engagement(user, enemy)
+            setExchangeCount(k)
+            activity = setObj(fightUnderway, "round", roundCount)
+            setPbp((prev) => [...prev, activity]);
           }
-          /***  FIGHT WORKFLOW ***/
-          let fightUnderway = engagement(user, enemy)
-          setExchangeCount(k)
-          activity = setObj(fightUnderway, "round", roundCount)
-          setPbp((prev) => [...prev, activity]);
-
         },
-        500*(k + 1),
-        () => console.log("fight over"));//This third argument is a second callback that runs once after timeout, use for modal etc.
-
-      };
-
+        delay*(k + 1), setDisable(false) )};
+        //This third argument is a second callback that runs once after timeout, use for modal etc.
   } 
 
-
   const fightBtn = //The main button
-    <button className="fight-button" onClick={()=> {
+    <button className="fight-button" disabled={disable} onClick={()=> {
       setFightStart(true);
+      setDisable(true);
       fight()
     }}><h4>Fight</h4></button>
 
-    console.log(userActive.ko(oppActive), oppActive);
-
+  console.log(ko)
 
   return (
     <div className="fight-engine-wrap">
@@ -254,7 +280,7 @@ const FightEngine = ({ user, enemy }) => {
               roundCount={roundCount} fightStart={fightStart} ko={ko}/>
             
             <div className="display-options">
-              <SelectMenu  buttons={fightBtn} />
+              <SelectMenu  buttons={fightBtn} ko={ko} fightStart={fightStart} />
             </div>
           </div>
 
