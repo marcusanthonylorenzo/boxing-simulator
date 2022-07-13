@@ -4,7 +4,7 @@ import './Display.css'
 import Textbox from '../../Interface/Textbox/Textbox'
 // import touch from '../../../assets/images/touchGloves.jpg'
 
-const Display = ({ buttons, pbp, user, opp, fightStart, roundCount }) => {
+const Display = ({ ko, pbp, user, opp, fightStart, roundCount }) => {
 
   const [fade, setFade] = useState({backgroundColor:`gray`});
   const [hide, setHide] = useState(`show`);
@@ -26,6 +26,7 @@ const Display = ({ buttons, pbp, user, opp, fightStart, roundCount }) => {
     displayDiv.current.scrollTop = displayDiv.current.scrollHeight;
     }, 1000);
   });
+  
 
   const mapPbp = () => { 
     return pbp.map((scrap, i) => {
@@ -35,9 +36,7 @@ const Display = ({ buttons, pbp, user, opp, fightStart, roundCount }) => {
       }
       ; //remember to change all keys! no indexes when shipping
       return ( 
-        <>
-        <Textbox key={i} input={scrap} getAttacker={getAttacker} user={user} opp={opp} pbp={pbp}/>
-        </>
+         <Textbox key={i} ko={ko} input={scrap} getAttacker={getAttacker} user={user} opp={opp} pbp={pbp}/>   
       )
     })
   }

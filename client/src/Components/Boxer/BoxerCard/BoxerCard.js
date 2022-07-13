@@ -29,12 +29,14 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
 
   useEffect(() =>{
     setPunchCount(engagementCount + 1)
-    const dmgDealt = setDmgTracker((dmgTracker) => 
-        [...dmgTracker, { boxerName, roundCount, engagementCount, exchangeCount, dmgScale }]);
+    let exc = { boxerName, roundCount, engagementCount, exchangeCount, dmgScale }
+    setDmgTracker((dmgTracker) => [...dmgTracker, exc]);
     console.log(boxer.firstName, dmgTracker)
   }, [dmgScale, exchangeCount])
 
-  console.log(boxerName, dmgTracker.reduce((totalDmg, each) => totalDmg + each.dmgScale, 0))
+
+  let dmgStats = dmgTracker.reduce((totalDmg, each) => each.dmgScale ? totalDmg += each.dmgScale : null, 0)
+  console.log(dmgStats, dmgScale)
 
   /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
 

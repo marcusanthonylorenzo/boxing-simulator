@@ -43,6 +43,23 @@ const FightEngine = ({ user, enemy }) => {
     return difference
   };
 
+  const determinePowerShot = (off, def, diff) => {
+    let powerShot = off.ko(def); //determine powershot, then if KO
+    let takesAShot = def.getUp();
+    if (powerShot > def.chin){  //check if powershot is stronger than chin
+      console.log(`A BIG SHOT BY ${off.firstName}`)
+      if (powerShot > takesAShot){  //check if powershot is stronger than def ability to getUp (take a shot)
+        setKo(true);
+        console.log(`${def.firstName} GOES DOWN.`)
+        def.hp = 0
+      }
+      console.log(powerShot, takesAShot, powerShot + diff)
+      return powerShot + diff //if not return a heavier shot
+    } else {
+      return diff
+    }
+  }
+
 
  //Phase 2 = wrap both attack and defense with output text in one single obj, easier to package for output
   const determineDmg = (attacker, defender, difference) => {
@@ -54,59 +71,64 @@ const FightEngine = ({ user, enemy }) => {
       text: 'The fighters clinch'
     };
     let hit;
-
+    let normalOrPowerPunch;
 
     if (attacker.hp <= 0) { //check for knockout
       setKo(true)
       result.text = `${attacker.firstName} hits the canvas!`;
-
       return;
+
     } else if (defender.hp <= 0) {
       setKo(true);
       result.text = `${defender.firstName} is down!`;
 
-      //this is where you use .getUp
+      //this is where you use the algo for the fighter to getUp
       return;
     }
 
-
     if (difference <= -5){
-      hit = attacker.hp += difference;
-      setObj(attacker, "hp", hit)
-      result.totalDmg = hit
 
+      normalOrPowerPunch = determinePowerShot(defender, attacker, difference)
+      console.log(normalOrPowerPunch)
+      hit = attacker.hp += normalOrPowerPunch; //reduce health
+      setObj(attacker, "hp", hit)
+
+      result.totalDmg = normalOrPowerPunch //log dmg value for boxerCard volume
       result.text = `${defender.firstName} returning heavy fire!`;
 
     } else if (difference >= -5 && difference <= -1){
 
-      let powerShot = defender.ko(attacker); //determine KO, based on the def chin mitigating atk pow
-      console.log(powerShot, difference, attacker.hp)
-      if (powerShot > attacker.chin){
-        console.log(powerShot, attacker.chin, difference + powerShot)
-      }
-      
-      hit = attacker.hp += difference; //reduce health
+      normalOrPowerPunch = determinePowerShot(defender, attacker, difference)
+      console.log(normalOrPowerPunch)
+      hit = attacker.hp += normalOrPowerPunch; //reduce health
       setObj(attacker, "hp", hit)
 
-      result.totalDmg = hit
+      result.totalDmg = normalOrPowerPunch
       result.text = `${defender.firstName} making ${attacker.firstName} pay on the way in`;
 
     }else if (difference === 0) {
       hit = defender.hp -= 0;
       setObj(defender, "hp", hit)
-      result.totalDmg = hit;
-      result.text = `${attacker.firstName} misses!`;
+
+      result.totalDmg = 0;
+      result.text = `${attacker.firstName} swinging for air!`;
 
     } else if (difference >= 1 && difference <= 5) {
-      defender.hp -= difference;
-      result.totalDmg = difference;
+      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+      console.log(normalOrPowerPunch)
+      hit = defender.hp -= normalOrPowerPunch; //reduce health
       setObj(defender, "hp", hit)
+
+      result.totalDmg = normalOrPowerPunch;
       result.text = `Good back-and-forth action.`;
 
     } else if (difference > 5) {
-      defender.hp -= difference;
-      result.totalDmg = difference;
+      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+      console.log(normalOrPowerPunch)
+      hit = defender.hp -= normalOrPowerPunch; //reduce health
       setObj(defender, "hp", hit)
+
+      result.totalDmg = normalOrPowerPunch;
       result.text = `${attacker.firstName} laying on the hurt!`;
 
     }
@@ -133,6 +155,7 @@ const FightEngine = ({ user, enemy }) => {
     } else if (oppOffense === userOffense) {
       console.log("cancel")
     }
+    console.log(resultDmg)
     return resultDmg
   };
 
@@ -155,7 +178,7 @@ const FightEngine = ({ user, enemy }) => {
   const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", true, oppDmgScale)
 
 
-  const fight = async () => {
+  const fight = () => {
 
   /*** set i length to user+opp engage for volume of strikes***/
       for (let i = 0; i < 12; i++){
@@ -186,12 +209,12 @@ const FightEngine = ({ user, enemy }) => {
               }
 
             setPbp(prev => [...prev, {text: over, round: roundCount, attacker: ``, defender: ``} ] )
-            return;
+            return fight;
           }
           /***  FIGHT WORKFLOW ***/
-          let fight = engagement(user, enemy)
+          let fightUnderway = engagement(user, enemy)
           setExchangeCount(k)
-          activity = setObj(fight, "round", roundCount)
+          activity = setObj(fightUnderway, "round", roundCount)
           setPbp((prev) => [...prev, activity]);
 
         },
@@ -228,7 +251,7 @@ const FightEngine = ({ user, enemy }) => {
           <div className="inner-container">
             <Display
               pbp={pbp} user={userActive} opp={oppActive}
-              roundCount={roundCount} fightStart={fightStart} />
+              roundCount={roundCount} fightStart={fightStart} ko={ko}/>
             
             <div className="display-options">
               <SelectMenu  buttons={fightBtn} />
