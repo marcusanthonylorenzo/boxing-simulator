@@ -162,12 +162,13 @@ class Boxer {
 
     rest: () => {
 
-      if (this.hp < this.maxHp) {
+      if (this.hp < this.maxHp*0.95) {
         this.hp *= 1.05;
       }
-      if (this.con < this.maxCon) {
+      if (this.con < this.maxCon*0.95) {
         this.con *= 1.05;
       }
+      return this.rest;
     }
   }
 

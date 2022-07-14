@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './Display.css'
 
-const Display = ({ ko, pbp, user, opp, fightStart, roundCount }) => {
+const Display = ({ ko, pbp, user, opp, fightStart, roundOver }) => {
 
   const [fade, setFade] = useState({backgroundColor:`gray`});
   const [hide, setHide] = useState(`show`);
@@ -26,40 +26,64 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundCount }) => {
 
 
   const mapPbp = () => { 
-    console.log(ko)
     return pbp.map((scrap, i) => {
-    
+
       let getAttacker = {
         ...scrap.attacker,
         cornerColor: scrap.favoriteColor,
       }
 
-      const isKoed = !ko ?
-      <div className={`textbox`} style={{ backgroundColor: getAttacker.favoriteColor}}>
-        {scrap.text}
-      </div>
-      : returnOptions(scrap.text)
+    const continueText =
+      <div className={`textbox`} style={{backgroundColor: getAttacker.favoriteColor}}>{scrap.text}</div>
 
-      console.log(scrap)
+    const koedText =
+      <div className={`options`} style={{color: `black`}}>
+        <h4>The fighters both in the pocket trading heavy blows right now!</h4>
+        <h4>{scrap.text}</h4>
+      </div>
+    
+    // const roundOverText =
+    //   <div className={`options`}>{scrap.text}</div>
+
       return (
         <>
-        { 
-          isKoed
+        {
+        !ko ? continueText : koedText
         }
         </>
       )
     })
-  }
+  };
 
-  const returnOptions = (text) => {
-    return (
-      <>
-        <div className={`options`} style={{ backgroundColor: `gray`}}>
-          <h4>{text}</h4>
-        </div>
-      </>
-    )
-  }
+  //THE ACTUAL TEXT TO FILL if CONTINUE FIGHTING, OR MODAL POP UP AFTER KO, END OF ROUND
+  // const endOfActionModal = (fightHistory) => {
+
+  //   console.log(fightHistory, ko, roundOver)
+
+  //   const continueText =
+  //     <div className={`textbox`} style={{backgroundColor: fightHistory.attacker.favoriteColor}}>{fightHistory.text}</div>
+
+  //   const koedText =
+  //     <div className={`options`} style={{backgroundColor: fightHistory.defender.favoriteColor}}>{fightHistory.text}</div>
+    
+  //   const roundOverText =
+  //     <div className={`options`} style={{backgroundColor: `red`}}>{fightHistory.text}</div>
+
+  //   const continueOrModal = () =>{
+  //     if (!ko && !roundOver) {
+  //       return continueText;
+  //     } else if (ko && !roundOver) {
+  //       return koedText;
+  //     } else if (!ko && roundOver) {
+  //       return roundOverText;
+  //     }
+  //   }
+  //   return (
+  //     <>
+  //       {continueOrModal()}
+  //     </>
+  //   )
+  // };
 
   return (
     <>

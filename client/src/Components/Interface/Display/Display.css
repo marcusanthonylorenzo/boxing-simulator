@@ -112,20 +112,23 @@
   margin: 1% 0;
   border-radius: 3px;
   opacity: 99%;
-  width: fit-content;
+  width: 95%;
 
   color: white;
   font-size: 15px;
   font-weight: 600;
   padding: 4%;
   transform: scale(0.95);
+  box-shadow: 4px 3px 7px 2px rgba(77, 76, 76, 0.6);
 }
 
 .options {
   display: flex;
+  flex-direction: column;
   position: absolute;
   height: 100%;
   width: 100%;
   justify-content: center;
   align-items: center;
+  background-color: rgb(227, 227, 227);
 }

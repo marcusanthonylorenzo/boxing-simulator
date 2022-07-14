@@ -31,7 +31,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
     setPunchCount(engagementCount + 1)
     let exc = { boxerName, roundCount, engagementCount, exchangeCount, dmgScale }
     setDmgTracker((dmgTracker) => [...dmgTracker, exc]);
-    console.log(boxer.firstName, dmgTracker)
+    // console.log(boxer.firstName, dmgTracker)
   }, [dmgScale, exchangeCount])
 
 
@@ -86,6 +86,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
   
   const koColor = (energy) => boxer.hp <= 0 ? `50%` : `${energy}%`
   const flip = () => cornerColor.side !== 'left' ? '' : ''
+
   
   const dmgScaleRegulator = () => {
     let descale = 100 - dmgScale;
@@ -93,8 +94,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
       descale = 100
     } else {
       return descale
-    }
-    return descale + 0.5;
+    } return descale + 0.5;
   }
 
   const mainCard =  () => { //Conditional Rendering ref for fighter card switching between intro, and realtime fight stats
@@ -122,16 +122,16 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
 
           <div className="boxer-condition" style={{ backgroundColor: changeColor(life), opacity: koColor(energy) }}>
             <div className={`boxer-condition-body ${flip()}`} //exists if you want to flip a profile pic in future
-                style={{
-                  backgroundColor: changeColor(life), //Change phyiscal condition by color, red is near knockout
-                  backgroundImage: `url('${path}')`,
-                  opacity: koColor(energy),
-                  transform: `scale(${dmgScaleRegulator()}% -1)`
+              style={{
+              backgroundColor: changeColor(life), //Change phyiscal condition by color, red is near knockout
+              backgroundImage: `url('${path}')`,
+              opacity: koColor(energy),
+              transform: `scale(${dmgScaleRegulator()}% -1)`
             }}>
               <img src={path} alt={'boxer body'} className="boxer-pic"
                 style={{ 
-                  transform: `scale(${dmgScaleRegulator()}%)`,
-                  opacity: koColor(),
+                transform: `scale(${dmgScaleRegulator()}%)`,
+                opacity: koColor(),
               }}/>
               <h5 style={{display: 'flex', position: 'absolute', color: `white`}}>
                 {Math.round(boxer.hp)} {life} {Math.round((boxer.con*100))}
@@ -155,9 +155,9 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
           <h5 className={'info-details'}>{boxer.win} - {boxer.loss}</h5>  
           <h5 className={`info-titles`}>Rank:</h5>
           {
-            !boxer.champion ? <span className={`champ`}>
-              <h5>CHAMPION</h5> <img src={goldBelt} id={`champ`} alt="CHAMPION"/>
-            </span> : <h5 className={'info-details'}>
+            !boxer.champion ?
+              <span className={`champ`}> <h5>CHAMPION</h5> <img src={goldBelt} id={`champ`} alt="CHAMPION"/>
+              </span> : <h5 className={'info-details'}>
               {boxer.rank} <em style={{marginLeft: `3%`}}> ({ commentary.weightClassName(boxer) }) </em>
             </h5>
           }
@@ -171,11 +171,12 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
     <div className={`BoxerCard`}>
 
       { //if round count is 0, fight has not begun, display intro cards first
-      roundCount === 0 ? <div className={`intros-${cornerColor.side} ${show}`}
-      style={{opacity: fade, color: boxer.favoriteColor}}
-      onClick={(e) => {
-        e.preventDefault();
-        showHide();
+      roundCount === 0 ?
+      <div className={`intros-${cornerColor.side} ${show}`}
+        style={{opacity: fade, color: boxer.favoriteColor}}
+        onClick={(e) => {
+          e.preventDefault();
+          showHide();
       }}>
         {/* // style={{backgroundColor: }}> */}
         {commentary.setIntros({...cornerColor, weightClass: commentary.weightClassName(boxer)}, boxer.favoriteColor)}</div> : mainCard()

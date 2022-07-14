@@ -36,6 +36,7 @@
 }
 
 .fight-button:disabled {
+  background-color: gray;
   opacity: 80%;
   transform: scale(1);
   box-shadow: none;
