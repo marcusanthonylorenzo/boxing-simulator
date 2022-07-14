@@ -105,14 +105,17 @@ class Boxer {
   pepTalk = {
     getInThere: () => this.train.speedBag(),
     relax: () => {
-      let recover = this.train.rest()
-      return recover*this.con
+      this.agi *= 0.96;
+      this.pow *= 0.96;
+      this.con *= 1.08;
+      console.log(this.agi, this.pow, this.con)
     },
     youGottaGo: () => {
       this.agr *= 1.05;
       this.heart *= 1.05;
       this.agi *= 1.05;
       this.con *= this.con;
+      console.log(this.con)
     }
   }
   
@@ -153,6 +156,7 @@ class Boxer {
       this.agr *= 1.03;
       this.agi *= 1.03;
       this.energyLoss();
+      console.log(this.agr, this.agi, this.con)
     },
 
     jumpRope: () => {
@@ -168,14 +172,14 @@ class Boxer {
     },
 
     rest: () => {
-
+      console.log("rested")
       if (this.hp < this.maxHp*0.95) {
         this.hp *= 1.05;
       }
       if (this.con < this.maxCon*0.95) {
         this.con *= 1.05;
       }
-      return this.rest;
+      console.log(this.hp)
     }
   }
 

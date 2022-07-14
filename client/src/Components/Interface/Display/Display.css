@@ -132,3 +132,13 @@
   align-items: center;
   background-color: rgb(227, 227, 227);
 }
+
+.options-select {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 100%;
+}
