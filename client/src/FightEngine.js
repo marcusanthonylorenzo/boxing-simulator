@@ -22,7 +22,7 @@ const FightEngine = ({ user, enemy }) => {
   const [fightStart, setFightStart] = useState(false);
   const [rateOfExchange, setRateOfExchange] = useState(12);
   const [exchangeCount, setExchangeCount] = useState(0);
-  const [delay, setDelay] = useState(500);
+  const [delay, setDelay] = useState(600);
 
 
   useEffect(() => {
@@ -278,19 +278,21 @@ const FightEngine = ({ user, enemy }) => {
   };
 
 
-  const fight = () => {
+  const fight = (user, enemy) => {
 
+          roundUpdate();
   /*** set i length to user+opp engage for volume of strikes***/
       for (let i = 0; i < rateOfExchange; i++){
         let k = i;
 
-        if (k === 1) { //updates the next round
+        // if (k === 1) { //updates the next round
           let newRnd = roundCount + 1;
           setRoundCount(newRnd);
           setRoundOver(false);
-          user.roundRecovery();
-          enemy.roundRecovery();
-        }
+          // user.roundRecovery();
+          // enemy.roundRecovery();
+
+        // }
         const fightAction = setTimeout(()=>{
           let activity;
           let over;
@@ -323,14 +325,26 @@ const FightEngine = ({ user, enemy }) => {
           setTimeout(() => { //sync disable counters
             setRoundOver(true);
             setDisable(false);
-            // user.roundRecovery();
-            // enemy.roundRecovery();
-          }, delay*12)
+
+          }, delay*rateOfExchange)
 
         }, delay*(k + 1),)
+
       };
-      console.log(roundOver)
  } 
+
+ const roundUpdate = () => {
+    let update;  
+    if (roundCount === 0) {
+      update = `This fight is officially underway!`;
+      setPbp((prev) => [ ...prev, {text: update},]);
+    } else if (!roundOver && roundCount > 0) {
+      update = `The bell sounds for round ${roundCount}!`;
+      setPbp((prev) => [{text: update}, ...prev]);
+    }
+
+    return update;
+ }
 
   // const handSpeed = 12;
 
@@ -338,13 +352,16 @@ const FightEngine = ({ user, enemy }) => {
     <button className="fight-button" disabled={disable} onClick={()=> {
       setFightStart(true);
       setDisable(true);
-      fight();
+      fight(user, enemy); //for NPC fights, use recursion to call itself 12 times ?
+      user.roundRecovery();
+      enemy.roundRecovery();
     }}><h4>Fight</h4></button>
+
 
   return (
     <div className="fight-engine-wrap">
 
-      <Navbar/>
+      <Navbar roundCount={roundCount}/>
 
       <div className="main-container-wrap">
         <div className="main-container">

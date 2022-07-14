@@ -23,15 +23,14 @@
 }
 
 .fight-button:hover {
-  transform: scale(0.99);
-  background-color: rgb(207, 76, 61);
+  background-color: rgb(219, 116, 105);
   cursor: pointer;
-  animation-timing-function: 150ms;
+  transition: ease-in-out;
   box-shadow: inset 1px 1px 2px rgba(189, 190, 90, 0.723)
 }
 
 .fight-button:active {
-  transform: scale(0.94);
+  transform: scale(0.99);
   transition: ease-in-out;
 }
 

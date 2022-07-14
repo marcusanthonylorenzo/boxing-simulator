@@ -42,6 +42,13 @@ class Boxer {
 
   ***/
 
+  isChamp = (trueOrFalse) => {
+    this.champion = trueOrFalse;
+    if (true) {
+      this.rank = 1;
+    }
+  }
+
   //determines who attacks first
   engage = () =>{
     let initiative = ((this.agr*0.6)+(this.heart*0.2)+(this.sta*0.2))

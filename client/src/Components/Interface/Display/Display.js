@@ -27,14 +27,28 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver }) => {
 
   const mapPbp = () => { 
     return pbp.map((scrap, i) => {
-
       let getAttacker = {
         ...scrap.attacker,
         cornerColor: scrap.favoriteColor,
       }
 
-    const continueText =
-      <div className={`textbox`} style={{backgroundColor: getAttacker.favoriteColor}}>{scrap.text}</div>
+    const continueText = () => { //set opening text to black color
+      let fontCol = `white`;
+      let fontSiz = `1rem`;
+      if (pbp.length === 1) {
+        fontCol = `black`;
+        fontSiz = `2rem`;
+      } else { 
+        fontCol = `white`;
+      }
+      return (
+      <div className={`textbox`} style={{
+        backgroundColor: getAttacker.favoriteColor,
+        color: fontCol,
+        fontSize: fontSiz
+      }}>{scrap.text}</div>
+      )
+    }
 
     const koedText =
       <div className={`options`} style={{color: `black`}}>
@@ -48,42 +62,13 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver }) => {
       return (
         <>
         {
-        !ko ? continueText : koedText
+        !ko ? continueText() : koedText
         }
         </>
       )
     })
   };
 
-  //THE ACTUAL TEXT TO FILL if CONTINUE FIGHTING, OR MODAL POP UP AFTER KO, END OF ROUND
-  // const endOfActionModal = (fightHistory) => {
-
-  //   console.log(fightHistory, ko, roundOver)
-
-  //   const continueText =
-  //     <div className={`textbox`} style={{backgroundColor: fightHistory.attacker.favoriteColor}}>{fightHistory.text}</div>
-
-  //   const koedText =
-  //     <div className={`options`} style={{backgroundColor: fightHistory.defender.favoriteColor}}>{fightHistory.text}</div>
-    
-  //   const roundOverText =
-  //     <div className={`options`} style={{backgroundColor: `red`}}>{fightHistory.text}</div>
-
-  //   const continueOrModal = () =>{
-  //     if (!ko && !roundOver) {
-  //       return continueText;
-  //     } else if (ko && !roundOver) {
-  //       return koedText;
-  //     } else if (!ko && roundOver) {
-  //       return roundOverText;
-  //     }
-  //   }
-  //   return (
-  //     <>
-  //       {continueOrModal()}
-  //     </>
-  //   )
-  // };
 
   return (
     <>

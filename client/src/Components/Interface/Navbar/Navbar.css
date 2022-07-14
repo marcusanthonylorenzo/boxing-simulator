@@ -57,3 +57,19 @@
   filter: invert(1);
   border-radius: 5px;
 }
+
+.navbar-ticker {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  background-color: rgba(55, 55, 70, 0.366);
+  margin: 0;
+  margin-left: 20%;
+  width: 90%;
+  height: 55%;
+  border-radius: 5px;
+}
+
+.navbar-round-count {
+  color: white;
+}

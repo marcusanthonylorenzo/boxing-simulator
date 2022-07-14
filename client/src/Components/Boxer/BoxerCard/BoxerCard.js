@@ -36,7 +36,8 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
 
 
   let dmgStats = dmgTracker.reduce((totalDmg, each) => each.dmgScale ? totalDmg += each.dmgScale : null, 0)
-  console.log(dmgStats, dmgScale)
+
+  console.log(pbp, dmgTracker)
 
   /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
 
@@ -155,7 +156,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
           <h5 className={'info-details'}>{boxer.win} - {boxer.loss}</h5>  
           <h5 className={`info-titles`}>Rank:</h5>
           {
-            !boxer.champion ?
+            boxer.champion ?
               <span className={`champ`}> <h5>CHAMPION</h5> <img src={goldBelt} id={`champ`} alt="CHAMPION"/>
               </span> : <h5 className={'info-details'}>
               {boxer.rank} <em style={{marginLeft: `3%`}}> ({ commentary.weightClassName(boxer) }) </em>

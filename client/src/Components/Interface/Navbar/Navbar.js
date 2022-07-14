@@ -3,7 +3,7 @@ import './Navbar.css'
 // import Ticker from 'react-ticker'
 import oppBody from '../../../assets/images/oppBody.png'
 
-const Navbar = () => {
+const Navbar = ({roundCount}) => {
 
 
   return (
@@ -22,7 +22,9 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-ticker">
-        
+        <div className="navbar-round-count">
+          <h3 id="round-count"> Round: {roundCount}</h3>
+        </div>
       </div>
     
     </div>

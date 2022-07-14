@@ -42,7 +42,7 @@ const setIntros = (person, colorOfTrunks) => {
   const arrayIntro = [
     <h4>IN the <span style={{color: person.cornerColor, opacity: `90%`}}>{person.cornerColorLabel} corner</span>.</h4>,
     <h4>Wearing the {colorOfTrunks} trunks.</h4>,
-    <h4>{ !person.champion ? <h4>The {person.weightClass} CHAMPION of the WORLD</h4> : <h4>The number {person.rank} ranked fighter in the {person.weightClass} division...</h4> }</h4>,
+    <h4>{ person.champion ? <h4>The {person.weightClass} CHAMPION of the WORLD</h4> : <h4>The number {person.rank} ranked fighter in the {person.weightClass} division...</h4> }</h4>,
     <h4>Fighting out of {person.hometown.toUpperCase()}...</h4>,
     <h3>{person.firstName.toUpperCase()}</h3>,
     <h3>{person.nickname}</h3>, 
