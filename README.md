@@ -30,6 +30,12 @@ Blog: https://achefthatcodes.com/
   - Save User Boxer (and subsequent career)
   - Persist Lists of Opponent Boxers.
 
+### Collections: All these are similar but group different related values based on component needs.
+  - pbp: an array of objects containing the boxers overall engagement. The attacker, defender, round, and total damage.
+  - punchCount: an array of objects containing each back-and-forth trade in the pbp. Similar to pbp in bite sized pieces.
+    -Boxer objects contain punchCount key (how many punches thrown in that exchange), damage or total damage from that exchange.
+  - dmgTracker: also an array of objects that hold values in the roundCount, engagementCount (the number of initiated), exchangeCount (sorted list of fight sequences), and dmgScale (originally intended to scale the damage in a percentage later)
+
 ### Features to implement (in order of importance):
 - Head and Body Image with colorized indicators
 - Graphs to show punch stats round-by-round

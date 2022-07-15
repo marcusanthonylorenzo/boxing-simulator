@@ -72,7 +72,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
     }, []);
 
   const changeColor = (life) => {
-    if (life <= 100 && life >= 75) {
+    if (life >= 75) {
       return `#00b424`
     } else if (life <= 75 && life > 50) {
       return `#bce920`;

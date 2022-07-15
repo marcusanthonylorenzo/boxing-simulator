@@ -146,9 +146,21 @@ const FightEngine = ({ user, enemy }) => {
 
     let atk = attacker.attack(atkCombos);
     let def = defender.defend(defCombos);
-    setPunchCount(prev => [...prev, {atker: atkCombos, def: defCombos, round: roundCount+1}])
+    console.log('exchange')
+
+    setPunchCount(prev => [...prev, {  //set punchCount list, to store punchStats
+      [attacker.firstName]: {
+        punchCount: atkCombos/10,
+        damage: atk
+      },
+      [defender.firstName]: {
+        punchCount: defCombos/10,
+        damage: def
+      },
+      round: roundCount+1
+    }])
+
     let difference = atk - def;
-    // console.log(attacker.firstName, atkCombos, difference, defender.firstName, defCombos)
     return difference
   };
 
@@ -301,6 +313,7 @@ const FightEngine = ({ user, enemy }) => {
     return resultDmg;
   };
 
+  console.log(punchCount)
 
   const fight = (user, enemy) => {
       roundUpdate();
