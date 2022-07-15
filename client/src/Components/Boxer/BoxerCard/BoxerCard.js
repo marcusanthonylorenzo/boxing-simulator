@@ -7,7 +7,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
 
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
-  const energy = Math.round((boxer.con*100)+20);
+  const energy = Math.round((boxer.con*100)+35);
   const cornerColor = corner(); //boxers ready with extra fight properties compared to normal user/enemy
   const dmgScale = cornerColor.dmgScale(); //scales animation properties based on health
   const getColor = cornerColor.cornerColor; //color of corner
@@ -36,24 +36,18 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
 
 
   let dmgStats = dmgTracker.reduce((totalDmg, each) => each.dmgScale ? totalDmg += each.dmgScale : null, 0)
-
-  // console.log(pbp, dmgTracker)
-
   /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
+  console.log(dmgStats)
 
   useEffect(() => {
     if (cornerColor.side === "right"){ //timing delays for opponent
       setTimeout(() => {
         setShow(`show`); //show, fade, hide
-      },  1000);
+      }, 1000);
 
       setTimeout(() => {
       setFade(`75%`);
       }, 3600);
-
-      // setTimeout(() => {
-      //   setShow(`hide`);
-      // }, 9000);
 
     } else if (cornerColor.side === "left"){ //timing delays for user
       setTimeout(() => {
@@ -63,13 +57,8 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
       setTimeout(() => {
         setFade(`75%`);
       },  7300);
-
-      // setTimeout(() => {
-      //   setShow(`hide`);
-      // }, 9000);
     }
     }, []);
-
 
   const changeColor = (life) => {
     if (life <= 100 && life >= 75) {
@@ -88,7 +77,6 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
   const koColor = (energy) => boxer.hp <= 0 ? `50%` : `${energy}%`
   const flip = () => cornerColor.side !== 'left' ? '' : ''
 
-  
   const dmgScaleRegulator = () => {
     let descale = 100 - dmgScale;
     if (descale >= 100) {
@@ -102,24 +90,23 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
     return (
           <>
           <div className="boxer-info border padded" >
+            <div className="boxer-info-name">
+              <h4 className={'name'} style={{
+                backgroundColor: cornerColor.favoriteColor }}>
+                <em>{boxer.firstName}</em>
+              </h4>
 
-          <div className="boxer-info-name">
-            <h4 className={'name'} style={{
-              backgroundColor: cornerColor.favoriteColor }}>
-              <em>{boxer.firstName}</em>
-            </h4>
+              <h4 id={`nickname`} style={{
+                fontWeight: `200px`,
+                backgroundColor: favColor}}>
+                <em>"{boxer.nickname}"</em>
+              </h4>
 
-            <h4 id={`nickname`} style={{
-              fontWeight: `200px`,
-              backgroundColor: favColor}}>
-              <em>"{boxer.nickname}"</em>
-            </h4>
-
-            <h4 className={'name'} style={{
-              backgroundColor: favColor }}>
-              <em>{boxer.lastName}</em>
-            </h4>
-          </div>
+              <h4 className={'name'} style={{
+                backgroundColor: favColor }}>
+                <em>{boxer.lastName}</em>
+              </h4>
+            </div>
 
           <div className="boxer-condition" style={{ backgroundColor: changeColor(life), opacity: koColor(energy) }}>
             <div className={`boxer-condition-body ${flip()}`} //exists if you want to flip a profile pic in future
@@ -129,13 +116,16 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
               opacity: koColor(energy),
               transform: `scale(${dmgScaleRegulator()}% -1)`
             }}>
-              <img src={path} alt={'boxer body'} className="boxer-pic"
+              <img src={path} alt={'boxer body'}
+                className="boxer-pic"
                 style={{ 
                 transform: `scale(${dmgScaleRegulator()}%)`,
                 opacity: koColor(),
               }}/>
               <h5 style={{display: 'flex', position: 'absolute', color: `white`}}>
-                {Math.round(boxer.hp)} {life} {Math.round((boxer.con*100))}
+                {Math.round(boxer.hp)}
+                {life}
+                {Math.round((boxer.con*100))}
               </h5>
             </div>
           </div>

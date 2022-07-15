@@ -8,10 +8,23 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, button
   const [hide, setHide] = useState(`show`);
   const [hideRules, setHideRules] = useState(`show`);
   const [hideRefTalk, setHideRefTalk] = useState(`hideRefTalk`);
-  const [getPepTalk, setPepTalk] = useState();
+  const [disableBtns, setDisableBtns] = useState(false);
+  const [hideModal, setHideModal] = useState(`hide`);
 
-  //dependency is if fightStart is truthy
+  
+  // useEffect(() => {
+  //   if (ko) setHideModal('hide')
+  // })
+
   useEffect(() => fightStart ? setHideRules(`hide`) : setHideRules(`show`),[fightStart]);
+  
+  useEffect(() => {
+    if (!roundOver && !hideModal) {
+      setHideModal('hide');
+    } else if (roundOver && hideModal){
+      setHideModal(`show`);
+    }
+  },[roundOver]); //toggle pepTalk buttons for each round
 
   setTimeout(() => {
     setFade({backgroundColor: `white`});
@@ -23,11 +36,10 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, button
   useEffect(() => {
     setTimeout(() => {
     displayDiv.current.scrollTop = displayDiv.current.scrollHeight;
-    }, 1000);
+    }, 500);
   });
 
   const fightIntroText = () => {
-
     return (
       <>
         <div id="walk-ins" className={hide}>
@@ -44,6 +56,24 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, button
     )
   }
 
+  const continueText = (getAttacker, scrap) => {
+     //set opening text to black color
+    let fontCol = `white`;
+    let fontSiz = `1rem`;
+    if (pbp.length === 1) {
+      fontCol = `black`;
+      fontSiz = `2rem`;
+    } else { 
+      fontCol = `white`;
+    }
+    return (
+    <div className={`textbox`} style={{
+      backgroundColor: getAttacker.favoriteColor,
+      color: fontCol,
+      fontSize: fontSiz
+    }}>{scrap.text}</div>
+    )
+  }
 
   const mapPbp = () => {  //map Play By Play
     return pbp.map((scrap, i) => {
@@ -51,24 +81,6 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, button
         ...scrap.attacker,
         cornerColor: scrap.favoriteColor,
       }
-
-    const continueText = () => { //set opening text to black color
-      let fontCol = `white`;
-      let fontSiz = `1rem`;
-      if (pbp.length === 1) {
-        fontCol = `black`;
-        fontSiz = `2rem`;
-      } else { 
-        fontCol = `white`;
-      }
-      return (
-      <div className={`textbox`} style={{
-        backgroundColor: getAttacker.favoriteColor,
-        color: fontCol,
-        fontSize: fontSiz
-      }}>{scrap.text}</div>
-      )
-    }
 
     const koedText = //KO result text
       <div className={`options`} style={{color: `black`}}>
@@ -78,57 +90,47 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, button
 
       return (
         <>
-        {!ko ? continueText() : koedText} {/* continue or show KO OR judgesDecision() */}
-        {roundOver && !ko ? modal() : null}
+        {!ko ? continueText(getAttacker, scrap) : koedText } {/* continue or show KO OR judgesDecision() */}
+        {!ko ? modal() : koedText }
         </>
       )
     })
   };
 
-
-  
-      // console.log(Object.entries(user[`pepTalk`]))
-
     const modal = () => { //popup between rounds
       const pepTalkEntries = Object.entries(user[`pepTalk`])      
       return (
         <>
-          <div className={`options`}>
+          <div className={`options ${hideModal}`}>
             <div className={`options-select`}>
-              <h4>Round {roundCount} over.</h4>
+              <h2>The bell sounds for round {roundCount}.</h2>
+              <h4>At your corner, Coach looks you in the eyes with stern advice:</h4>
                 <div className={`select-menu`}>
-
                     {pepTalkEntries.map((entry, i)  => {
-
-                      const eachEntry = entry[i];
-                      const pepTalkLabel = entry[0];
-                      const pepTalkMethod = entry[1];
-                      
+                      const pepTalkLabel = entry[1][1];
+                      const pepTalkMethod = entry[1][2];
                       return(
                         <>
-                          <button key={pepTalkLabel} className={`pep-talk-buttons`}
+                          <button key={pepTalkLabel} className={`pep-talk-buttons`} disabled={disableBtns}
                             onClick={ e => {
-                              e.preventDefault()
-                              pepTalkMethod()
+                              e.preventDefault();
+                              pepTalkMethod();
+                              setHideModal(`hide`);
                             }}>
-                              {pepTalkLabel}                               
+                              <h4>{pepTalkLabel}</h4>                             
                             </button>
                         </>   
                       )
-
                     })}
-
                 </div>
             </div>
           </div>
         </>
       )
     }
-
   return (
     <>
     <div ref={displayDiv} className={"Display"}>
- 
       <div className="display-container">
           { roundCount === 0 ? fightIntroText() : null} {/* show ref intro pre-round 1 */}
           {mapPbp()}         

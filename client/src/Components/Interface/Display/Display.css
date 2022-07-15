@@ -4,8 +4,8 @@
   background-size: contain;
   margin: 1% auto;
   margin-top: 15%;
-  height: 48vh;
-  width: 21vw;
+  height: 42vh;
+  width: 20vw;
   padding: 5% auto;
   border-radius: 5px;
 
@@ -21,16 +21,12 @@
   box-shadow: inset 1px 1px 3px 3px rgba(77, 76, 76, 0.6);
 }
 
-.inner-container {
-  margin-top: -50%;
-  height: 50%;
-}
 
 .main-container {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   place-items: center;
-  margin: 1% 15%;
+  margin: 1% 18%;
   /* margin-left: 20%; */
 
   background-color: rgba(75, 68, 68, .109);
@@ -40,10 +36,15 @@
   background-position-x: center;
   background-position-y: center;
 
-  width: 50vw;
-  height: 72vh;
-  transform: scale(0.92);
+  width: 100%;
+  height: 70vh;
+  transform: scale(0.98);
   box-shadow: 2px 0 2px 2px rgba(0, 0, 0, 0.5);
+
+}
+.inner-container {
+  margin-top: -50%;
+  height: 50%;
 }
 
 .display-container {
@@ -134,11 +135,39 @@
 }
 
 .options-select {
+  background-color: white;
   display: flex;
   flex-direction: column;
-  position: absolute;
+  position: fixed;
   justify-content: center;
   align-items: center;
-  width: 80%;
-  height: 100%;
+  width: 42%;
+  height: 60%;
+  border-radius: 5px;
+  box-shadow: 1px 1px 4px 1px rgba(77, 76, 76, 0.3);
+}
+
+.options-select > * {
+  margin: 5%;
+}
+
+.pep-talk-buttons {
+  display: flex;
+  margin: 0 auto;
+  /* justify-content:center; */
+  align-items:center;
+  padding: 2%;
+  height: 3rem;
+  background-color: white;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 1px 1px 3px 1px rgba(77, 76, 76, 0.4);
+  border-radius: 5px;
+  margin: 1%;
+}
+
+.pep-talk-buttons:hover {
+  cursor: pointer;
+  background-color: rgb(227, 227, 227);
+  transform: scale(0.995);
+  border:none;
 }

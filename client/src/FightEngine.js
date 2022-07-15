@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import './Components/Helpers/Helpers.css'
 import Navbar from './Components/Interface/Navbar/Navbar'
 import BoxerCard from './Components/Boxer/BoxerCard/BoxerCard'
 import Display from './Components/Interface/Display/Display'
@@ -107,7 +106,7 @@ const FightEngine = ({ user, enemy }) => {
 
       if (powerShot > takesAShot){  //check if powershot is stronger than def ability to getUp (take a shot)
         setKo(true);
-        pbp.forEach((el, i) => { //change text again
+        // pbp.forEach((el, i) => { //change text again
           // el.text = `;
           setPbp(prev => [prev, {
             attacker: off,
@@ -125,7 +124,7 @@ const FightEngine = ({ user, enemy }) => {
             hit: diff,
             text: `${def.firstName} beats the count!`
           }])
-        })
+        // })
       }
       return powerShot + diff //if not return a heavier shot
     } else {
@@ -194,9 +193,7 @@ const FightEngine = ({ user, enemy }) => {
     }
 
     /*** 
-     * 
      *  FIGHT COMMENTARY GOES HERE:
-     * 
     ***/
 
     if (difference <= -10){ //Strong counters by defender
@@ -243,7 +240,6 @@ const FightEngine = ({ user, enemy }) => {
 
     } else if (difference > 1 && difference <= 5) { // Close in favor of Attacker
       normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      console.log(normalOrPowerPunch)
       hit = defender.hp -= normalOrPowerPunch;
       setObj(defender, "hp", hit)
       result.totalDmg = normalOrPowerPunch;
@@ -251,7 +247,6 @@ const FightEngine = ({ user, enemy }) => {
 
     } else if (difference > 5) {
       normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      console.log(normalOrPowerPunch)
       hit = defender.hp -= normalOrPowerPunch;
       setObj(defender, "hp", hit)
       result.totalDmg = normalOrPowerPunch;
@@ -280,67 +275,55 @@ const FightEngine = ({ user, enemy }) => {
     } else if (oppOffense === userOffense) {
       resultDmg = 0;
     }
-    console.log(resultDmg);
     return resultDmg;
   };
 
 
   const fight = (user, enemy) => {
+        roundUpdate();
 
-          roundUpdate();
-  /*** set i length to user+opp engage for volume of strikes***/
-      for (let i = 0; i < rateOfExchange; i++){
+      for (let i = 0; i < rateOfExchange; i++){ //set i length to user+opp engage for volume of strikes
         let k = i;
+        let newRnd = roundCount + 1;
+        setRoundCount(newRnd);
 
-        // if (k === 1) { //updates the next round
-          let newRnd = roundCount + 1;
-          setRoundCount(newRnd);
-          setRoundOver(false);
-          // user.roundRecovery();
-          // enemy.roundRecovery();
-
-        // }
-        const fightAction = setTimeout(()=>{
+        let fightAction = setTimeout(()=>{
           let activity;
           let over;
 
-          //*** WHAT TO DO WHEN A BOXER IS DOWN AND NEEDS TO GET UP ***/
-        if (user.hp <= 0) { //check for knockout
-          console.log("USE FIGHT ACTION KO SEQUENCE");
-          setKo(true);
-          over = `${user.firstName} hits the canvas!! This fight is over!`;
-          // determineKO(enemy, user);
-          setPbp(prev => [prev, {text: over, round: roundCount, attacker: enemy, defender: user} ] )
-          clearTimeout(fightAction);
-          return;
-        } else if (enemy.hp <= 0) {
-          setKo(true);
-          over = `${enemy.firstName} is down in round ${roundCount}!! This fight is over!`;
-          // determineKO(user, enemy)
-          setPbp(prev => [prev, {text: over, round: roundCount, attacker: user, defender: enemy} ] )
-          clearTimeout(fightAction);
-          return;
-        }
-        
-        /***  FIGHT WORKFLOW ***/
-        let fightUnderway = engagement(user, enemy);
-        setKo(false)
-        setExchangeCount(k);
-        activity = setObj(fightUnderway, "round", roundCount);
-        setPbp((prev) => [...prev, activity]);
-
-          setTimeout(() => { //sync disable counters
-            setRoundOver(true);
-            setDisable(false);
-
-          }, delay*rateOfExchange)
-
+            //*** WHAT TO DO WHEN A BOXER IS DOWN AND NEEDS TO GET UP ***/
+          if (user.hp <= 0) { //check for knockout
+            console.log("USE FIGHT ACTION KO SEQUENCE");
+            setKo(true);
+            over = `${user.firstName} hits the canvas!! This fight is over!`;
+            setPbp(prev => [prev, {text: over, round: roundCount, attacker: enemy, defender: user} ] )
+            clearTimeout(fightAction);
+            return;
+          } else if (enemy.hp <= 0) {
+            setKo(true);
+            over = `${enemy.firstName} is down in round ${roundCount}!! This fight is over!`;
+            setPbp(prev => [prev, {text: over, round: roundCount, attacker: user, defender: enemy} ] )
+            clearTimeout(fightAction);
+            return;
+          }
+          
+          /***  FIGHT WORKFLOW ***/
+          let fightUnderway = engagement(user, enemy);
+          setKo(false)
+          setExchangeCount(k);
+          activity = setObj(fightUnderway, "round", roundCount);
+          setPbp((prev) => [...prev, activity]);
         }, delay*(k + 1),)
-
+        
+        let roundOverRegulator = setTimeout(() => { //sync disable counters with other setTimeouts
+          setRoundOver(true);
+          setDisable(false);
+          // if (ko) clearTimeout(roundOverRegulator)
+        }, (delay*rateOfExchange)+1000)
       };
  } 
 
- const roundUpdate = () => {
+ const roundUpdate = () => { //round text updates
     let update;  
     if (roundCount === 0) {
       update = `This fight is officially underway!`;
@@ -349,19 +332,20 @@ const FightEngine = ({ user, enemy }) => {
       update = `The bell sounds for round ${roundCount}!`;
       setPbp((prev) => [{text: update}, ...prev]);
     }
-
     return update;
  }
 
   // const handSpeed = 12;
 
   const fightBtn = //The main button
-    <button className="fight-button" disabled={disable} onClick={()=> {
-      setFightStart(true);
-      setDisable(true);
-      fight(user, enemy); //for NPC fights, use recursion to call itself 12 times ?
-      user.roundRecovery();
-      enemy.roundRecovery();
+    <button className="fight-button" disabled={disable}
+      onClick={()=> {
+        setFightStart(true);
+        setDisable(true);
+        setRoundOver(false);
+        fight(user, enemy);
+        user.roundRecovery();
+        enemy.roundRecovery();
     }}><h4>Fight</h4></button>
 
 
@@ -379,9 +363,10 @@ const FightEngine = ({ user, enemy }) => {
             corner={() => userReady}/>
 
           <div className="inner-container">
-            <Display
-              pbp={pbp} user={userActive} opp={oppActive} fightStart={fightStart} 
-              roundOver={roundOver} roundCount={roundCount} ko={ko} buttons={fightBtn}/>
+            <Display pbp={pbp} user={userActive}
+              opp={oppActive} fightStart={fightStart}
+              roundOver={roundOver} roundCount={roundCount}
+              ko={ko} buttons={fightBtn}/>
             
             <div className="display-options">
               <SelectMenu buttons={fightBtn} ko={ko} fightStart={fightStart} />

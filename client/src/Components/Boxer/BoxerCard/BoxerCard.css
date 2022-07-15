@@ -42,6 +42,10 @@
   text-align: left;
 }
 
+.intro-textbox h3 {
+  font-weight: 700;
+}
+
 .BoxerCard > div {
   border-radius: 5px;
   border: none;
@@ -85,12 +89,10 @@
   left: 40%;
 }
 
-
 .boxer-info, .boxer-info-profile h5 {
   text-align: left;
   margin: 0;
 }
-
 
 .boxer-info {
   background-color: rgb(255, 255, 255);
@@ -100,9 +102,7 @@
   height: 100%;
 }
 
-
 /*boxer info and stats*/
-
 .boxer-info-profile, .fight-stats {
   background-color: rgb(255, 255, 255);
   display: flex;
@@ -112,10 +112,6 @@
   width: 100%;
   height: 100%;
 }
-
-/* .fight-stats {
-  margin-bottom: 2%;
-} */
 
 .boxer-info-profile > h5 {
   display: flex;

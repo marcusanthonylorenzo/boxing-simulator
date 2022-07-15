@@ -103,19 +103,31 @@ class Boxer {
 
   //increase attributes between rounds, with 1 or 2 negative effects
   pepTalk = {
-    getInThere: () => this.train.speedBag(),
-    relax: () => {
-      this.agi *= 0.96;
-      this.pow *= 0.96;
-      this.con *= 1.08;
-      console.log(this.agi, this.pow, this.con)
+    getInThere: {
+      1: "There's no reason to be afraid of this guy. Put him away!",
+      2: () => this.train.speedBag()
     },
-    youGottaGo: () => {
-      this.agr *= 1.05;
-      this.heart *= 1.05;
-      this.agi *= 1.05;
-      this.con *= this.con;
-      console.log(this.con)
+    relax: {
+      1: "Hey...relax mate. No need to rush. Be patient. Do your thing.",
+      2: () => {
+        this.agi *= 0.96;
+        this.pow *= 1.09;
+        this.con *= 1.09;
+        this.def *= 1.09
+        console.log(this.agi, this.pow, this.con)
+      }
+    },
+    youGottaGo: {
+      1: "I DON'T CARE HOW TIRED YOU ARE, BUT YOU GOTTA GO. YOU'RE BEHIND. GET AHEAD. NOW.",
+      2: () => {
+        this.pow *= 1.1;
+        this.agr *= 1.05;
+        this.heart *= 1.05;
+        this.agi *= 1.05;
+        this.con *= this.con;
+        this.def *= 0.80;
+        console.log(this.con)
+      }
     }
   }
   
@@ -130,11 +142,9 @@ class Boxer {
   lifeLeft = () => this.hp/this.maxHp
 
   record = {
-
   //update wins/loss in endFight function
     updateLoss: () => this.loss += 1,
     updateWin: () => this.win += 1 
-
   }
 
 /***
@@ -145,39 +155,38 @@ class Boxer {
 
   //increase attributes during fight week
   train = {
-
     roadWork: () => {
-      this.sta *= 1.03;
+      this.sta *= 1.1;
       this.maxCon += (this.con/100);
       this.energyLoss();
     },
 
     speedBag: () => {
-      this.agr *= 1.03;
-      this.agi *= 1.03;
+      this.agr *= 1.1;
+      this.agi *= 1.1;
       this.energyLoss();
       console.log(this.agr, this.agi, this.con)
     },
 
     jumpRope: () => {
-      this.sta *= 1.03;
-      this.agi *= 1.03;
+      this.sta *= 1.1;
+      this.agi *= 1.1;
       this.energyLoss();
     },
 
     pads: () => {
-      this.str *= 1.03;
-      this.def *= 1.03;
+      this.str *= 1.1;
+      this.def *= 1.1;
       this.energyLoss();
     },
 
     rest: () => {
       console.log("rested")
       if (this.hp < this.maxHp*0.95) {
-        this.hp *= 1.05;
+        this.hp *= 1.09;
       }
       if (this.con < this.maxCon*0.95) {
-        this.con *= 1.05;
+        this.con *= 1.09;
       }
       console.log(this.hp)
     }

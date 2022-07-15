@@ -1,3 +1,5 @@
+import '../Boxer/BoxerCard/BoxerCard.css'
+
 const Commentary = () => {
 
   const weightClassName = (boxer) => {
@@ -52,16 +54,6 @@ const setIntros = (person, colorOfTrunks) => {
 }
  
 const epicIntros =(whatToIntro) => {
-  
-  // for (let i = 0; i < whatToIntro.length; i++) {
-  //   setTimeout(() => {
-  //     return (
-  //       <div className="intro-text-box">
-  //         {whatToIntro[i]}
-  //       </div>
-  //     )
-  //   }, 300)
-  // }
 
   return whatToIntro.map((item, i) => {
     return (

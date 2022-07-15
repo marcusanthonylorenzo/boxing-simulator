@@ -23,7 +23,7 @@ const Navbar = ({roundCount}) => {
 
       <div className="navbar-ticker">
         <div className="navbar-round-count">
-          <h3 id="round-count"> Round: {roundCount}</h3>
+          <h3 id="round-count">{roundCount === 0 ? "Fighter Introductions" : `Round: ${roundCount}`}</h3>
         </div>
       </div>
     
