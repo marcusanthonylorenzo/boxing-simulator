@@ -46,7 +46,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
   }, [dmgScale, exchangeCount])
 
 
-  let dmgStats = dmgTracker.reduce((totalDmg, each) => each.dmgScale ? totalDmg += each.dmgScale : null, 0)
+  let dmgStats = dmgTracker.reduce((totalDmg, each) => each.dmgScale && each.roundCount === roundCount ? totalDmg += each.dmgScale : null, 0)
   /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
   console.log(pbp, dmgTracker)
 

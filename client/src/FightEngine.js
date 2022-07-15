@@ -13,6 +13,7 @@ const FightEngine = ({ user, enemy }) => {
   const [userDmgScale, setUserDmgScale] = useState();
   const [oppDmgScale, setOppDmgScale] = useState();
   const [pbp, setPbp] = useState([]);
+  const [punchCount, setPunchCount] = useState([]);
   const [ko, setKo] = useState(false);
 
   const [disable, setDisable] = useState(false)
@@ -46,6 +47,11 @@ const FightEngine = ({ user, enemy }) => {
       dmgScale: () => dmg
     }
   };
+
+  // const setPbpFunc = () => {
+
+
+  // }
 
   //HERE is where you set the fighters extra stats, randomize cornerColors in future, change before each new fight!
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
@@ -135,9 +141,14 @@ const FightEngine = ({ user, enemy }) => {
   
    //Phase 1 = exchange() determines who wins the trading of blows
   const exchange = (attacker, defender) => {
-    let atk = attacker.attack();
-    let def = defender.defend();
+    let atkCombos = attacker.handSpeed(); //determine punch volume
+    let defCombos = defender.handSpeed();
+
+    let atk = attacker.attack(atkCombos);
+    let def = defender.defend(defCombos);
+    setPunchCount(prev => [...prev, {atker: atkCombos, def: defCombos, round: roundCount+1}])
     let difference = atk - def;
+    // console.log(attacker.firstName, atkCombos, difference, defender.firstName, defCombos)
     return difference
   };
 
@@ -272,12 +283,16 @@ const FightEngine = ({ user, enemy }) => {
 
     if (userOffense > oppOffense) {
       let userDmg = exchange(user, opp);
-      resultDmg = calcDamage(user, opp, userDmg); //determines resulting dmg after engage and exchange
+      let defDmg = exchange(opp, user);
+      let dmgDifferential = userDmg - defDmg
+      resultDmg = calcDamage(user, opp, dmgDifferential); //determines resulting dmg after engage and exchange
       setUserDmgScale(userDmg);
 
     } else if (oppOffense > userOffense) {
       let oppDmg = exchange(opp, user);
-      resultDmg = calcDamage(opp, user, oppDmg); //determines resulting dmg after engage and exchange
+      let playerDmg = exchange(user, opp);
+      let dmgDifference = oppDmg - playerDmg;
+      resultDmg = calcDamage(opp, user, dmgDifference); //determines resulting dmg after engage and exchange
       setOppDmgScale(oppDmg);
 
     } else if (oppOffense === userOffense) {

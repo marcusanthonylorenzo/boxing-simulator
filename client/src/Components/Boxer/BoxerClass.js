@@ -58,20 +58,27 @@ class Boxer {
   }
 
   //determines the damage output
-  attack = () => {
+  attack = (combos) => {
     this.lowEnergyWarning();
+    let handSpd = combos/10;
     let min = this.pow*this.con
-    let rand = randomizer(min, this.pow);
+    let max = (this.pow*this.con)/10*handSpd
+    let rand = randomizer(min, max);
     this.energyLoss();
+    console.log(this.name, rand)
+    // console.log(this.firstName, `combo speed`, handSpd, `power`, (this.pow*this.con)/10*handSpd, ((rand/10)*handSpd)/10)
     return rand;
   }
 
   //determines the ability to reduce damage input
-  defend = () => {
+  defend = (combo) => {
+    let counterSpd = combo/10;
     let defense = ((this.def*0.8)+(this.chin*0.2))
     let minDef = defense*this.con
     let defRand = randomizer(minDef, defense)
     this.energyLoss();
+    console.log(this.name, defRand)
+    // console.log(this.firstName, `counter speed:`, counterSpd, ((defRand/10)*counterSpd)/10)
     return defRand
   }
 
@@ -182,12 +189,12 @@ class Boxer {
 
     rest: () => {
       console.log("rested")
-      if (this.hp < this.maxHp*0.95) {
+      if (!this.hp < this.maxHp) {
         this.hp *= 1.09;
+      } else if (this.hp > this.maxHp) {
+        this.hp = this.maxHp;
       }
-      if (this.con < this.maxCon*0.95) {
-        this.con *= 1.09;
-      }
+      this.con *= 1.09;
       console.log(this.hp)
     }
   }
