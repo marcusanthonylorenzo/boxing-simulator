@@ -1,6 +1,6 @@
 import '../Boxer/BoxerCard/BoxerCard.css'
 
-const Commentary = () => {
+const Commentary = () => { //General store for static data
 
   const weightClassName = (boxer) => {
     const weight = parseInt(boxer.weightClass);

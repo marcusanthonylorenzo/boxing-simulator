@@ -8,7 +8,9 @@ const OpponentModel = require('./models/Opponent.js');
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb+srv://admin:epicodus@cluster0.bhljv.mongodb.net/boxing-sim?retryWrites=true&w=majority");
+mongoose.connect("mongodb+srv://admin:epicodus@cluster0.bhljv.mongodb.net/boxing-sim?retryWrites=true&w=majority")
+  .then(() =>  console.log('connection successful'))
+  .catch((err) => console.error(err));
 
 
 

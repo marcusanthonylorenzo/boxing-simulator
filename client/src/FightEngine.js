@@ -21,7 +21,7 @@ const FightEngine = ({ user, enemy }) => {
   const [fightStart, setFightStart] = useState(false);
   const [rateOfExchange, setRateOfExchange] = useState(12);
   const [exchangeCount, setExchangeCount] = useState(0);
-  const [delay, setDelay] = useState(600);
+  const [delay, setDelay] = useState(1000);
 
 
   useEffect(() => {
@@ -157,7 +157,6 @@ const FightEngine = ({ user, enemy }) => {
       if (attacker.hp <= 0) { //check for knockout
         setKo(true)
         console.log("STRAIGHT TO DETERMINE DMG atk")
-        // determineKO(defender, attacker);
 
         const atkerGetUp = attacker.getUp();
         if (atkerGetUp > attacker.getUp()) {
@@ -174,8 +173,7 @@ const FightEngine = ({ user, enemy }) => {
       } else if (defender.hp <= 0) {
         setKo(true);
         console.log("STRAIGHT TO DETERMINE DMG def")
-        // determineKO(attacker, defender);
-
+        
         const takesAShot = defender.getUp();
         const getUp = defender.getUp();
         if (getUp > takesAShot) {
@@ -193,27 +191,35 @@ const FightEngine = ({ user, enemy }) => {
     }
 
     /*** 
-     *  FIGHT COMMENTARY GOES HERE:
+     *  FIGHT COMMENTARY GOES HERE: refactor all conditional events!
     ***/
 
-    if (difference <= -10){ //Strong counters by defender
+    if (difference <= -15){ //Strong counters by defender
 
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference
       result.text = `${defender.firstName} returning some BIG, HEAVY counters!`;
 
-    } else if (difference > -10 && difference <= -5){ //Close Counter in favor of defender.
+    } else if (difference > -15 && difference <= -10){ //Close Counter in favor of defender.
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
       result.text = `${defender.firstName} keeping the pressure off and working well on the outside.`;
 
-    } else if (difference > -5 && difference < -1){ //Close Counter in favor of defender.
+    } else if (difference > -10 && difference <= -5){ //Close Counter in favor of defender.
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
       result.text = `${defender.firstName} making ${attacker.firstName} pay on the way in`;
+
+    } else if (difference > -5 && difference < -1){ //Close Counter in favor of defender.
+      hit = attacker.hp += difference; //reduce health
+      setObj(attacker, "hp", hit);
+      result.totalDmg = difference;
+      result.text = `${defender.firstName} moving well to avoid ${attacker.firstName}'s offense.`;
+
+
 
     } else if (difference === -1) { //Inside work for defender
       hit = attacker.hp -= 2;
@@ -237,6 +243,8 @@ const FightEngine = ({ user, enemy }) => {
 
       result.totalDmg = 2;
       result.text = `Strong corner bullying by ${attacker.firstName}`;
+
+
 
     } else if (difference > 1 && difference <= 5) { // Close in favor of Attacker
       normalOrPowerPunch = determinePowerShot(attacker, defender, difference)

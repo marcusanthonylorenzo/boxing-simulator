@@ -1,4 +1,5 @@
 import React, { useState, useEffect} from 'react'
+import { useSpring, animated as ani} from 'react-spring'
 import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
@@ -14,10 +15,18 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
   const favColor = cornerColor.favoriteColor;
   const [show, setShow] = useState(`hide`);
   const [fade, setFade] = useState(``);
-
   const boxerName = boxer.firstName;
   const [dmgTracker, setDmgTracker] = useState([]) //tracks each punch for graphs
   const [engagementCount, setPunchCount] = useState(0)
+
+
+  /*** Animation Spring ***/
+  const animate = useSpring({
+    from: { marginBottom: 200, opacity: 0 },
+    opacity: 1,
+    marginBottom: `25%`,
+    config: { mass: 1, tension: 150, friction: 10 }
+  });
 
   const showHide = (show, set) => {
     if (show) {
@@ -86,7 +95,8 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
     } return descale + 0.5;
   }
 
-  const mainCard =  () => { //Conditional Rendering ref for fighter card switching between intro, and realtime fight stats
+  const mainCard =  () => {
+
     return (
           <>
           <div className="boxer-info border padded" >
@@ -156,24 +166,32 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
     </>
     )}
 
-
   return (
     <>
-    <div className={`BoxerCard`}>
+      <div className={`BoxerCard`} style={{...animate}}>
 
-      { //if round count is 0, fight has not begun, display intro cards first
-      roundCount === 0 ?
-      <div className={`intros-${cornerColor.side} ${show}`}
-        style={{opacity: fade, color: boxer.favoriteColor}}
-        onClick={(e) => {
-          e.preventDefault();
-          showHide();
-      }}>
-        {/* // style={{backgroundColor: }}> */}
-        {commentary.setIntros({...cornerColor, weightClass: commentary.weightClassName(boxer)}, boxer.favoriteColor)}</div> : mainCard()
-      }
+        { //if round count is 0, fight has not begun, display intro cards first
+        roundCount === 0 ?
+        <div className={`intros-${cornerColor.side} ${show}`}
+          style={{opacity: fade, color: boxer.favoriteColor}}
+          onClick={(e) => {
+            e.preventDefault();
+            showHide();
+        }}>
+          {/* // style={{backgroundColor: }}> */}
+          {commentary.setIntros(
+            {...cornerColor,
+              weightClass: commentary.weightClassName(boxer)},
+              boxer.favoriteColor)}
+        </div> 
+        
+        : 
+        
+        mainCard()
 
-    </div>
+        }
+
+      </div>
     </>
   )
 }

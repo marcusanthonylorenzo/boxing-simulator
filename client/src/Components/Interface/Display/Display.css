@@ -13,7 +13,7 @@
   justify-content: center;
   align-items: center;
 
-  overflow: auto;
+  overflow: hidden;
   scroll-behavior: smooth;
   animation-timing-function: ease-in-out;
   position: relative;
