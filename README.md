@@ -2,7 +2,6 @@
 
 Blog: https://achefthatcodes.com/
 
-
 ### A comprehensive personal project in React, MERN stack.
 - Create a boxer and follow their rise or fall in the world rankings
 - User creates a boxer and faces 30 other randomly generated boxers
@@ -35,6 +34,10 @@ Blog: https://achefthatcodes.com/
 - Head and Body Image with colorized indicators
 - Graphs to show punch stats round-by-round
 - Graphs to show punch stats total post-Fight
+
+## Here is a slightly overwhelming, but all-in-one diagram that helps me visualize the process:
+
+<img width="4621" alt="BOXING SIM" src="https://user-images.githubusercontent.com/100096239/179266251-4985e5d8-0b0f-44f4-ba8b-dc2b797f8905.png">
 
 
 ### Notes:
