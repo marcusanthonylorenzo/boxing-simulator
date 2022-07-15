@@ -5,8 +5,8 @@
   height: 70vh;
   width: 100%;
   margin-top: -4%;
-  border-radius: 8px;
-  box-shadow: 1px 1px 0px 1px rgba(73, 71, 71, 0.1);
+  /* border-radius: 8px; */
+  box-shadow: 1px 1px 4px 1px rgba(73, 71, 71, 0.2);
   opacity: 97%;
   color: rgb(255, 255, 255);
 }
@@ -23,7 +23,7 @@
   background-color: rgb(255, 255, 255);
   color: black;
   box-shadow: 1px 0px 4px 3px rgba(15, 11, 11, 0.4);
-  border-radius: 1px;
+  /* border-radius: 1px; */
   text-align: left;
 }
 
@@ -38,7 +38,7 @@
   background-color: rgb(255, 255, 255);
   color: black;
   box-shadow: 1px 0px 4px 3px rgba(15, 11, 11, 0.4);
-  border-radius: 1px;
+  /* border-radius: 1px; */
   text-align: left;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .BoxerCard > div {
-  border-radius: 5px;
+  /* border-radius: 5px; */
   border: none;
   box-shadow: 1px 1px 3px 1px rgba(73, 71, 71, 0.1);
 }

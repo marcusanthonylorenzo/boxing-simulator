@@ -27,10 +27,9 @@
   grid-template-columns: 1fr 2fr 1fr;
   place-items: center;
   margin: 1% 18%;
-  /* margin-left: 20%; */
 
   background-color: rgba(75, 68, 68, .109);
-  background-image: url('https://i.guim.co.uk/img/media/f130d023bbec5b75bff7ed8c2be00a4df65f3ff0/0_0_4091_4094/master/4091.jpg?width=1300&quality=85&fit=max&s=50c28d753fcf4168b7e23cd6d4eb6c4f');
+  /* background-image: url('https://i.guim.co.uk/img/media/f130d023bbec5b75bff7ed8c2be00a4df65f3ff0/0_0_4091_4094/master/4091.jpg?width=1300&quality=85&fit=max&s=50c28d753fcf4168b7e23cd6d4eb6c4f'); */
   background-size: 85%;
   background-repeat: no-repeat;
   background-position-x: center;
@@ -111,7 +110,7 @@
 .textbox {
   background-color: white;
   margin: 1% 0;
-  border-radius: 3px;
+  border-radius: 1px;
   opacity: 99%;
   width: 95%;
 
@@ -143,7 +142,7 @@
   align-items: center;
   width: 42%;
   height: 60%;
-  border-radius: 5px;
+  border-radius: 1px;
   box-shadow: 1px 1px 4px 1px rgba(77, 76, 76, 0.3);
 }
 
@@ -161,7 +160,7 @@
   background-color: white;
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: 1px 1px 3px 1px rgba(77, 76, 76, 0.4);
-  border-radius: 5px;
+  border-radius: 1px;
   margin: 1%;
 }
 

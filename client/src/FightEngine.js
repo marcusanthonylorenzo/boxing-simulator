@@ -54,43 +54,48 @@ const FightEngine = ({ user, enemy }) => {
 
 
   const determineKO = (offense, defense, hit ) => {
+
     if (defense.hp <= 0) {
       console.log("DETERMINING KO")
+
       const getUpTimer = setTimeout(() => { //slow down getUp post knock out text boxes.
-        const takesShot = defense.getUp();
-        const getUp = defense.getUp();
-        setPbp(prev => [...prev, { 
+      const takesShot = defense.getUp();
+      const getUp = defense.getUp();
+
+      setPbp(prev => [...prev, {  //push to play-by-play array with new object.
+        attacker: offense,
+        defender: defense,
+        hit: hit,
+        text: `${defense.firstName} with the count!`}
+      ])
+
+      if (getUp > takesShot) { //if second will to "get up" is stronger than previous will to get up.
+        setKo(false)          
+        console.log("HE'S BACK UP")
+        setPbp(prev => [...prev, {
+          attacker: offense,
+          defender:defense,
+          hit: hit,
+          text: `${defense.firstName} stands back up!`
+        }])
+        defense.hp*=1.2;
+        return determineKO;
+        
+      } else {
+        console.log("determineKO() says FIGHT OVER")
+        setPbp(prev => [prev, {
           attacker: offense,
           defender: defense,
           hit: hit,
-          text: `${defense.firstName} with the count!`}
-        ])
-
-        if (getUp > takesShot) {
-          setKo(false)          
-          console.log("HE CAN GET UP")
-          setPbp(prev => [...prev, {
-            attacker: offense,
-            defender:defense,
-            hit: hit,
-            text: `${defense.firstName} stands back up!`
-          }])
-          defense.hp*=1.2;
-          return determineKO;
-        } else {
-          console.log("determineKO() says FIGHT OVER")
-          setPbp(prev => [prev, {
-            attacker: offense,
-            defender: defense,
-            hit: hit,
-            text: `THIS FIGHT IS OVER. ${offense.firstName} PUTS ${defense.firstName} AWAY`
-          }])
-          return determineKO;
-        }
+          text: `THIS FIGHT IS OVER. ${offense.firstName} PUTS ${defense.firstName} AWAY`
+        }])
+        return determineKO;
+      }
       }, 600);
       clearTimeout(getUpTimer)
     }
   };
+
 
   const determinePowerShot = (off, def, diff) => {
     let powerShot = off.ko(def); //determine powershot, then if KO
@@ -104,34 +109,29 @@ const FightEngine = ({ user, enemy }) => {
         text: `A BIG SHOT BY ${off.firstName}. ${def.firstName} stumbles!`
       }])
 
-      if (powerShot > takesAShot){  //check if powershot is stronger than def ability to getUp (take a shot)
-        setKo(true);
-        // pbp.forEach((el, i) => { //change text again
-          // el.text = `;
-          setPbp(prev => [prev, {
-            attacker: off,
-            defender: def,
-            hit: diff,
-            text: `${def.firstName} IS DOWN. DOES HE GET BACK UP?`
-          }])
-          def.con = 0.1;
-          console.log("VIA EXCHANGE")
-          determineKO(off, def, powerShot) //Post determine KO is where you setKo to false, and implement ref count
-          setKo(false)
-          setPbp(prev => [prev, {
-            attacker: off,
-            defender: def,
-            hit: diff,
-            text: `${def.firstName} beats the count!`
-          }])
-        // })
+    if (powerShot > takesAShot){  //check if powershot is stronger than def ability to getUp (take a shot)
+      setKo(true);
+      setPbp(prev => [prev, {
+        attacker: off,
+        defender: def,
+        hit: diff,
+        text: `${def.firstName} IS DOWN. DOES HE GET BACK UP?`
+      }])
+      def.energyLoss();
+      determineKO(off, def, powerShot) //Post determine KO is where you setKo to false, and implement ref count
+      setKo(false) //if determineKO does not persist ko state, (setKo(false)), then continue pbp.
+      setPbp(prev => [prev, {
+        attacker: off,
+        defender: def,
+        hit: diff,
+        text: `${def.firstName} beats the count!`
+      }])
       }
       return powerShot + diff //if not return a heavier shot
     } else {
       return diff
     }
   }
-
   
    //Phase 1 = exchange() determines who wins the trading of blows
   const exchange = (attacker, defender) => {
@@ -145,7 +145,7 @@ const FightEngine = ({ user, enemy }) => {
  //Phase 2 = wrap both attack and defense with output text in one single obj, easier to package for output
   const calcDamage = (attacker, defender, difference) => {
 
-      let result = {
+      let result = { //an object template to populate the pbp
         attacker: attacker,
         defender: defender,
         totalDmg: 0,
@@ -173,9 +173,9 @@ const FightEngine = ({ user, enemy }) => {
       } else if (defender.hp <= 0) {
         setKo(true);
         console.log("STRAIGHT TO DETERMINE DMG def")
-        
         const takesAShot = defender.getUp();
         const getUp = defender.getUp();
+
         if (getUp > takesAShot) {
           setKo(false);
           console.log('down!')
@@ -189,9 +189,9 @@ const FightEngine = ({ user, enemy }) => {
           return calcDamage;
         }
     }
-
+    
     /*** 
-     *  FIGHT COMMENTARY GOES HERE: refactor all conditional events!
+     FIGHT COMMENTARY GOES HERE: refactor all conditional events!
     ***/
 
     if (difference <= -15){ //Strong counters by defender
@@ -288,7 +288,7 @@ const FightEngine = ({ user, enemy }) => {
 
 
   const fight = (user, enemy) => {
-        roundUpdate();
+      roundUpdate();
 
       for (let i = 0; i < rateOfExchange; i++){ //set i length to user+opp engage for volume of strikes
         let k = i;
@@ -304,13 +304,13 @@ const FightEngine = ({ user, enemy }) => {
             console.log("USE FIGHT ACTION KO SEQUENCE");
             setKo(true);
             over = `${user.firstName} hits the canvas!! This fight is over!`;
-            setPbp(prev => [prev, {text: over, round: roundCount, attacker: enemy, defender: user} ] )
+            setPbp(prev => [...prev, {text: over, round: newRnd, attacker: enemy, defender: user} ] )
             clearTimeout(fightAction);
             return;
           } else if (enemy.hp <= 0) {
             setKo(true);
-            over = `${enemy.firstName} is down in round ${roundCount}!! This fight is over!`;
-            setPbp(prev => [prev, {text: over, round: roundCount, attacker: user, defender: enemy} ] )
+            over = `${enemy.firstName} is down in round ${newRnd}!! This fight is over!`;
+            setPbp(prev => [...prev, {text: over, round: newRnd, attacker: user, defender: enemy} ] )
             clearTimeout(fightAction);
             return;
           }
@@ -319,15 +319,16 @@ const FightEngine = ({ user, enemy }) => {
           let fightUnderway = engagement(user, enemy);
           setKo(false)
           setExchangeCount(k);
-          activity = setObj(fightUnderway, "round", roundCount);
+          activity = setObj(fightUnderway, "round", newRnd);
           setPbp((prev) => [...prev, activity]);
+
         }, delay*(k + 1),)
         
         let roundOverRegulator = setTimeout(() => { //sync disable counters with other setTimeouts
           setRoundOver(true);
           setDisable(false);
-          // if (ko) clearTimeout(roundOverRegulator)
         }, (delay*rateOfExchange)+1000)
+        
       };
  } 
 

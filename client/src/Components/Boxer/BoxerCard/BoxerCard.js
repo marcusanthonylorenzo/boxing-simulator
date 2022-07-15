@@ -9,10 +9,12 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
   const energy = Math.round((boxer.con*100)+35);
+
   const cornerColor = corner(); //boxers ready with extra fight properties compared to normal user/enemy
   const dmgScale = cornerColor.dmgScale(); //scales animation properties based on health
   const getColor = cornerColor.cornerColor; //color of corner
   const favColor = cornerColor.favoriteColor;
+
   const [show, setShow] = useState(`hide`);
   const [fade, setFade] = useState(``);
   const boxerName = boxer.firstName;
@@ -46,7 +48,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
 
   let dmgStats = dmgTracker.reduce((totalDmg, each) => each.dmgScale ? totalDmg += each.dmgScale : null, 0)
   /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
-  console.log(dmgStats)
+  console.log(pbp, dmgTracker)
 
   useEffect(() => {
     if (cornerColor.side === "right"){ //timing delays for opponent
@@ -144,6 +146,10 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
         <div className={`fight-stats border padded`}>
           <h3 style={{ color: favColor, filter: `brightness(1.5)`}}>
             Fight stats brought to you by Modelo.
+
+            <div className="graphs">
+              <h4>{dmgStats}</h4>
+            </div>
           </h3>
         </div>
 

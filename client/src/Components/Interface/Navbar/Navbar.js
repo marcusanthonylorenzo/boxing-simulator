@@ -5,6 +5,15 @@ import oppBody from '../../../assets/images/oppBody.png'
 
 const Navbar = ({roundCount}) => {
 
+  // const navTickerInfo = () => {
+  //   if (roundCount === 0) {
+  //     return "Fight Introductions"
+  //   } else {
+  //     if (ko) {
+  //       return "THIS ROUND IS OVER"
+  //     }
+  //   }
+  // }
 
   return (
     <div className="Navbar">
