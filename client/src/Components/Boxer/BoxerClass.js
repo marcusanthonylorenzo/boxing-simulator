@@ -25,7 +25,7 @@ class Boxer {
     this.maxCon = ((this.sta*0.8)+(this.heart*0.2))/100
     this.con = this.maxCon
 
-    this.maxHp = (this.sta + this.chin + this.heart + this.str)
+    this.maxHp = (this.sta + this.chin + this.heart)*12;
     this.hp = this.maxHp;
 
     this.win = 0;
@@ -61,22 +61,24 @@ class Boxer {
   attack = (combos) => {
     this.lowEnergyWarning();
     let handSpd = combos;
-    let min = (this.pow*this.con)/100
-    let max = (this.pow*this.con)/100*handSpd
+    let min = (this.pow*this.con)/100 *handSpd;
+    let max = (this.pow)
     let rand = randomizer(min, max);
     this.energyLoss();
-    console.log(`attacker`, this.firstName, rand, combos, `max`, min, max)
+
+    console.log(min, max)
+    // console.log(`attacker`, this.firstName, rand, combos, `max`, min, max)
     return rand;
   }
 
-  //determines the ability to reduce damage input
+  //determines the ability to reduce damage input by matching attackers punches (and evading them)
   defend = (combo) => {
     let counterSpd = combo/10;
     let defense = ((this.def*0.8)+(this.chin*0.2))
     let minDef = defense*this.con
     let defRand = randomizer(minDef, defense)
     this.energyLoss();
-    console.log(`defender`, this.firstName, defRand, combo)
+    // console.log(`defender`, this.firstName, defRand, combo)
     return defRand
   }
 
@@ -84,36 +86,37 @@ class Boxer {
 
   roundRecovery = () => {
     let rest = this.train.rest();
-    return rest*this.cond;
+    return rest;
   }
 
   handSpeed = () => {
-    let min = this.agi*this.con;
-    return randomizer(min, this.agi)
+    // let min = this.agi*this.con;
+    return randomizer(1, this.agi)
   }
 
   ko = (defender) => { //if ko > defender.chin
     let lowKO = this.pow*(defender.chin/100);
-    let randKO = randomizer(lowKO, this.pow);
+    let randKO = randomizer(lowKO, defender.hp);
     this.energyLoss();
     return randKO;
   }
 
   getUp = () => { //if getUp > boxerHealth%
     this.energyLoss();
-    let weak = (this.chin+this.heart)*this.con;
-    return randomizer(weak, this.heart);
+    let willToGetUp = (this.chin+this.heart)*this.con;
+    return randomizer(this.chin, willToGetUp);
   }
 
 
   //increase attributes between rounds, with 1 or 2 negative effects
   pepTalk = {
+
     getInThere: {
       1: "There's no reason to be afraid of this guy. Put him away!",
       2: () => this.train.speedBag()
     },
     relax: {
-      1: "Hey...relax mate. No need to rush. Be patient. Do your thing.",
+      1: "Hey...relax mate. Be patient. Do your thing.",
       2: () => {
         this.agi *= 0.96;
         this.pow *= 1.09;
@@ -123,7 +126,7 @@ class Boxer {
       }
     },
     youGottaGo: {
-      1: "I DON'T CARE HOW TIRED YOU ARE, BUT YOU GOTTA GO. YOU'RE BEHIND. GET AHEAD. NOW.",
+      1: "HEY. LISTEN. YOU GOTTA GO. YOU'RE BEHIND. GET AHEAD. NOW.",
       2: () => {
         this.pow *= 1.1;
         this.agr *= 1.05;

@@ -108,16 +108,17 @@ const FightEngine = ({ user, enemy }) => {
     let takesAShot = def.getUp();
     
     if (powerShot > def.chin){  //check if powershot is stronger than chin
-      setPbp(prev => [prev, {
+      setPbp(prev => [...prev, {
         attacker: off,
         defender: def,
         hit: diff,
         text: `A BIG SHOT BY ${off.firstName}. ${def.firstName} stumbles!`
       }])
 
-    if (powerShot > takesAShot){  //check if powershot is stronger than def ability to getUp (take a shot)
+    const consciousness = def.getUp();
+    if (consciousness > takesAShot){  //check if powershot is stronger than def ability to getUp (take a shot)
       setKo(true);
-      setPbp(prev => [prev, {
+      setPbp(prev => [...prev, {
         attacker: off,
         defender: def,
         hit: diff,
@@ -126,7 +127,7 @@ const FightEngine = ({ user, enemy }) => {
       def.energyLoss();
       determineKO(off, def, powerShot) //Post determine KO is where you setKo to false, and implement ref count
       setKo(false) //if determineKO does not persist ko state, (setKo(false)), then continue pbp.
-      setPbp(prev => [prev, {
+      setPbp(prev => [...prev, {
         attacker: off,
         defender: def,
         hit: diff,
@@ -146,21 +147,28 @@ const FightEngine = ({ user, enemy }) => {
 
     let atk = attacker.attack(atkCombos);
     let def = defender.defend(defCombos);
-    console.log('exchange')
+    let difference = atk - def;
 
     setPunchCount(prev => [...prev, {  //set punchCount list, to store punchStats
-      [attacker.firstName]: {
-        punchCount: atkCombos/10,
-        damage: atk
+      attacker: {
+        [attacker.firstName]: {
+          punchesThrown: Math.ceil(atkCombos/12),
+          punchesLanded: Math.ceil(atkCombos/atk),
+          damage: atk
+        }
       },
-      [defender.firstName]: {
-        punchCount: defCombos/10,
-        damage: def
+      defender: {
+        [defender.firstName]: {
+          punchesThrown: Math.ceil(defCombos/12),
+          punchesLanded: Math.ceil(defCombos/def),
+          damage: def
+        }
       },
+      difference: difference,
       round: roundCount+1
     }])
 
-    let difference = atk - def;
+    //
     return difference
   };
 
@@ -217,72 +225,89 @@ const FightEngine = ({ user, enemy }) => {
      FIGHT COMMENTARY GOES HERE: refactor all conditional events!
     ***/
 
-    if (difference <= -15){ //Strong counters by defender
+    if (difference <= -35){ //Strong counters by defender
 
       hit = attacker.hp += difference; //reduce health
+    
       setObj(attacker, "hp", hit);
       result.totalDmg = difference
       result.text = `${defender.firstName} returning some BIG, HEAVY counters!`;
 
-    } else if (difference > -15 && difference <= -10){ //Close Counter in favor of defender.
+    } else if (difference > -35 && difference <= -25){ //Close Counter in favor of defender.
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
       result.text = `${defender.firstName} keeping the pressure off and working well on the outside.`;
 
-    } else if (difference > -10 && difference <= -5){ //Close Counter in favor of defender.
+    } else if (difference > -25 && difference <= -15){ //Close Counter in favor of defender.
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
       result.text = `${defender.firstName} making ${attacker.firstName} pay on the way in`;
 
-    } else if (difference > -5 && difference < -1){ //Close Counter in favor of defender.
+    } else if (difference > -15 && difference < -5){ //Close Counter in favor of defender.
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
-      result.text = `${defender.firstName} moving well to avoid ${attacker.firstName}'s offense.`;
+      result.text = `${defender.firstName} moving well to avoid ${attacker.firstName}'s offense. Peppering jabs in response.`;
 
 
-
-    } else if (difference === -1) { //Inside work for defender
+    } else if (difference >=5 && difference <-2) { //Inside work for defender
       hit = attacker.hp -= 2;
       defender.hp -= 1;
       setObj(defender, "hp", hit);
       result.totalDmg = 2;
-      result.text = `Both fighters work inside...${defender.firstName} looking like a wrestler.`;
+      result.text = `Both fighters work inside...${defender.firstName} getting the best of the scrap.`;
 
-    } else if (difference === 0) {
+    } else if (difference >= 2 && difference <= 2) {
       hit = attacker.hp -= 0;
       attacker.roundRecovery();
       defender.roundRecovery();
       setObj(attacker, "hp", hit);
       result.totalDmg = 0;
-      result.text = `Both fighters work the clinch...Ref decides to break.`;
+      result.text = `Both fighters work in the clinch...Ref decides to break.`;
 
-    } else if (difference === 1){
-      hit = defender.hp -= 2;
-      attacker.hp -= 1;
-      setObj(defender, "hp", hit);
+    // } else if (difference === 1){
+    //   hit = defender.hp -= 2;
+    //   attacker.hp -= 1;
+    //   setObj(defender, "hp", hit);
 
-      result.totalDmg = 2;
-      result.text = `Strong corner bullying by ${attacker.firstName}`;
+    //   result.totalDmg = 2;
+    //   result.text = `Strong corner bullying by ${attacker.firstName}`;
 
 
 
-    } else if (difference > 1 && difference <= 5) { // Close in favor of Attacker
+    } else if (difference > 2 && difference <= 5) { // Close in favor of Attacker
       normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
       hit = defender.hp -= normalOrPowerPunch;
       setObj(defender, "hp", hit)
       result.totalDmg = normalOrPowerPunch;
-      result.text = `Solid work and movement by ${attacker.firstName}`;
+      result.text = `Solid work and steady shots by ${attacker.firstName}`;
 
-    } else if (difference > 5) {
+    } else if (difference > 5 && difference <= 15) {
       normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
       hit = defender.hp -= normalOrPowerPunch;
       setObj(defender, "hp", hit)
       result.totalDmg = normalOrPowerPunch;
-      result.text = `${attacker.firstName} laying on the hurt!`;
+      result.text = `${attacker.firstName} working great in the mid-range!`;
+
+    } else if (difference > 15 && difference <= 25) {
+      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+      hit = defender.hp -= normalOrPowerPunch;
+      setObj(defender, "hp", hit)
+      result.totalDmg = normalOrPowerPunch;
+      result.text = `A clinical performance by ${attacker.firstName}!`;
+
+    } else if (difference > 25) {
+      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+      hit = defender.hp -= normalOrPowerPunch;
+      setObj(defender, "hp", hit)
+      result.totalDmg = normalOrPowerPunch;
+      result.text = `${attacker.firstName} laying some hard, clean shots with ${defender.firstName} trapped in the corner!`;
     }
+
+
+
     return result
   };
 
@@ -397,6 +422,7 @@ const FightEngine = ({ user, enemy }) => {
             pbp={pbp}
             roundCount={roundCount}
             exchangeCount={exchangeCount}
+            punchCount={punchCount}
             corner={() => userReady}/>
 
           <div className="inner-container">
@@ -414,6 +440,7 @@ const FightEngine = ({ user, enemy }) => {
             pbp={pbp}
             roundCount={roundCount}
             exchangeCount={exchangeCount}
+            punchCount={punchCount}
             corner={() => oppReady}/>
         </div>
       </div>

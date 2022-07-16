@@ -53,7 +53,7 @@
 }
 
 .BoxerCard > div:hover {
-  background-color: rgba(250, 250, 250, 0.975);
+  background-color: rgb(27, 13, 13);
   /* color: rgb(253, 239, 135); */
   cursor: default;
 }
@@ -95,7 +95,7 @@
 }
 
 .boxer-info {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(27, 13, 13);
   margin-top: 5%;
   /* padding: 2%; */
   width: 100%;
@@ -104,7 +104,7 @@
 
 /*boxer info and stats*/
 .boxer-info-profile, .fight-stats {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(27, 13, 13);
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -12,9 +12,9 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, button
   const [hideModal, setHideModal] = useState(`hide`);
 
   
-  // useEffect(() => {
-  //   if (ko) setHideModal('hide')
-  // })
+  useEffect(() => {
+  
+  },[])
 
   useEffect(() => fightStart ? setHideRules(`hide`) : setHideRules(`show`),[fightStart]);
   
@@ -36,7 +36,7 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, button
   useEffect(() => {
     setTimeout(() => {
     displayDiv.current.scrollTop = displayDiv.current.scrollHeight;
-    }, 500);
+    }, 1200);
   });
 
   const fightIntroText = () => {

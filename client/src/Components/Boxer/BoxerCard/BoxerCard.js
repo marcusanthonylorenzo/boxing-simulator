@@ -4,7 +4,7 @@ import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
 
-const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
+const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchCount }) => {
 
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
@@ -48,7 +48,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
 
   let dmgStats = dmgTracker.reduce((totalDmg, each) => each.dmgScale && each.roundCount === roundCount ? totalDmg += each.dmgScale : null, 0)
   /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
-  console.log(pbp, dmgTracker)
+  console.log(pbp, punchCount)
 
   useEffect(() => {
     if (cornerColor.side === "right"){ //timing delays for opponent
@@ -120,13 +120,17 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
               </h4>
             </div>
 
-          <div className="boxer-condition" style={{ backgroundColor: changeColor(life), opacity: koColor(energy) }}>
+          <div className="boxer-condition" style={{
+            backgroundColor: changeColor(life),
+            opacity: koColor(energy),
+            transform: `scale(${dmgScaleRegulator()}% )`
+          }}>
             <div className={`boxer-condition-body ${flip()}`} //exists if you want to flip a profile pic in future
               style={{
               backgroundColor: changeColor(life), //Change phyiscal condition by color, red is near knockout
               backgroundImage: `url('${path}')`,
               opacity: koColor(energy),
-              transform: `scale(${dmgScaleRegulator()}% -1)`
+              // transform: `scale(${dmgScaleRegulator()}% )`
             }}>
               <img src={path} alt={'boxer body'}
                 className="boxer-pic"
@@ -144,7 +148,10 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
         </div>
 
         <div className={`fight-stats border padded`}>
-          <h3 style={{ color: favColor, filter: `brightness(1.5)`}}>
+          <h3 style={{
+            // color: favColor,
+            filter: `brightness(1.5)`
+            }}>
             Fight stats brought to you by Modelo.
 
             <div className="graphs">
@@ -153,7 +160,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount }) => {
           </h3>
         </div>
 
-        <div className={'boxer-info-profile border padded'} style={{ backgroundColor: favColor}}>
+        <div className={'boxer-info-profile border padded'} style={{}}>
           <h5 className={`info-titles`}>Height / Weight / Reach:</h5>
           <h5> Height {boxer.weightClass} Reach </h5>
           <h5 className={`info-titles`}>Fighting out of:</h5>

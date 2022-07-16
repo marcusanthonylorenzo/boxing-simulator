@@ -134,7 +134,8 @@
 }
 
 .options-select {
-  background-color: white;
+  background-color: rgb(27, 13, 13, 0.8);
+  color: white;
   display: flex;
   flex-direction: column;
   position: fixed;
