@@ -127,7 +127,7 @@
   align-items: center;
 }
 
-
+/*** Graphs and Charts  ***/
 .fight-stats {
   /* padding: 2.5%; */
   margin: 0;
@@ -136,6 +136,23 @@
 .info-titles {
   font-weight: 400;
 }
+
+.graphs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  height: 30%;
+  width: 100%;
+  /* background-color: white; */
+}
+
+.graphs h4 {
+  color: white;
+}
+
+
+/*** Boxer Info ***/
 
 .name {
   display: flex;

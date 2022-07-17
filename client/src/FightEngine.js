@@ -5,6 +5,7 @@ import Display from './Components/Interface/Display/Display'
 import leftBoxer from './assets/images/redgloves.png'
 import oppBody from './assets/images/oppBody.png'
 import SelectMenu from './Components/Interface/SelectMenu/SelectMenu'
+import randomize from './Components/Helpers/Randomize'
 
 const FightEngine = ({ user, enemy }) => {
 
@@ -152,24 +153,25 @@ const FightEngine = ({ user, enemy }) => {
     let def = defender.defend(defCombos);
     let difference = atk - def;
 
+    console.log(`combos, atk, defCombos, def, diff`, atkCombos, atk, defCombos, def, difference)
     setPunchCount(prev => [...prev, {  //set punchCount list, to store punchStats
       attacker: {
         name: attacker.firstName,
-        punchesThrown: Math.ceil(atkCombos/rateOfExchange), //round down, to avoid excessive decimals
-        punchesLanded: Math.ceil(atkCombos/def), //round up, to get a minimum value of 1
-        damage: atk
+        punchesThrown: Math.ceil(atkCombos/rateOfExchange), //round up a randomized no. of punches in combo
+        punchesLanded: Math.round((atk*(atkCombos/100))/rateOfExchange), //round 
+        effectiveness: atk/10,
+        engagement: `aggressor`
       },
       defender: {
         name: defender.firstName,
         punchesThrown: Math.ceil(defCombos/rateOfExchange),
-        punchesLanded: Math.ceil(defCombos/rateOfExchange),
-        damage: def
+        punchesLanded: Math.round((def*(defCombos/100))/rateOfExchange),
+        effectiveness: def/10,
+        engagement: `counter`
       },
       difference: difference,
       round: roundCount+1
     }])
-
-    //
     return difference
   };
 
@@ -223,7 +225,7 @@ const FightEngine = ({ user, enemy }) => {
     }
     
     /*** 
-     FIGHT COMMENTARY GOES HERE: refactor all conditional events!
+    FIGHT COMMENTARY GOES HERE: refactor all conditional events!
     ***/
 
     if (difference <= -35){ //Strong counters by defender

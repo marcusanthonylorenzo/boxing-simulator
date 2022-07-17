@@ -111,6 +111,19 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
     } return descale + 0.5;
   }
 
+  const mapPunchData = () => {
+
+    const totalPunchesLanded = boxerPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
+    const totalPunchesThrown = boxerPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
+
+    return (
+      <>
+        <h4>{totalPunchesLanded}</h4> / <h4>{totalPunchesThrown}</h4>
+      </>
+    )
+
+  }
+
   const mainCard =  () => {
 
     return (
@@ -163,15 +176,15 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
 
         <div className={`fight-stats border padded`}>
           <h3 style={{
-            // color: favColor,
             filter: `brightness(1.5)`
-            }}>
+          }}>
             Fight stats brought to you by Modelo.
-
-            <div className="graphs">
-              {/* <h4>{getBoxerData.punchesLanded}/{getBoxerData.punchesThrown}</h4> */}
-            </div>
           </h3>
+
+          <div className="graphs">
+            {mapPunchData()}
+          </div>
+
         </div>
 
         <div className={'boxer-info-profile border padded'} style={{}}>
@@ -193,7 +206,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
     </>
     )}
 
-    console.log(boxerPunchData)
+    console.log()
 
   return (
     <>
