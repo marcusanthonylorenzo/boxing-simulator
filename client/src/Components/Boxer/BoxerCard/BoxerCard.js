@@ -13,14 +13,20 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
   const cornerColor = corner(); //boxers ready with extra fight properties compared to normal user/enemy
   const dmgScale = cornerColor.dmgScale(); //scales animation properties based on health
   const getColor = cornerColor.cornerColor; //color of corner
-  const favColor = cornerColor.favoriteColor;
+  const favColor = cornerColor.favoriteColor; //get boxer shorts color
 
   const [show, setShow] = useState(`hide`);
   const [fade, setFade] = useState(``);
   const boxerName = boxer.firstName;
-  const [dmgTracker, setDmgTracker] = useState([]) //tracks each punch for graphs
-  const [engagementCount, setPunchCount] = useState(0)
+  const [dmgTracker, setDmgTracker] = useState([]); //tracks each punch for graphs
+  const [engagementCount, setEngagementCount] = useState(0);
+  const [boxerPunchData, setBoxerPunchData] = useState([])
 
+    /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
+  let dmgStats = dmgTracker.reduce((totalDmg, each) => 
+    each.dmgScale && each.roundCount === roundCount ? totalDmg += each.dmgScale : null, 0);
+  const koColor = (energy) => boxer.hp <= 0 ? `50%` : `${energy}%`
+  const flip = () => cornerColor.side !== 'left' ? '' : ''
 
   /*** Animation Spring ***/
   const animate = useSpring({
@@ -39,16 +45,26 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
   }
 
   useEffect(() =>{
-    setPunchCount(engagementCount + 1)
+    setEngagementCount(engagementCount + 1)
     let exc = { boxerName, roundCount, engagementCount, exchangeCount, dmgScale }
     setDmgTracker((dmgTracker) => [...dmgTracker, exc]);
-    // console.log(boxer.firstName, dmgTracker)
   }, [dmgScale, exchangeCount])
-
-
-  let dmgStats = dmgTracker.reduce((totalDmg, each) => each.dmgScale && each.roundCount === roundCount ? totalDmg += each.dmgScale : null, 0)
-  /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
-  console.log(pbp, punchCount)
+  
+  const searchPunches = () => { //use Reduce method to package data from punchCount into individual boxer data
+    const splitPunchCountByBoxerName = punchCount.reduce((acc, curr) =>{
+      if (curr.attacker.name === boxer.firstName) {
+        return [...acc, {...curr.attacker, round: curr.round}];
+      } else if (curr.defender.name === boxer.firstName){
+        return [...acc, {...curr.defender, round: curr.round}];
+      }
+    }, []);
+    return splitPunchCountByBoxerName;
+  }
+  
+  useEffect(() => {
+    const getBoxerData = searchPunches();
+    setBoxerPunchData(getBoxerData);
+  },[punchCount])
 
   useEffect(() => {
     if (cornerColor.side === "right"){ //timing delays for opponent
@@ -84,9 +100,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
       return `#e80000`;
     }
   }
-  
-  const koColor = (energy) => boxer.hp <= 0 ? `50%` : `${energy}%`
-  const flip = () => cornerColor.side !== 'left' ? '' : ''
+
 
   const dmgScaleRegulator = () => {
     let descale = 100 - dmgScale;
@@ -155,7 +169,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
             Fight stats brought to you by Modelo.
 
             <div className="graphs">
-              <h4>{dmgStats}</h4>
+              {/* <h4>{getBoxerData.punchesLanded}/{getBoxerData.punchesThrown}</h4> */}
             </div>
           </h3>
         </div>
@@ -178,6 +192,8 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
         </div>
     </>
     )}
+
+    console.log(boxerPunchData)
 
   return (
     <>

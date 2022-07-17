@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import './Display.css'
 import SelectMenu from '../SelectMenu/SelectMenu'
 
-const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, buttons }) => {
+const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundCount }) => {
 
   const [fade, setFade] = useState({backgroundColor:`gray`});
   const [hide, setHide] = useState(`show`);
@@ -12,9 +12,7 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, button
   const [hideModal, setHideModal] = useState(`hide`);
 
   
-  useEffect(() => {
-  
-  },[])
+  useEffect(() => { if(roundStart)setHideModal('hide') }, [roundStart])
 
   useEffect(() => fightStart ? setHideRules(`hide`) : setHideRules(`show`),[fightStart]);
   
@@ -102,7 +100,7 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundOver, roundCount, button
       return (
         <>
           <div className={`options ${hideModal}`}>
-            <div className={`options-select`}>
+            <div className={`options-select`}  style={{backgroundColor: user.cornerColor}}>
               <h2>The bell sounds for round {roundCount}.</h2>
               <h4>At your corner, Coach looks you in the eyes with stern advice:</h4>
                 <div className={`select-menu`}>

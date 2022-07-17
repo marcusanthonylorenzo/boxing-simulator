@@ -3,8 +3,8 @@
   flex-direction: column;
   background-color: rgb(27, 13, 13);
   justify-content: center;
-  height: fit-content;
-  width: 20vw;
+  height: min-content;
+  width: 100%;
   border-radius: 4px;
   box-shadow: inset 1px 1px 2px 1px rgba(117, 108, 108, 0.7);
   padding: 1%;

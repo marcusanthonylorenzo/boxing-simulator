@@ -8,26 +8,29 @@ import SelectMenu from './Components/Interface/SelectMenu/SelectMenu'
 
 const FightEngine = ({ user, enemy }) => {
 
-  const [userActive, setUserActive] = useState(user);
+  const [userActive, setUserActive] = useState(user); //point to an updated state of user attributes
   const [oppActive, setOppActive] = useState(enemy);
-  const [userDmgScale, setUserDmgScale] = useState();
+  const [userDmgScale, setUserDmgScale] = useState(); //store values for each total damage output for data
   const [oppDmgScale, setOppDmgScale] = useState();
-  const [pbp, setPbp] = useState([]);
-  const [punchCount, setPunchCount] = useState([]);
+  const [pbp, setPbp] = useState([]); //a combination of above state in objects, for historical fight record
+  
+  const [punchCount, setPunchCount] = useState([]); //data for each punch/counter punch thrown, for historical fight record
   const [ko, setKo] = useState(false);
-
   const [disable, setDisable] = useState(false)
   const [roundCount, setRoundCount] = useState(0);
-  const [roundOver, setRoundOver] = useState(false)
+  const [roundStart, setRoundStart] = useState(false);
+  const [roundOver, setRoundOver] = useState(false);
   const [fightStart, setFightStart] = useState(false);
-  const [rateOfExchange, setRateOfExchange] = useState(12);
-  const [exchangeCount, setExchangeCount] = useState(0);
-  const [delay, setDelay] = useState(1000);
+
+  const [rateOfExchange, setRateOfExchange] = useState(12);  //toggle number of punches in one round based on boxer handSpeed
+  const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
+  const [delay, setDelay] = useState(1000);  //toggle rate of text ouput
 
 
   useEffect(() => {
     setUserActive(userReady);
     setOppActive(oppReady);
+    if (roundStart) setDisable(true);
   },[])
 
   const setObj = (resultObj, key, value) => { //Composition create key
@@ -151,18 +154,16 @@ const FightEngine = ({ user, enemy }) => {
 
     setPunchCount(prev => [...prev, {  //set punchCount list, to store punchStats
       attacker: {
-        [attacker.firstName]: {
-          punchesThrown: Math.ceil(atkCombos/12),
-          punchesLanded: Math.ceil(atkCombos/atk),
-          damage: atk
-        }
+        name: attacker.firstName,
+        punchesThrown: Math.ceil(atkCombos/rateOfExchange), //round down, to avoid excessive decimals
+        punchesLanded: Math.ceil(atkCombos/def), //round up, to get a minimum value of 1
+        damage: atk
       },
       defender: {
-        [defender.firstName]: {
-          punchesThrown: Math.ceil(defCombos/12),
-          punchesLanded: Math.ceil(defCombos/def),
-          damage: def
-        }
+        name: defender.firstName,
+        punchesThrown: Math.ceil(defCombos/rateOfExchange),
+        punchesLanded: Math.ceil(defCombos/rateOfExchange),
+        damage: def
       },
       difference: difference,
       round: roundCount+1
@@ -338,10 +339,11 @@ const FightEngine = ({ user, enemy }) => {
     return resultDmg;
   };
 
-  console.log(punchCount)
+  console.log(roundStart)
 
   const fight = (user, enemy) => {
       roundUpdate();
+
 
       for (let i = 0; i < rateOfExchange; i++){ //set i length to user+opp engage for volume of strikes
         let k = i;
@@ -352,7 +354,7 @@ const FightEngine = ({ user, enemy }) => {
           let activity;
           let over;
 
-            //*** WHAT TO DO WHEN A BOXER IS DOWN AND NEEDS TO GET UP ***/
+          //*** WHAT TO DO WHEN A BOXER IS DOWN AND NEEDS TO GET UP ***/
           if (user.hp <= 0) { //check for knockout
             console.log("USE FIGHT ACTION KO SEQUENCE");
             setKo(true);
@@ -378,6 +380,7 @@ const FightEngine = ({ user, enemy }) => {
         }, delay*(k + 1),)
         
         let roundOverRegulator = setTimeout(() => { //sync disable counters with other setTimeouts
+          setRoundStart(false);
           setRoundOver(true);
           setDisable(false);
         }, (delay*rateOfExchange)+1000)
@@ -386,14 +389,15 @@ const FightEngine = ({ user, enemy }) => {
  } 
 
  const roundUpdate = () => { //round text updates
-    let update;  
+    let update;
     if (roundCount === 0) {
       update = `This fight is officially underway!`;
       setPbp((prev) => [ ...prev, {text: update},]);
-    } else if (!roundOver && roundCount > 0) {
+    } else if (roundStart && roundCount > 0) {
+      setRoundStart(true);
       update = `The bell sounds for round ${roundCount}!`;
       setPbp((prev) => [{text: update}, ...prev]);
-    }
+    } 
     return update;
  }
 
@@ -404,6 +408,7 @@ const FightEngine = ({ user, enemy }) => {
       onClick={()=> {
         setFightStart(true);
         setDisable(true);
+        setRoundStart(true);
         setRoundOver(false);
         fight(user, enemy);
         user.roundRecovery();
@@ -420,24 +425,32 @@ const FightEngine = ({ user, enemy }) => {
         <div className="main-container">
           <BoxerCard boxer={user} path={leftBoxer}
             pbp={pbp}
+            roundStart={roundStart}
             roundCount={roundCount}
             exchangeCount={exchangeCount}
             punchCount={punchCount}
             corner={() => userReady}/>
 
           <div className="inner-container">
-            <Display pbp={pbp} user={userActive}
-              opp={oppActive} fightStart={fightStart}
-              roundOver={roundOver} roundCount={roundCount}
-              ko={ko} buttons={fightBtn}/>
+            <Display pbp={pbp} user={userActive} opp={oppActive}
+              fightStart={fightStart}
+              roundStart={roundStart}
+              roundOver={roundOver}
+              roundCount={roundCount}
+              ko={ko}
+              buttons={fightBtn}/>
             
             <div className="display-options">
-              <SelectMenu buttons={fightBtn} ko={ko} fightStart={fightStart} />
+              <SelectMenu buttons={fightBtn}
+              fightStart={fightStart}
+              roundStart={roundStart} 
+              ko={ko} />
             </div>
           </div>
 
           <BoxerCard boxer={enemy} path={oppBody}
             pbp={pbp}
+            roundStart={roundStart}
             roundCount={roundCount}
             exchangeCount={exchangeCount}
             punchCount={punchCount}
