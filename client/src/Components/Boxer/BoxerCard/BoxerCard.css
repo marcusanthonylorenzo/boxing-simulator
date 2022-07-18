@@ -140,6 +140,7 @@
 .fight-stats-punches-data {
   display: grid;
   grid-template-rows: repeat(2 1fr);
+  grid-template-columns: repeat(2 1fr);
   place-items: center;
 }
 
@@ -154,7 +155,7 @@
 }
 
 .punches-landed-data{
-  display: flex;
+  display: grid;
   margin: 0;
   justify-content: center;
   width: 100%;

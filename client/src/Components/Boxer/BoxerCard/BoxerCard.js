@@ -139,17 +139,19 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
     //get total fight data, all rounds, especially for judges
     const getTotalPunchesLanded = boxerPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
     const getTotalPunchesThrown = boxerPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
-    console.log(getTotalPunchesLanded, getTotalPunchesThrown, `total shots landed`, Math.round((getTotalPunchesLanded/getTotalPunchesThrown)*100), `%`);
+    console.log(getTotalPunchesLanded, getTotalPunchesThrown, `total shots landed`, Math.round((getTotalPunchesLanded/getTotalPunchesThrown)*100),`%`);
     
     return (
       <>
         <div className="fight-stats-punches-data">
           <div className="punches-landed-label">
-            <h5>Landed/Thrown</h5>
+            <h5>Accuracy</h5>
           </div>
           <div className="punches-landed-data">
             <h5>{totalPunchesLanded} / {totalPunchesThrown} </h5>
-            <h5>({ Math.round((totalPunchesLanded / totalPunchesThrown)*100)}%)</h5>
+            <h5>({ Math.ceil((totalPunchesLanded / totalPunchesThrown)*100)}%)</h5>
+            <h5>{getTotalPunchesLanded} / {getTotalPunchesThrown} </h5>
+            <h5>( {Math.ceil((getTotalPunchesLanded/getTotalPunchesThrown)*100)}%)</h5>
           </div>
           <div className="punches-landed-label">
             <h5>Engagement Rate:</h5>

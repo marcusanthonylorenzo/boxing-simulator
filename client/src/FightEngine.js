@@ -148,8 +148,8 @@ const FightEngine = ({ user, enemy }) => {
     let difference = atk - def;
     // let engagementRateDuringFight = (atk/10)+(def/10); //activity of fighters changes length of loop, makes it more or less active
     // setRateOfExchange(engagementRateDuringFight)
-    let attackerPunchesLanded = Math.floor(((atk*(atkCombos/100))/rateOfExchange)*attacker.con);
-    let defenderPunchesLanded = Math.floor(((def*(defCombos/100))/rateOfExchange)*defender.con);
+    let attackerPunchesLanded = Math.round(((atk*(atkCombos/100))/rateOfExchange)*attacker.maxCon);
+    let defenderPunchesLanded = Math.round(((def*(defCombos/100))/rateOfExchange)*defender.maxCon);
 
     // console.log(`combos, atk, defCombos, def, diff`, atkCombos, atk, defCombos, def, difference)
     setPunchCount(prev => [...prev, {  //set punchCount list, to store punchStats
@@ -157,7 +157,7 @@ const FightEngine = ({ user, enemy }) => {
         name: attacker.firstName,
         punchesThrown: Math.ceil((atkCombos/rateOfExchange)), //round up a randomized no. of punches in combo
         punchesLanded: attackerPunchesLanded, //round 
-        engagementRate: atk/12,
+        engagementRate: atk/10,
         ringControl: Math.round((atk/(atk+def))*100),
         engagement: `aggressor`
       },
@@ -165,7 +165,7 @@ const FightEngine = ({ user, enemy }) => {
         name: defender.firstName,
         punchesThrown: Math.ceil((defCombos/rateOfExchange)),
         punchesLanded: defenderPunchesLanded,
-        engagementRate: def/12,
+        engagementRate: def/10,
         ringControl: Math.round((def/(def+atk))*100),
         engagement: `counter`
       },

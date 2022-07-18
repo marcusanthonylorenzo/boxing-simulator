@@ -26,7 +26,7 @@ class Boxer {
     this.con = this.maxCon
 
     this.maxHp = ((this.sta + this.chin + this.heart)*12)*this.con;
-    this.hp = this.maxHp;
+    this.hp = this.maxHp*this.con;
 
     this.win = 0;
     this.loss = 0;
