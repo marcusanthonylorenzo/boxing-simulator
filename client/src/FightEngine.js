@@ -52,16 +52,10 @@ const FightEngine = ({ user, enemy }) => {
     }
   };
 
-  // const setPbpFunc = () => {
-
-
-  // }
-
   //HERE is where you set the fighters extra stats, randomize cornerColors in future, change before each new fight!
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
   const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", true, oppDmgScale)
-
 
   const determineKO = (offense, defense, hit ) => {
 
@@ -386,8 +380,6 @@ const FightEngine = ({ user, enemy }) => {
           setRoundStart(false);
           setRoundOver(true);
           setDisable(false);
-          user.roundRecovery();
-          enemy.roundRecovery();
         }, (delay*rateOfExchange)+1000)
         
       };

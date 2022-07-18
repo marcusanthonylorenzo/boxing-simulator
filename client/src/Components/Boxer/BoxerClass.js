@@ -164,27 +164,27 @@ class Boxer {
   //increase attributes during fight week
   train = {
     roadWork: () => {
-      this.sta *= 1.1;
+      this.sta *= 1.03;
       this.maxCon += (this.con/100);
       this.energyLoss();
     },
 
     speedBag: () => {
-      this.agr *= 1.1;
-      this.agi *= 1.1;
+      this.agr += 1.03;
+      this.agi *= 1.03;
       this.energyLoss();
       console.log(this.agr, this.agi, this.con)
     },
 
     jumpRope: () => {
-      this.sta *= 1.1;
-      this.agi *= 1.1;
+      this.sta *= 1.03;
+      this.agi *= 1.03;
       this.energyLoss();
     },
 
     pads: () => {
-      this.str *= 1.1;
-      this.def *= 1.1;
+      this.str *= 1.03;
+      this.def *= 1.03;
       this.energyLoss();
     },
 

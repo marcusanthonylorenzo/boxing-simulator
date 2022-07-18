@@ -112,8 +112,9 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
     } return descale + 0.5;
   }
 
-  const mapPunchData = () => {
+  
 
+  const mapPunchData = () => {
     const filterPunchData = boxerPunchData.filter(data => {
       if (roundCount === data.round) {
         return data;
@@ -129,13 +130,17 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
       }
     }
 
+    //filter fight data by round
     const totalPunchesLanded = filterPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
     const totalPunchesThrown = filterPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
     const engagementRate = filterPunchData.reduce((acc, cur) => acc = cur.engagementRate, 0);
     const ringControl = filterPunchData.reduce((acc, cur) => acc = cur.ringControl, 0);
 
-    console.log(filterPunchData)
-
+    //get total fight data, all rounds, especially for judges
+    const getTotalPunchesLanded = boxerPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
+    const getTotalPunchesThrown = boxerPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
+    console.log(getTotalPunchesLanded, getTotalPunchesThrown, `total shots landed`, Math.round((getTotalPunchesLanded/getTotalPunchesThrown)*100), `%`);
+    
     return (
       <>
         <div className="fight-stats-punches-data">
