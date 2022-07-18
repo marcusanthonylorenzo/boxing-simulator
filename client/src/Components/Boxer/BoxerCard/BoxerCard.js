@@ -20,7 +20,8 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
   const boxerName = boxer.firstName;
   const [dmgTracker, setDmgTracker] = useState([]); //tracks each punch for graphs
   const [engagementCount, setEngagementCount] = useState(0);
-  const [boxerPunchData, setBoxerPunchData] = useState([])
+  const [boxerPunchData, setBoxerPunchData] = useState([]);
+
 
     /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
   let dmgStats = dmgTracker.reduce((totalDmg, each) => 
@@ -113,15 +114,53 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
 
   const mapPunchData = () => {
 
-    const totalPunchesLanded = boxerPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
-    const totalPunchesThrown = boxerPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
+    const filterPunchData = boxerPunchData.filter(data => {
+      if (roundCount === data.round) {
+        return data;
+      }
+    });
+
+    const maxEngagementRate = () => {
+      let rateOfEx = Math.floor(engagementRate*10);
+      if (rateOfEx > 100) {
+        return 100;
+      } else {
+        return rateOfEx;
+      }
+    }
+
+    const totalPunchesLanded = filterPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
+    const totalPunchesThrown = filterPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
+    const engagementRate = filterPunchData.reduce((acc, cur) => acc = cur.engagementRate, 0);
+    const ringControl = filterPunchData.reduce((acc, cur) => acc = cur.ringControl, 0);
+
+    console.log(filterPunchData)
 
     return (
       <>
-        <h4>{totalPunchesLanded}</h4> / <h4>{totalPunchesThrown}</h4>
+        <div className="fight-stats-punches-data">
+          <div className="punches-landed-label">
+            <h5>Landed/Thrown</h5>
+          </div>
+          <div className="punches-landed-data">
+            <h5>{totalPunchesLanded} / {totalPunchesThrown} </h5>
+            <h5>({ Math.round((totalPunchesLanded / totalPunchesThrown)*100)}%)</h5>
+          </div>
+          <div className="punches-landed-label">
+            <h5>Engagement Rate:</h5>
+          </div>
+          <div className="punches-landed-data">
+            <h5>{ maxEngagementRate() }%</h5>
+          </div>
+          <div className="punches-landed-label">
+            <h5>Ring Control:</h5>
+          </div>
+          <div className="punches-landed-data">
+            <h5>{ringControl}</h5>
+          </div>
+        </div>
       </>
     )
-
   }
 
   const mainCard =  () => {
@@ -175,11 +214,11 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
         </div>
 
         <div className={`fight-stats border padded`}>
-          <h3 style={{
+          {/* <h3 style={{
             filter: `brightness(1.5)`
           }}>
             Fight stats brought to you by Modelo.
-          </h3>
+          </h3> */}
 
           <div className="graphs">
             {mapPunchData()}

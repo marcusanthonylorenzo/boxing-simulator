@@ -23,7 +23,7 @@ const FightEngine = ({ user, enemy }) => {
   const [roundOver, setRoundOver] = useState(false);
   const [fightStart, setFightStart] = useState(false);
 
-  const [rateOfExchange, setRateOfExchange] = useState(12);  //toggle number of punches in one round based on boxer handSpeed
+  const [rateOfExchange, setRateOfExchange] = useState(10);  //toggle number of punches in one round based on boxer handSpeed
   const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
   const [delay, setDelay] = useState(1000);  //toggle rate of text ouput
 
@@ -109,7 +109,7 @@ const FightEngine = ({ user, enemy }) => {
 
   const determinePowerShot = (off, def, diff) => {
     let powerShot = off.ko(def); //determine powershot, then if KO
-    let takesAShot = def.getUp();
+    // let takesAShot = def.getUp();
     
     if (powerShot > def.chin){  //check if powershot is stronger than chin
       setPbp(prev => [...prev, {
@@ -120,7 +120,7 @@ const FightEngine = ({ user, enemy }) => {
       }])
 
     const consciousness = def.getUp();
-    if (consciousness > takesAShot){  //check if powershot is stronger than def ability to getUp (take a shot)
+    if (consciousness > powerShot){  //check if powershot is stronger than def ability to getUp (take a shot)
       setKo(true);
       setPbp(prev => [...prev, {
         attacker: off,
@@ -152,21 +152,27 @@ const FightEngine = ({ user, enemy }) => {
     let atk = attacker.attack(atkCombos);
     let def = defender.defend(defCombos);
     let difference = atk - def;
+    // let engagementRateDuringFight = (atk/10)+(def/10); //activity of fighters changes length of loop, makes it more or less active
+    // setRateOfExchange(engagementRateDuringFight)
+    let attackerPunchesLanded = Math.floor(((atk*(atkCombos/100))/rateOfExchange)*attacker.con);
+    let defenderPunchesLanded = Math.floor(((def*(defCombos/100))/rateOfExchange)*defender.con);
 
-    console.log(`combos, atk, defCombos, def, diff`, atkCombos, atk, defCombos, def, difference)
+    // console.log(`combos, atk, defCombos, def, diff`, atkCombos, atk, defCombos, def, difference)
     setPunchCount(prev => [...prev, {  //set punchCount list, to store punchStats
       attacker: {
         name: attacker.firstName,
-        punchesThrown: Math.ceil(atkCombos/rateOfExchange), //round up a randomized no. of punches in combo
-        punchesLanded: Math.round((atk*(atkCombos/100))/rateOfExchange), //round 
-        effectiveness: atk/10,
+        punchesThrown: Math.ceil((atkCombos/rateOfExchange)), //round up a randomized no. of punches in combo
+        punchesLanded: attackerPunchesLanded, //round 
+        engagementRate: atk/12,
+        ringControl: Math.round((atk/(atk+def))*100),
         engagement: `aggressor`
       },
       defender: {
         name: defender.firstName,
-        punchesThrown: Math.ceil(defCombos/rateOfExchange),
-        punchesLanded: Math.round((def*(defCombos/100))/rateOfExchange),
-        effectiveness: def/10,
+        punchesThrown: Math.ceil((defCombos/rateOfExchange)),
+        punchesLanded: defenderPunchesLanded,
+        engagementRate: def/12,
+        ringControl: Math.round((def/(def+atk))*100),
         engagement: `counter`
       },
       difference: difference,
@@ -175,6 +181,7 @@ const FightEngine = ({ user, enemy }) => {
     return difference
   };
 
+  console.log(punchCount)
 
  //Phase 2 = wrap both attack and defense with output text in one single obj, easier to package for output
   const calcDamage = (attacker, defender, difference) => {
@@ -229,9 +236,7 @@ const FightEngine = ({ user, enemy }) => {
     ***/
 
     if (difference <= -35){ //Strong counters by defender
-
       hit = attacker.hp += difference; //reduce health
-    
       setObj(attacker, "hp", hit);
       result.totalDmg = difference
       result.text = `${defender.firstName} returning some BIG, HEAVY counters!`;
@@ -308,9 +313,6 @@ const FightEngine = ({ user, enemy }) => {
       result.totalDmg = normalOrPowerPunch;
       result.text = `${attacker.firstName} laying some hard, clean shots with ${defender.firstName} trapped in the corner!`;
     }
-
-
-
     return result
   };
 
@@ -323,16 +325,18 @@ const FightEngine = ({ user, enemy }) => {
 
     if (userOffense > oppOffense) {
       let userDmg = exchange(user, opp);
-      let defDmg = exchange(opp, user);
-      let dmgDifferential = userDmg - defDmg
-      resultDmg = calcDamage(user, opp, dmgDifferential); //determines resulting dmg after engage and exchange
+      // let defDmg = exchange(opp, user);
+      // let dmgDifferential = userDmg - defDmg
+      resultDmg = calcDamage(user, opp, userDmg); //determines resulting dmg after engage and exchange
+      determineKO(user, opp, userDmg);
       setUserDmgScale(userDmg);
 
     } else if (oppOffense > userOffense) {
       let oppDmg = exchange(opp, user);
-      let playerDmg = exchange(user, opp);
-      let dmgDifference = oppDmg - playerDmg;
-      resultDmg = calcDamage(opp, user, dmgDifference); //determines resulting dmg after engage and exchange
+      // let playerDmg = exchange(user, opp);
+      // let dmgDifference = oppDmg - playerDmg;
+      resultDmg = calcDamage(opp, user, oppDmg); //determines resulting dmg after engage and exchange
+      determineKO(opp, user, oppDmg);
       setOppDmgScale(oppDmg);
 
     } else if (oppOffense === userOffense) {
@@ -341,11 +345,8 @@ const FightEngine = ({ user, enemy }) => {
     return resultDmg;
   };
 
-  console.log(roundStart)
-
   const fight = (user, enemy) => {
       roundUpdate();
-
 
       for (let i = 0; i < rateOfExchange; i++){ //set i length to user+opp engage for volume of strikes
         let k = i;
@@ -385,6 +386,8 @@ const FightEngine = ({ user, enemy }) => {
           setRoundStart(false);
           setRoundOver(true);
           setDisable(false);
+          user.roundRecovery();
+          enemy.roundRecovery();
         }, (delay*rateOfExchange)+1000)
         
       };

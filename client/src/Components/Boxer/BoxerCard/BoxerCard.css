@@ -137,6 +137,29 @@
   font-weight: 400;
 }
 
+.fight-stats-punches-data {
+  display: grid;
+  grid-template-rows: repeat(2 1fr);
+  place-items: center;
+}
+
+.fight-stats-punches-data div {
+  margin: 5% auto;
+}
+
+.fight-stats-punches-data h5{
+  margin: 0 auto;
+  padding: 0;
+  text-align: left;
+}
+
+.punches-landed-data{
+  display: flex;
+  margin: 0;
+  justify-content: center;
+  width: 100%;
+}
+
 .graphs {
   display: flex;
   justify-content: center;
