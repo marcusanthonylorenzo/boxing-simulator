@@ -10,7 +10,7 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundC
   const [hideRefTalk, setHideRefTalk] = useState(`hideRefTalk`);
   const [disableBtns, setDisableBtns] = useState(false);
   const [hideModal, setHideModal] = useState(`hide`);
-
+  const displayDiv = useRef(null) //auto scroll to bottom
   
   useEffect(() => { if(roundStart)setHideModal('hide') }, [roundStart])
 
@@ -30,10 +30,9 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundC
     setHideRefTalk(`black`);
   },  6900);
 
-  const displayDiv = useRef(null) //auto scroll to bottom
   useEffect(() => {
     setTimeout(() => {
-    displayDiv.current.scrollTop = displayDiv.current.scrollHeight;
+      displayDiv.current.scrollTop = displayDiv.current.scrollHeight;
     }, 1200);
   });
 
@@ -54,9 +53,8 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundC
     )
   }
 
-  const continueText = (getAttacker, scrap) => {
-     //set opening text to black color
-    let fontCol = `white`;
+  const continueText = (getAttacker, scrap) => { //set opening text to black color
+    let fontCol;
     let fontSiz = `1rem`;
     if (pbp.length === 1) {
       fontCol = `black`;
@@ -65,11 +63,13 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundC
       fontCol = `white`;
     }
     return (
-    <div className={`textbox`} style={{
-      backgroundColor: getAttacker.favoriteColor,
-      color: fontCol,
-      fontSize: fontSiz
-    }}>{scrap.text}</div>
+      <div className={`textbox`} style={{
+        backgroundColor: getAttacker.favoriteColor,
+        color: fontCol,
+        fontSize: fontSiz
+      }}>
+        {scrap.text}
+      </div>
     )
   }
 
@@ -88,8 +88,8 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundC
 
       return (
         <>
-        {!ko ? continueText(getAttacker, scrap) : koedText } {/* continue or show KO OR judgesDecision() */}
-        {!ko ? modal() : koedText }
+          {!ko ? continueText(getAttacker, scrap) : koedText } {/* continue or show KO OR judgesDecision() */}
+          {!ko ? modal() : koedText }
         </>
       )
     })

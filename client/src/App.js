@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css';
-import FightEngine from './FightEngine'
+import FightEngine from './Components/FightEngine/FightEngine'
 import temp from './Components/Helpers/Data'
 
 function App() {

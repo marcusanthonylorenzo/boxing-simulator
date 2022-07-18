@@ -103,6 +103,7 @@
 }
 
 /*boxer info and stats*/
+
 .boxer-info-profile, .fight-stats {
   background-color: rgb(27, 13, 13);
   display: flex;
@@ -128,6 +129,7 @@
 }
 
 /*** Graphs and Charts  ***/
+
 .fight-stats {
   /* padding: 2.5%; */
   margin: 0;

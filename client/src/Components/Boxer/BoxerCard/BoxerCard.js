@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import { useSpring, animated as ani} from 'react-spring'
+// import { useSpring, animated as ani} from 'react-spring'
 import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
@@ -9,33 +9,34 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
   const energy = Math.round((boxer.con*100)+35);
-
   const cornerColor = corner(); //boxers ready with extra fight properties compared to normal user/enemy
   const dmgScale = cornerColor.dmgScale(); //scales animation properties based on health
   const getColor = cornerColor.cornerColor; //color of corner
   const favColor = cornerColor.favoriteColor; //get boxer shorts color
+  const boxerName = boxer.firstName;
 
   const [show, setShow] = useState(`hide`);
   const [fade, setFade] = useState(``);
-  const boxerName = boxer.firstName;
   const [dmgTracker, setDmgTracker] = useState([]); //tracks each punch for graphs
   const [engagementCount, setEngagementCount] = useState(0);
   const [boxerPunchData, setBoxerPunchData] = useState([]);
 
 
-    /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
-  let dmgStats = dmgTracker.reduce((totalDmg, each) => 
-    each.dmgScale && each.roundCount === roundCount ? totalDmg += each.dmgScale : null, 0);
+  /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
+  let dmgStats = dmgTracker.reduce((totalDmg, each) =>
+    each.dmgScale && each.roundCount === roundCount ?
+      totalDmg += each.dmgScale :
+        null, 0);
   const koColor = (energy) => boxer.hp <= 0 ? `50%` : `${energy}%`
   const flip = () => cornerColor.side !== 'left' ? '' : ''
 
   /*** Animation Spring ***/
-  const animate = useSpring({
-    from: { marginBottom: 200, opacity: 0 },
-    opacity: 1,
-    marginBottom: `25%`,
-    config: { mass: 1, tension: 150, friction: 10 }
-  });
+  // const animate = useSpring({
+  //   from: { marginBottom: 200, opacity: 0 },
+  //   opacity: 1,
+  //   marginBottom: `25%`,
+  //   config: { mass: 1, tension: 150, friction: 10 }
+  // });
 
   const showHide = (show, set) => {
     if (show) {
@@ -86,22 +87,21 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
         setFade(`75%`);
       },  7300);
     }
-    }, []);
+  }, []);
 
   const changeColor = (life) => {
     if (life >= 75) {
       return `#00b424`
     } else if (life <= 75 && life > 50) {
       return `#bce920`;
-    } else if (life <= 50 && life > 35) {
+    } else if (life <= 49 && life > 35) {
       return `#fffc1e`;
-    } else if (life <= 35 && life > 19) {
+    } else if (life <= 35 && life > 20) {
       return `#f58000`;
-    } else if (life <= 19) {
+    } else if (life <= 20) {
       return `#e80000`;
     }
   }
-
 
   const dmgScaleRegulator = () => {
     let descale = 100 - dmgScale;
@@ -111,8 +111,6 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
       return descale
     } return descale + 0.5;
   }
-
-  
 
   const mapPunchData = () => {
     const filterPunchData = boxerPunchData.filter(data => {
@@ -135,7 +133,7 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
     const totalPunchesThrown = filterPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
     const engagementRate = filterPunchData.reduce((acc, cur) => acc = cur.engagementRate, 0);
     const ringControl = filterPunchData.reduce((acc, cur) => acc = cur.ringControl, 0);
-
+    
     //get total fight data, all rounds, especially for judges
     const getTotalPunchesLanded = boxerPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
     const getTotalPunchesThrown = boxerPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
@@ -173,25 +171,25 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
   const mainCard =  () => {
 
     return (
-          <>
-          <div className="boxer-info border padded" >
-            <div className="boxer-info-name">
-              <h4 className={'name'} style={{
-                backgroundColor: cornerColor.favoriteColor }}>
-                <em>{boxer.firstName}</em>
-              </h4>
+      <>
+        <div className="boxer-info border padded" >
+          <div className="boxer-info-name">
+            <h4 className={'name'} style={{
+              backgroundColor: cornerColor.favoriteColor }}>
+              <em>{boxer.firstName}</em>
+            </h4>
 
-              <h4 id={`nickname`} style={{
-                fontWeight: `200px`,
-                backgroundColor: favColor}}>
-                <em>"{boxer.nickname}"</em>
-              </h4>
+            <h4 id={`nickname`} style={{
+              fontWeight: `200px`,
+              backgroundColor: favColor}}>
+              <em>"{boxer.nickname}"</em>
+            </h4>
 
-              <h4 className={'name'} style={{
-                backgroundColor: favColor }}>
-                <em>{boxer.lastName}</em>
-              </h4>
-            </div>
+            <h4 className={'name'} style={{
+              backgroundColor: favColor }}>
+              <em>{boxer.lastName}</em>
+            </h4>
+          </div>
 
           <div className="boxer-condition" style={{
             backgroundColor: changeColor(life),
@@ -230,7 +228,6 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
           <div className="graphs">
             {mapPunchData()}
           </div>
-
         </div>
 
         <div className={'boxer-info-profile border padded'} style={{}}>
@@ -249,36 +246,30 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
             </h5>
           }
         </div>
-    </>
+      </>
     )}
-
-    console.log()
 
   return (
     <>
-      <div className={`BoxerCard`} style={{...animate}}>
-
+      <div className={`BoxerCard`} style={{}}>
         { //if round count is 0, fight has not begun, display intro cards first
-        roundCount === 0 ?
-        <div className={`intros-${cornerColor.side} ${show}`}
-          style={{opacity: fade, color: boxer.favoriteColor}}
-          onClick={(e) => {
-            e.preventDefault();
-            showHide();
-        }}>
-          {/* // style={{backgroundColor: }}> */}
-          {commentary.setIntros(
-            {...cornerColor,
-              weightClass: commentary.weightClassName(boxer)},
-              boxer.favoriteColor)}
-        </div> 
-        
-        : 
-        
-        mainCard()
+          roundCount === 0 ?
+          <div className={`intros-${cornerColor.side} ${show}`}
+            style={{opacity: fade, color: boxer.favoriteColor}}
+            onClick={(e) => {
+              e.preventDefault();
+              showHide(); }
+              }>
+            {/* // style={{backgroundColor: }}> */}
+            {
+              commentary.setIntros({...cornerColor,
+                weightClass: commentary.weightClassName(boxer)},
+                boxer.favoriteColor)
+            }
+          </div> 
 
+          :  mainCard()
         }
-
       </div>
     </>
   )

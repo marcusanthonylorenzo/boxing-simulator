@@ -18,8 +18,7 @@ const Navbar = ({roundCount}) => {
   return (
     <div className="Navbar">
       
-      <div className="navbar-container">
-        
+      <div className="navbar-container"> 
         <div className="navbar-title">
           <h2>Ringcraft</h2> <h5>A Boxing text-realism simulator.</h5>
         </div>
@@ -27,7 +26,6 @@ const Navbar = ({roundCount}) => {
         <div className="navbar-logo">
           <img src={oppBody} alt={"Ringcraft"} id={`logo`}/>
         </div>
-
       </div>
 
       <div className="navbar-ticker">
@@ -38,7 +36,6 @@ const Navbar = ({roundCount}) => {
     
     </div>
   )
-  
 }
 
 export default Navbar

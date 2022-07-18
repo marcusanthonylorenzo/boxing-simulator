@@ -1,21 +1,30 @@
 import { useState, useEffect } from 'react'
-import Navbar from './Components/Interface/Navbar/Navbar'
-import BoxerCard from './Components/Boxer/BoxerCard/BoxerCard'
-import Display from './Components/Interface/Display/Display'
-import leftBoxer from './assets/images/redgloves.png'
-import oppBody from './assets/images/oppBody.png'
-import SelectMenu from './Components/Interface/SelectMenu/SelectMenu'
-import randomize from './Components/Helpers/Randomize'
+import Functions from '../Helpers/Functions'
+import Navbar from '../Interface/Navbar/Navbar'
+import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
+import Display from '../Interface/Display/Display'
+import leftBoxer from '../../assets/images/redgloves.png'
+import oppBody from '../../assets/images/oppBody.png'
+import SelectMenu from '../Interface/SelectMenu/SelectMenu'
+// import randomize from '../Helpers/Randomize'
 
 const FightEngine = ({ user, enemy }) => {
+  
+  const { setObj, setCorner } = Functions(); //unpack functions from Helpers/Functions
 
+  /*** counters ***/
   const [userActive, setUserActive] = useState(user); //point to an updated state of user attributes
   const [oppActive, setOppActive] = useState(enemy);
   const [userDmgScale, setUserDmgScale] = useState(); //store values for each total damage output for data
   const [oppDmgScale, setOppDmgScale] = useState();
   const [pbp, setPbp] = useState([]); //a combination of above state in objects, for historical fight record
-  
   const [punchCount, setPunchCount] = useState([]); //data for each punch/counter punch thrown, for historical fight record
+  const [rateOfExchange, setRateOfExchange] = useState(10);  //toggle number of punches in one round based on boxer handSpeed
+  const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
+  const [delay, setDelay] = useState(1000);  //toggle rate of text ouput
+
+
+  /***  booleans ***/
   const [ko, setKo] = useState(false);
   const [disable, setDisable] = useState(false)
   const [roundCount, setRoundCount] = useState(0);
@@ -23,78 +32,54 @@ const FightEngine = ({ user, enemy }) => {
   const [roundOver, setRoundOver] = useState(false);
   const [fightStart, setFightStart] = useState(false);
 
-  const [rateOfExchange, setRateOfExchange] = useState(10);  //toggle number of punches in one round based on boxer handSpeed
-  const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
-  const [delay, setDelay] = useState(1000);  //toggle rate of text ouput
 
-
-  useEffect(() => {
+  useEffect(() => { //shallow copy of user/enemy for manipulation
     setUserActive(userReady);
     setOppActive(oppReady);
     if (roundStart) setDisable(true);
   },[])
-
-  const setObj = (resultObj, key, value) => { //Composition create key
-    return {
-      ...resultObj,
-      [key]: value
-    }
-  };
-  
-  const setCorner = (fighter, color, cornerColorLabel, side, champion, dmg) => { //set fight corner, color, champ status
-    return {
-      ...fighter,
-      cornerColor: color,
-      cornerColorLabel: cornerColorLabel,
-      side: side,
-      champion: champion,
-      dmgScale: () => dmg
-    }
-  };
 
   //HERE is where you set the fighters extra stats, randomize cornerColors in future, change before each new fight!
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
   const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", true, oppDmgScale)
 
-  const determineKO = (offense, defense, hit ) => {
+  const determineKO = (offense, defense, hit, timeout ) => {
 
     if (defense.hp <= 0) {
       console.log("DETERMINING KO")
 
       const getUpTimer = setTimeout(() => { //slow down getUp post knock out text boxes.
-      const takesShot = defense.getUp();
-      const getUp = defense.getUp();
-
-      setPbp(prev => [...prev, {  //push to play-by-play array with new object.
-        attacker: offense,
-        defender: defense,
-        hit: hit,
-        text: `${defense.firstName} with the count!`}
-      ])
-
-      if (getUp > takesShot) { //if second will to "get up" is stronger than previous will to get up.
-        setKo(false)          
-        console.log("HE'S BACK UP")
-        setPbp(prev => [...prev, {
-          attacker: offense,
-          defender:defense,
-          hit: hit,
-          text: `${defense.firstName} stands back up!`
-        }])
-        defense.hp*=1.2;
-        return determineKO;
-        
-      } else {
-        console.log("determineKO() says FIGHT OVER")
-        setPbp(prev => [prev, {
+        const takesShot = defense.getUp();
+        const getUp = defense.getUp();
+        setPbp(prev => [...prev, {  //push to play-by-play array with new object.
           attacker: offense,
           defender: defense,
           hit: hit,
-          text: `THIS FIGHT IS OVER. ${offense.firstName} PUTS ${defense.firstName} AWAY`
-        }])
-        return determineKO;
-      }
+          text: `${defense.firstName} down with the count!`}
+        ])
+
+        if (getUp > takesShot) { //if second will to "get up" is stronger than previous will to get up.
+          setKo(false)          
+          setPbp(prev => [...prev, {
+            attacker: offense,
+            defender:defense,
+            hit: hit,
+            text: `${defense.firstName} stands back up!`
+          }])
+          defense.hp*=1.2;
+          return determineKO;
+          
+        } else {
+          clearTimeout(timeout)
+          setPbp(prev => [prev, {
+            attacker: offense,
+            defender: defense,
+            hit: hit,
+            text: `THIS FIGHT IS OVER. The ref waves it off! ${offense.firstName} PUTS ${defense.firstName} AWAY.`
+          }])
+          return determineKO;
+        }
       }, 600);
       clearTimeout(getUpTimer)
     }
@@ -103,8 +88,7 @@ const FightEngine = ({ user, enemy }) => {
 
   const determinePowerShot = (off, def, diff) => {
     let powerShot = off.ko(def); //determine powershot, then if KO
-    // let takesAShot = def.getUp();
-    
+
     if (powerShot > def.chin){  //check if powershot is stronger than chin
       setPbp(prev => [...prev, {
         attacker: off,
@@ -142,12 +126,11 @@ const FightEngine = ({ user, enemy }) => {
   const exchange = (attacker, defender) => {
     let atkCombos = attacker.handSpeed(); //determine punch volume
     let defCombos = defender.handSpeed();
-
     let atk = attacker.attack(atkCombos);
     let def = defender.defend(defCombos);
     let difference = atk - def;
-    // let engagementRateDuringFight = (atk/10)+(def/10); //activity of fighters changes length of loop, makes it more or less active
-    // setRateOfExchange(engagementRateDuringFight)
+
+    //activity of fighters changes length of loop, makes it more or less active
     let attackerPunchesLanded = Math.round(((atk*(atkCombos/100))/rateOfExchange)*attacker.maxCon);
     let defenderPunchesLanded = Math.round(((def*(defCombos/100))/rateOfExchange)*defender.maxCon);
 
@@ -175,10 +158,9 @@ const FightEngine = ({ user, enemy }) => {
     return difference
   };
 
-  console.log(punchCount)
 
  //Phase 2 = wrap both attack and defense with output text in one single obj, easier to package for output
-  const calcDamage = (attacker, defender, difference) => {
+  const calcDamage = (attacker, defender, difference, timeout) => {
 
       let result = { //an object template to populate the pbp
         attacker: attacker,
@@ -189,45 +171,13 @@ const FightEngine = ({ user, enemy }) => {
       let hit;
       let normalOrPowerPunch;
 
-      if (attacker.hp <= 0) { //check for knockout
-        setKo(true)
-        console.log("STRAIGHT TO DETERMINE DMG atk")
+    /***
 
-        const atkerGetUp = attacker.getUp();
-        if (atkerGetUp > attacker.getUp()) {
-          setKo(false);
-          setPbp(prev => [prev, {text: `${attacker.firstName} stands back up!`}])
-          attacker.roundRecovery();
-          return calcDamage;
-        } else {
-          setRateOfExchange(1);
-          setPbp(prev => [prev, {text: `THIS FIGHT IS OVER. ${defender.firstName} PUTS ${attacker.firstName} AWAY`}])
-          return calcDamage;
-        }
-
-      } else if (defender.hp <= 0) {
-        setKo(true);
-        console.log("STRAIGHT TO DETERMINE DMG def")
-        const takesAShot = defender.getUp();
-        const getUp = defender.getUp();
-
-        if (getUp > takesAShot) {
-          setKo(false);
-          console.log('down!')
-          setPbp(prev => [prev, { text: `${defender.firstName} IS DOWN...BUT GETS BACK UP!`}])
-          defender.roundRecovery();
-          return calcDamage;
-
-        } else {
-          setRateOfExchange(1);
-          setPbp(prev => [prev, {text: `THIS FIGHT IS OVER, That was a heavy, heavy shot. It looked like his soul escaped him immediately. ${attacker.firstName} PUTS ${defender.firstName} AWAY`}])
-          return calcDamage;
-        }
-    }
-    
-    /*** 
     FIGHT COMMENTARY GOES HERE: refactor all conditional events!
+    
     ***/
+
+    /*** Fight balance favors defender ***/
 
     if (difference <= -35){ //Strong counters by defender
       hit = attacker.hp += difference; //reduce health
@@ -253,6 +203,7 @@ const FightEngine = ({ user, enemy }) => {
       result.totalDmg = difference;
       result.text = `${defender.firstName} moving well to avoid ${attacker.firstName}'s offense. Peppering jabs in response.`;
 
+    /***  Fight balance is close  ***/
 
     } else if (difference >=5 && difference <-2) { //Inside work for defender
       hit = attacker.hp -= 2;
@@ -277,14 +228,14 @@ const FightEngine = ({ user, enemy }) => {
     //   result.totalDmg = 2;
     //   result.text = `Strong corner bullying by ${attacker.firstName}`;
 
-
-
     } else if (difference > 2 && difference <= 5) { // Close in favor of Attacker
       normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
       hit = defender.hp -= normalOrPowerPunch;
       setObj(defender, "hp", hit)
       result.totalDmg = normalOrPowerPunch;
       result.text = `Solid work and steady shots by ${attacker.firstName}`;
+
+    /***  fight balance favors attacker  ***/
 
     } else if (difference > 5 && difference <= 15) {
       normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
@@ -312,25 +263,21 @@ const FightEngine = ({ user, enemy }) => {
 
 
   //Phase 3: tie everything together
-  const engagement = (user, opp) => {  //engagement determines who initiates the attack   
+  const engagement = (user, opp, timeout) => {  //engagement determines who initiates the attack   
     let userOffense = user.engage();
     let oppOffense = opp.engage();
     let resultDmg;
 
     if (userOffense > oppOffense) {
       let userDmg = exchange(user, opp);
-      // let defDmg = exchange(opp, user);
-      // let dmgDifferential = userDmg - defDmg
-      resultDmg = calcDamage(user, opp, userDmg); //determines resulting dmg after engage and exchange
-      determineKO(user, opp, userDmg);
+      resultDmg = calcDamage(user, opp, userDmg, timeout); //determines resulting dmg after engage and exchange
+      determineKO(user, opp, userDmg, timeout);
       setUserDmgScale(userDmg);
 
     } else if (oppOffense > userOffense) {
       let oppDmg = exchange(opp, user);
-      // let playerDmg = exchange(user, opp);
-      // let dmgDifference = oppDmg - playerDmg;
-      resultDmg = calcDamage(opp, user, oppDmg); //determines resulting dmg after engage and exchange
-      determineKO(opp, user, oppDmg);
+      resultDmg = calcDamage(opp, user, oppDmg, timeout); //determines resulting dmg after engage and exchange
+      determineKO(opp, user, oppDmg, timeout);
       setOppDmgScale(oppDmg);
 
     } else if (oppOffense === userOffense) {
@@ -340,65 +287,66 @@ const FightEngine = ({ user, enemy }) => {
   };
 
   const fight = (user, enemy) => {
-      roundUpdate();
+    roundUpdate();
 
-      for (let i = 0; i < rateOfExchange; i++){ //set i length to user+opp engage for volume of strikes
-        let k = i;
-        let newRnd = roundCount + 1;
-        setRoundCount(newRnd);
+    for (let i = 0; i < rateOfExchange; i++){ //set i length to user+opp engage for volume of strikes
+      let k = i; //copy of i, to attach to delay (timeout length)
+      let newRnd = roundCount + 1; //update rounds on start
+      setRoundCount(newRnd);
 
-        let fightAction = setTimeout(()=>{
-          let activity;
-          let over;
+      let fightAction = setTimeout(()=>{
+        let activity;
+        let over; //placeholder for various text
 
-          //*** WHAT TO DO WHEN A BOXER IS DOWN AND NEEDS TO GET UP ***/
-          if (user.hp <= 0) { //check for knockout
-            console.log("USE FIGHT ACTION KO SEQUENCE");
-            setKo(true);
-            over = `${user.firstName} hits the canvas!! This fight is over!`;
-            setPbp(prev => [...prev, {text: over, round: newRnd, attacker: enemy, defender: user} ] )
-            clearTimeout(fightAction);
-            return;
-          } else if (enemy.hp <= 0) {
-            setKo(true);
-            over = `${enemy.firstName} is down in round ${newRnd}!! This fight is over!`;
-            setPbp(prev => [...prev, {text: over, round: newRnd, attacker: user, defender: enemy} ] )
-            clearTimeout(fightAction);
-            return;
-          }
-          
-          /***  FIGHT WORKFLOW ***/
-          let fightUnderway = engagement(user, enemy);
-          setKo(false)
-          setExchangeCount(k);
-          activity = setObj(fightUnderway, "round", newRnd);
-          setPbp((prev) => [...prev, activity]);
-
-        }, delay*(k + 1),)
+        /*** Replace with determineKO later, when various commentary is added  ***/
         
-        let roundOverRegulator = setTimeout(() => { //sync disable counters with other setTimeouts
-          setRoundStart(false);
-          setRoundOver(true);
-          setDisable(false);
-        }, (delay*rateOfExchange)+1000)
+        if (user.hp <= 0) { //check for knockout
+          console.log("USE FIGHT ACTION KO SEQUENCE");
+          setKo(true);
+          over = `${user.firstName} hits the canvas!! This fight is over!`;
+          setPbp(prev => [...prev, {text: over, round: newRnd, attacker: enemy, defender: user} ] )
+          clearTimeout(fightAction);
+          return;
+        } else if (enemy.hp <= 0) {
+          setKo(true);
+          over = `${enemy.firstName} is down in round ${newRnd}!! This fight is over!`;
+          setPbp(prev => [...prev, {text: over, round: newRnd, attacker: user, defender: enemy} ] )
+          clearTimeout(fightAction);
+          return;
+        }
         
-      };
+        /***  FIGHT WORKFLOW ***/
+        let fightUnderway = engagement(user, enemy, fightAction); //takes fightAction and passes it in closure like props
+        setKo(false)
+        setExchangeCount(k);
+        activity = setObj(fightUnderway, "round", newRnd);
+        setPbp((prev) => [...prev, activity]);
+      }, delay*(k + 1),)
+      
+      setTimeout(() => { //sync disable counters with other setTimeouts
+        setRoundStart(false);
+        setRoundOver(true);
+        setDisable(false);
+      }, (delay*rateOfExchange)+1000)
+    };
  } 
 
  const roundUpdate = () => { //round text updates
     let update;
     if (roundCount === 0) {
       update = `This fight is officially underway!`;
-      setPbp((prev) => [ ...prev, {text: update},]);
+      setPbp((prev) => [ ...prev, {
+        text: update
+      },]);
     } else if (roundStart && roundCount > 0) {
       setRoundStart(true);
       update = `The bell sounds for round ${roundCount}!`;
-      setPbp((prev) => [{text: update}, ...prev]);
+      setPbp((prev) => [
+        {text: update},
+        ...prev]);
     } 
     return update;
  }
-
-  // const handSpeed = 12;
 
   const fightBtn = //The main button
     <button className="fight-button" disabled={disable}
@@ -412,6 +360,7 @@ const FightEngine = ({ user, enemy }) => {
         enemy.roundRecovery();
     }}><h4>Fight</h4></button>
 
+  /***  rafce return jsx  ***/
 
   return (
     <div className="fight-engine-wrap">

@@ -25,7 +25,7 @@ class Boxer {
     this.maxCon = ((this.sta*0.8)+(this.heart*0.2))/100
     this.con = this.maxCon
 
-    this.maxHp = ((this.sta + this.chin + this.heart)*12)*this.con;
+    this.maxHp = (this.sta + this.chin + this.heart + this.maxCon + this.str)*2;
     this.hp = this.maxHp*this.con;
 
     this.win = 0;
@@ -96,7 +96,7 @@ class Boxer {
 
   ko = (defender) => { //if ko > defender.chin
     let lowKO = this.pow*(defender.chin/100);
-    let randKO = randomizer(lowKO, this.pow);
+    let randKO = randomizer(lowKO, defender.hp*this.con+defender.chin);
     this.energyLoss();
     return randKO;
   }
