@@ -14,7 +14,7 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundC
   
   useEffect(() => { if(roundStart)setHideModal('hide') }, [roundStart])
 
-  useEffect(() => fightStart ? setHideRules(`hide`) : setHideRules(`show`),[fightStart]);
+  useEffect(() => fightStart ? setHideRules(`hide`) : setHideRules(`show`), [fightStart]);
   
   useEffect(() => {
     if (!roundOver && !hideModal) {
@@ -104,22 +104,23 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundC
               <h2>The bell sounds for round {roundCount}.</h2>
               <h4>At your corner, Coach looks you in the eyes with stern advice:</h4>
                 <div className={`select-menu`}>
-                    {pepTalkEntries.map((entry, i)  => {
-                      const pepTalkLabel = entry[1][1];
-                      const pepTalkMethod = entry[1][2];
-                      return(
-                        <>
-                          <button key={pepTalkLabel} className={`pep-talk-buttons`} disabled={disableBtns}
-                            onClick={ e => {
-                              e.preventDefault();
-                              pepTalkMethod();
-                              setHideModal(`hide`);
-                            }}>
-                              <h4>{pepTalkLabel}</h4>                             
-                            </button>
-                        </>   
-                      )
-                    })}
+                    {
+                      pepTalkEntries.map((entry, i)  => {
+                        const pepTalkLabel = entry[1][1];
+                        const pepTalkMethod = entry[1][2];
+                        return(
+                          <>
+                            <button key={pepTalkLabel} className={`pep-talk-buttons`} disabled={disableBtns}
+                              onClick={ e => {
+                                e.preventDefault();
+                                pepTalkMethod();
+                                setHideModal(`hide`);
+                              }}>
+                                <h4>{pepTalkLabel}</h4>                             
+                              </button>
+                          </>   
+                      )})
+                    }
                 </div>
             </div>
           </div>

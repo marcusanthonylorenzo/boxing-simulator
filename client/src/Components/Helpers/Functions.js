@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Functions = () => {
   return {
     setObj: (resultObj, key, value) => { //Composition create key
@@ -20,7 +18,7 @@ const Functions = () => {
       }
     }
 
-    }
   }
+}
 
 export default Functions

@@ -4,7 +4,10 @@ import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
 
-const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchCount }) => {
+const BoxerCard = ({
+  boxer, path, corner, fightOver, roundOver, roundCount, setFinalTotals,
+  exchangeCount, punchCount, setTotalRingControl, setTotalAccuracy
+  }) => {
 
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
@@ -20,13 +23,52 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
   const [dmgTracker, setDmgTracker] = useState([]); //tracks each punch for graphs
   const [engagementCount, setEngagementCount] = useState(0);
   const [boxerPunchData, setBoxerPunchData] = useState([]);
+  const [roundByRoundData, setRoundByRoundData] = useState([]);
+
+  const filterPunchData = boxerPunchData.filter(data => {
+    if (roundCount === data.round) {
+      return data;
+    }
+  });
+
+  const showHide = (show, set) => {
+    if (show) {
+      set(`hide`);
+    } else if (!show) {
+      set(`show`);
+    }
+  }
+
+  //filter fight data by round
+  const totalPunchesLanded = filterPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
+  const totalPunchesThrown = filterPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
+  const engagementRate = filterPunchData.reduce((acc, cur) => acc = cur.engagementRate, 0);
+  const ringControl = filterPunchData.reduce((acc, cur) => acc = cur.ringControl, 0);
+  
+  //get total fight data, all rounds, especially for judges
+  const getTotalPunchesLanded = boxerPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
+  const getTotalPunchesThrown = boxerPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
+  const totalAccuracy = getTotalPunchesLanded / getTotalPunchesThrown;
+  const getTotalRingControl= boxerPunchData.reduce((acc, cur) => acc += cur.ringControl, 0);
+
+  
+  useEffect(() => { //set new Obj for local round by round data, then pass to parent state
+    const newRoundData = () => {
+      return {
+        [`round`]: roundCount,
+          [boxer.firstName]: {
+            [`accuracy`]: totalAccuracy,
+            [`control`]: getTotalRingControl
+          }
+      }
+    }
+    if (roundOver) {  //set fight data to parent state ONLY once per round, if round is 1-12
+      const preserveRoundByRoundData = newRoundData()
+      setFinalTotals(prev => [...prev, preserveRoundByRoundData])
+    }
+  }, [roundOver]);
 
 
-  /*** .dmgScale is the output of damage, can use with agi to calc punch output and plot to graph */
-  let dmgStats = dmgTracker.reduce((totalDmg, each) =>
-    each.dmgScale && each.roundCount === roundCount ?
-      totalDmg += each.dmgScale :
-        null, 0);
   const koColor = (energy) => boxer.hp <= 0 ? `50%` : `${energy}%`
   const flip = () => cornerColor.side !== 'left' ? '' : ''
 
@@ -38,14 +80,6 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
   //   config: { mass: 1, tension: 150, friction: 10 }
   // });
 
-  const showHide = (show, set) => {
-    if (show) {
-      set(`hide`);
-    } else if (!show) {
-      set(`show`);
-    }
-  }
-
   useEffect(() =>{
     setEngagementCount(engagementCount + 1)
     let exc = { boxerName, roundCount, engagementCount, exchangeCount, dmgScale }
@@ -55,9 +89,13 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
   const searchPunches = () => { //use Reduce method to package data from punchCount into individual boxer data
     const splitPunchCountByBoxerName = punchCount.reduce((acc, curr) =>{
       if (curr.attacker.name === boxer.firstName) {
-        return [...acc, {...curr.attacker, round: curr.round}];
+        return [...acc, {
+          ...curr.attacker,
+          round: curr.round}];
       } else if (curr.defender.name === boxer.firstName){
-        return [...acc, {...curr.defender, round: curr.round}];
+        return [...acc, {
+          ...curr.defender,
+          round: curr.round}];
       }
     }, []);
     return splitPunchCountByBoxerName;
@@ -113,11 +151,6 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
   }
 
   const mapPunchData = () => {
-    const filterPunchData = boxerPunchData.filter(data => {
-      if (roundCount === data.round) {
-        return data;
-      }
-    });
 
     const maxEngagementRate = () => {
       let rateOfEx = Math.floor(engagementRate*10);
@@ -128,17 +161,6 @@ const BoxerCard = ({ boxer, path, corner, pbp, roundCount, exchangeCount, punchC
       }
     }
 
-    //filter fight data by round
-    const totalPunchesLanded = filterPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
-    const totalPunchesThrown = filterPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
-    const engagementRate = filterPunchData.reduce((acc, cur) => acc = cur.engagementRate, 0);
-    const ringControl = filterPunchData.reduce((acc, cur) => acc = cur.ringControl, 0);
-    
-    //get total fight data, all rounds, especially for judges
-    const getTotalPunchesLanded = boxerPunchData.reduce((acc, cur) => acc += cur.punchesLanded, 0);
-    const getTotalPunchesThrown = boxerPunchData.reduce((acc, cur) => acc += cur.punchesThrown, 0);
-    console.log(getTotalPunchesLanded, getTotalPunchesThrown, `total shots landed`, Math.round((getTotalPunchesLanded/getTotalPunchesThrown)*100),`%`);
-    
     return (
       <>
         <div className="fight-stats-punches-data">

@@ -12,7 +12,7 @@ const FightEngine = ({ user, enemy }) => {
   
   const { setObj, setCorner } = Functions(); //unpack functions from Helpers/Functions
 
-  /*** counters ***/
+  /*** general state ***/
   const [userActive, setUserActive] = useState(user); //point to an updated state of user attributes
   const [oppActive, setOppActive] = useState(enemy);
   const [userDmgScale, setUserDmgScale] = useState(); //store values for each total damage output for data
@@ -22,33 +22,120 @@ const FightEngine = ({ user, enemy }) => {
   const [rateOfExchange, setRateOfExchange] = useState(10);  //toggle number of punches in one round based on boxer handSpeed
   const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
   const [delay, setDelay] = useState(1000);  //toggle rate of text ouput
+  const [totalRingControl, setTotalRingControl] = useState([]);
+  const [totalAccuracy, setTotalAccuracy] = useState([]);
+  const [finalTotals, setFinalTotals] = useState([]);
 
-
-  /***  booleans ***/
+  /***  match specific state ***/
   const [ko, setKo] = useState(false);
-  const [disable, setDisable] = useState(false)
+  const [disable, setDisable] = useState(false);
   const [roundCount, setRoundCount] = useState(0);
   const [roundStart, setRoundStart] = useState(false);
   const [roundOver, setRoundOver] = useState(false);
   const [fightStart, setFightStart] = useState(false);
+  const [fightOver, setFightOver] = useState(false);
+  const [judgeOne, setJudgeOne] = useState([]);
 
+  let totalUserKnockdowns = 0;
+  let totalOppKnockdowns = 0;
 
   useEffect(() => { //shallow copy of user/enemy for manipulation
     setUserActive(userReady);
     setOppActive(oppReady);
-    if (roundStart) setDisable(true);
   },[])
+
+  useEffect(() => { //shallow copy of user/enemy for manipulation 
+    if (roundStart || ko || fightOver ) setDisable(true);
+    if (ko) {
+      setFightOver(true);
+    }
+    if (roundCount === 5 && roundOver) {
+      setDisable(true);
+      setFightOver(true);
+    }
+  },[roundStart, ko, fightOver, roundCount])
+
+  useEffect(() => { 
+    if (roundOver) {
+      judgeOneDecision('control');
+      user.knockdownCount = 0;
+      enemy.knockdownCount = 0;
+    }
+  }, [roundOver])
+
+  useEffect(() => { //shallow copy of user/enemy for manipulationif(fightOver) {
+    checkWinnerAndLoser(user, enemy);
+    // judgeOneDecision('control')
+  },[fightOver])
+
+  console.log(`total data`, finalTotals)
+  console.log(`user record`, user.win, user.loss);
+  console.log(`opp record`, enemy.win, enemy.loss);
 
   //HERE is where you set the fighters extra stats, randomize cornerColors in future, change before each new fight!
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
   const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", true, oppDmgScale)
 
+
+  const filterStats = (person, whatToFilter) => {
+    for (let i = 0; i < finalTotals.length; i++){
+      if(finalTotals[i].hasOwnProperty(person.firstName)){
+        return finalTotals[i][person.firstName][whatToFilter]
+      }
+    }
+  }; //good
+
+  const judgeOneDecision = (whatToJudge) => {
+    const judgeUser = filterStats(user, whatToJudge);
+    const judgeOpp = filterStats(enemy, whatToJudge);
+    let userScore = 10;
+    let oppScore = 10;
+
+    if (user.knockdownCount > 0) {
+      userScore -= user.knockdownCount+1;
+      setJudgeOne(prev => [...prev, [userScore, oppScore]]);
+    } else if (enemy.knockdownCount > 0){
+      oppScore -= enemy.knockdownCount+1;
+      setJudgeOne(prev => [...prev, [userScore, oppScore]]);
+    } 
+    
+    if (user.knockdownCount === 0 && enemy.knockdownCount === 0) {
+      if (judgeUser > judgeOpp){
+        oppScore -= 1;
+        setJudgeOne(prev => [...prev, [userScore, oppScore]]);
+      } else if (judgeOpp > judgeUser) {
+        userScore -= 1;
+        setJudgeOne(prev => [...prev, [userScore, oppScore]]);
+      }
+    }
+  }
+
+  console.log(user.knockdownCount, enemy.knockdownCount, totalUserKnockdowns, totalOppKnockdowns, judgeOne);
+
+  const checkWinnerAndLoser = (user, opp) => {
+    // work here: FILTER by name and reduce accuracy stat, ring control stat
+    if (fightOver) {
+      if (user.hp <= 0) {
+        user.loss++;
+        opp.win++;
+      } else if (opp.hp <= 0) {
+        opp.win++;
+        user.win++;
+      } else {
+        const judgeOppByControl = filterStats(opp.firstName,`control`);
+        console.log(judgeOppByControl)
+      }
+      console.log(`FIGHT OVER`);
+    }
+  }
+
+
+
   const determineKO = (offense, defense, hit, timeout ) => {
 
     if (defense.hp <= 0) {
       console.log("DETERMINING KO")
-
       const getUpTimer = setTimeout(() => { //slow down getUp post knock out text boxes.
         const takesShot = defense.getUp();
         const getUp = defense.getUp();
@@ -58,6 +145,7 @@ const FightEngine = ({ user, enemy }) => {
           hit: hit,
           text: `${defense.firstName} down with the count!`}
         ])
+        defense.knockdownCount++;
 
         if (getUp > takesShot) { //if second will to "get up" is stronger than previous will to get up.
           setKo(false)          
@@ -71,6 +159,7 @@ const FightEngine = ({ user, enemy }) => {
           return determineKO;
           
         } else {
+          setFightOver(true);
           clearTimeout(timeout)
           setPbp(prev => [prev, {
             attacker: offense,
@@ -88,7 +177,6 @@ const FightEngine = ({ user, enemy }) => {
 
   const determinePowerShot = (off, def, diff) => {
     let powerShot = off.ko(def); //determine powershot, then if KO
-
     if (powerShot > def.chin){  //check if powershot is stronger than chin
       setPbp(prev => [...prev, {
         attacker: off,
@@ -98,8 +186,9 @@ const FightEngine = ({ user, enemy }) => {
       }])
 
     const consciousness = def.getUp();
-    if (consciousness > powerShot){  //check if powershot is stronger than def ability to getUp (take a shot)
+    if (consciousness < powerShot){  //check if powershot is stronger than def ability to getUp (take a shot)
       setKo(true);
+      def.knockdownCount++;
       setPbp(prev => [...prev, {
         attacker: off,
         defender: def,
@@ -286,6 +375,7 @@ const FightEngine = ({ user, enemy }) => {
     return resultDmg;
   };
 
+
   const fight = (user, enemy) => {
     roundUpdate();
 
@@ -303,12 +393,16 @@ const FightEngine = ({ user, enemy }) => {
         if (user.hp <= 0) { //check for knockout
           console.log("USE FIGHT ACTION KO SEQUENCE");
           setKo(true);
+          user.knockdownCount++;
+          setFightOver(true);
           over = `${user.firstName} hits the canvas!! This fight is over!`;
           setPbp(prev => [...prev, {text: over, round: newRnd, attacker: enemy, defender: user} ] )
           clearTimeout(fightAction);
           return;
         } else if (enemy.hp <= 0) {
           setKo(true);
+          enemy.knockdownCount++;
+          setFightOver(true);
           over = `${enemy.firstName} is down in round ${newRnd}!! This fight is over!`;
           setPbp(prev => [...prev, {text: over, round: newRnd, attacker: user, defender: enemy} ] )
           clearTimeout(fightAction);
@@ -326,8 +420,8 @@ const FightEngine = ({ user, enemy }) => {
       setTimeout(() => { //sync disable counters with other setTimeouts
         setRoundStart(false);
         setRoundOver(true);
-        setDisable(false);
-      }, (delay*rateOfExchange)+1000)
+        if (!fightOver) setDisable(false);
+      }, (delay*rateOfExchange)+500)
     };
  } 
 
@@ -361,7 +455,6 @@ const FightEngine = ({ user, enemy }) => {
     }}><h4>Fight</h4></button>
 
   /***  rafce return jsx  ***/
-
   return (
     <div className="fight-engine-wrap">
 
@@ -373,8 +466,14 @@ const FightEngine = ({ user, enemy }) => {
             pbp={pbp}
             roundStart={roundStart}
             roundCount={roundCount}
+            roundOver={roundOver}
+            fightOver={fightOver}
             exchangeCount={exchangeCount}
             punchCount={punchCount}
+            setTotalRingControl={setTotalRingControl}
+            setTotalAccuracy={setTotalAccuracy}
+            finalTotals={finalTotals}
+            setFinalTotals={setFinalTotals}
             corner={() => userReady}/>
 
           <div className="inner-container">
@@ -383,6 +482,7 @@ const FightEngine = ({ user, enemy }) => {
               roundStart={roundStart}
               roundOver={roundOver}
               roundCount={roundCount}
+              fightOver={fightOver}
               ko={ko}
               buttons={fightBtn}/>
             
@@ -398,8 +498,14 @@ const FightEngine = ({ user, enemy }) => {
             pbp={pbp}
             roundStart={roundStart}
             roundCount={roundCount}
+            roundOver={roundOver}
+            fightOver={fightOver}
             exchangeCount={exchangeCount}
             punchCount={punchCount}
+            setTotalRingControl={setTotalRingControl}
+            setTotalAccuracy={setTotalAccuracy}
+            finalTotals={finalTotals}
+            setFinalTotals={setFinalTotals}
             corner={() => oppReady}/>
         </div>
       </div>

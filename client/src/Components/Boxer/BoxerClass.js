@@ -25,7 +25,7 @@ class Boxer {
     this.maxCon = ((this.sta*0.8)+(this.heart*0.2))/100
     this.con = this.maxCon
 
-    this.maxHp = (this.sta + this.chin + this.heart + this.maxCon + this.str)*2;
+    this.maxHp = (this.sta + this.chin + this.heart + this.maxCon + this.str)*12;
     this.hp = this.maxHp*this.con;
 
     this.win = 0;
@@ -33,6 +33,7 @@ class Boxer {
     this.rank = 31;
     this.champion = false;
     this.id = uuidv4();
+    this.knockdownCount = 0;
 
   }
 
