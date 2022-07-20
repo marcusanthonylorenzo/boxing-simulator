@@ -54,7 +54,7 @@ const FightEngine = ({ user, enemy }) => {
   },[roundStart, ko, fightOver, user.knockdownCount, enemy.knockdownCount])
 
   useEffect(() => {
-    if (roundCount === 2 && roundOver) {
+    if (roundCount === 3 && roundOver) {
       setDisable(true);
       setFightOver(true);
     }
@@ -62,20 +62,14 @@ const FightEngine = ({ user, enemy }) => {
 
   useEffect(() => { //toggle specific end-of-round (roundOver) and round start attributes
     if (roundStart || fightOver) {
+      judgeOneDecision(user, enemy, 'control');
       user.knockdownCount = 0;
       enemy.knockdownCount = 0;
     }
-  }, [roundStart])
-
-  useEffect(() => {
-    if (roundCount > 0 && roundOver) {
-      console.log("judging")
-      judgeOneDecision(user, enemy, 'control');
-    } 
-  }, [roundOver, roundCount])
+  }, [roundStart, fightOver])
 
   useEffect(() => { 
-    if(fightOver) checkWinnerAndLoser(user, enemy);
+    if (fightOver) checkWinnerAndLoser(user, enemy);
   },[fightOver])
 
 
@@ -97,6 +91,7 @@ const FightEngine = ({ user, enemy }) => {
   console.log(`opp record`, enemy.win, enemy.loss);
 
   /*** Build logic for Judge criteria ***/ //REFACTOR
+
   const judgeOneDecision = (user, enemy, whatToJudge) => {
     const judgeUser = filterStats(user, whatToJudge);
     const judgeOpp = filterStats(enemy, whatToJudge);
@@ -104,7 +99,6 @@ const FightEngine = ({ user, enemy }) => {
     let oppScore = 9;
 
     if (enemy.knockdownCount === user.knockdownCount) {
-
       if (judgeUser > judgeOpp){
         userScore = 9;
         oppScore = 10;
@@ -116,18 +110,18 @@ const FightEngine = ({ user, enemy }) => {
       }
     } else {
 
-    if (user.knockdownCount > 0) {
-      userScore -= user.knockdownCount;
-      oppScore++;
-      setJudgeOne(prev => [...prev, [userScore, oppScore]]);
-    }
-    if (enemy.knockdownCount > 0) {
-      oppScore -= enemy.knockdownCount;
-      userScore++;
-      setJudgeOne(prev => [...prev, [userScore, oppScore]]);
-    }
-    
-    if (user.knockdownCount > 0 && enemy.knockdownCount > 0) {
+      if (user.knockdownCount > 0) {
+        userScore -= user.knockdownCount;
+        oppScore++;
+        setJudgeOne(prev => [...prev, [userScore, oppScore]]);
+      }
+      if (enemy.knockdownCount > 0) {
+        oppScore -= enemy.knockdownCount;
+        userScore++;
+        setJudgeOne(prev => [...prev, [userScore, oppScore]]);
+      }
+      
+      if (user.knockdownCount > 0 && enemy.knockdownCount > 0) {
         if (user.knockdownCount > enemy.knockdownCount) {
           userScore = 9;
           oppScore = 10;
@@ -151,15 +145,16 @@ const FightEngine = ({ user, enemy }) => {
       } else if (opp.hp <= 0) {
         opp.win++;
         user.win++;
-      } else {
+      } 
 
         //improve judging logic! ****
-        const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0]);
-        console.log(judgeOneUserScore)
-      }
+      const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
+      const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
+      console.log(judgeOneUserScore, judgeOneOppScore)
       console.log(`FIGHT OVER`);
     }
   }
+
 
   const determineKO = (offense, defense, hit, timeout ) => {
 
@@ -169,6 +164,7 @@ const FightEngine = ({ user, enemy }) => {
       const getUpTimer = setTimeout(() => { //slow down getUp post knock out text boxes.
         const takesShot = defense.getUp();
         const getUp = defense.getUp();
+        
         setPbp(prev => [...prev, {  //push to play-by-play array with new object.
           attacker: offense,
           defender: defense,
