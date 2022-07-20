@@ -177,18 +177,34 @@
 .scorecard {
   display: flex;
   background-color: white;
+  justify-content: center;
+  align-items: center;
   margin: 2% auto;
-  width: 15vw;
+  width: 17vw;
   height: 22%;
   border-radius: 2px;
   box-shadow: 2px 1px 6px 0px rgba(72, 72, 69, 0.8);
 }
 
 .scorecard h4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 1% auto;
-  padding: 2%;
-  width: 90%;
-  font-size: 0.96rem;
+  height: 4vh;
+  font-size: 0.97rem;
+}
+
+.judge-label {
+  display: flex;
+  justify-content: left;
+  width: 60%;
+}
+
+.scores {
+  margin: 0;
+  width: 30%;
+  text-align: left;
 }
 
 #winner {
@@ -201,5 +217,5 @@
 }
 
 #winner h3 {
-  margin: 2% auto;
+  margin: 3% auto;
 }

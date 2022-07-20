@@ -145,20 +145,20 @@ const Display = ({
         <>
           <div className="scorecards">
             <div className="scorecard" id="judge-one">
-              <h4>Judge One scores it:</h4>
-              <h4>{judgeOneOfficialScorecard.user} - {judgeOneOfficialScorecard.opp}</h4>
+              <h4 className="judge-label">Judge One scores it:</h4>
+              <h4 className="scores">{judgeOneOfficialScorecard.user} - {judgeOneOfficialScorecard.opp}</h4>
             </div>
             <div className="scorecard" id="judge-two">
-              <h4>Judge Two scores it:</h4>
-              <h4>{judgeTwoOfficialScorecard.opp} - {judgeTwoOfficialScorecard.user}</h4>
+              <h4 className="judge-label">Judge Two scores it:</h4>
+              <h4 className="scores">{judgeTwoOfficialScorecard.opp} - {judgeTwoOfficialScorecard.user}</h4>
             </div>
             <div className="scorecard" id="judge-three">
-              <h4>Judge Three scores it:</h4>
-              <h4>{judgeOneOfficialScorecard.user} - {judgeOneOfficialScorecard.opp}</h4>
+              <h4 className="judge-label">Judge Three scores it:</h4>
+              <h4 className="scores">{judgeOneOfficialScorecard.user} - {judgeOneOfficialScorecard.opp}</h4>
             </div>
             <div className="scorecard" id="winner">
               <h4>For the winner, by decision...</h4>
-              <strong><h3>{winner.firstName} {winner.lastName}</h3></strong>
+              <strong><h3 style={{ color: winner.favoriteColor }}>{winner.firstName} {winner.lastName}</h3></strong>
             </div>
           </div>
         </>

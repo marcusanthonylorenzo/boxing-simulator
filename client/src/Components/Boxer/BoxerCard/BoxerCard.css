@@ -47,13 +47,13 @@
 }
 
 .BoxerCard > div {
-  /* border-radius: 5px; */
+  border-radius: 5px;
   border: none;
   box-shadow: 1px 1px 3px 1px rgba(73, 71, 71, 0.1);
 }
 
 .BoxerCard > div:hover {
-  background-color: rgb(27, 13, 13);
+  /* background-color: rgb(255, 246, 246); */
   /* color: rgb(253, 239, 135); */
   cursor: default;
 }
@@ -118,7 +118,7 @@
   display: flex;
   position: relative;
   align-items: left;
-  left: 5%;
+  left: 12%;
 }
 
 .boxer-pic {
@@ -150,31 +150,39 @@
   margin: 5% auto;
 }
 
-.fight-stats-punches-data h5{
-  margin: 0 auto;
+.fight-stats-punches-data h5 {
+  margin: 0;
   padding: 0;
   text-align: left;
+  justify-content: center;
 }
 
 .punches-landed-data{
   display: grid;
-  margin: 0;
+  background-color: rgb(19, 16, 16);
+  color: rgb(247, 247, 247);
+  grid-template-columns: repeat(2 1fr);
   justify-content: center;
   width: 100%;
+  border-radius: 2px;
+}
+
+.punches-landed-accuracy-round, .punches-landed-accuracy-total {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .graphs {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto;
+  /* margin: 0 auto; */
   height: 30%;
-  width: 100%;
-  /* background-color: white; */
 }
 
 .graphs h4 {
-  color: white;
+  color: black;
 }
 
 

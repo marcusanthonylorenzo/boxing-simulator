@@ -168,13 +168,17 @@ const BoxerCard = ({
             <h5>{boxer.knockdownCount}</h5>
           </div>
           <div className="punches-landed-label">
-            <h5>Accuracy</h5>
+            <h5>Accuracy: </h5>
           </div>
           <div className="punches-landed-data">
-            <h5>{totalPunchesLanded} / {totalPunchesThrown} </h5>
-            <h5>( { Math.ceil((totalPunchesLanded / totalPunchesThrown)*100)}% )</h5>
-            <h5>{getTotalPunchesLanded} / {getTotalPunchesThrown} </h5>
-            <h5>( {Math.ceil((getTotalPunchesLanded/getTotalPunchesThrown)*100)}% )</h5>
+            <div className="punches-landed-accuracy-round">
+              <h5 className="landed-thrown">{totalPunchesLanded} / {totalPunchesThrown} </h5>
+              <h5>( { Math.ceil((totalPunchesLanded / totalPunchesThrown)*100)}% )</h5>
+            </div>
+            <div className="punches-landed-accuracy-total">
+              <h5 className="landed-thrown">{getTotalPunchesLanded} / {getTotalPunchesThrown} </h5>
+              <h5>( {Math.ceil((getTotalPunchesLanded/getTotalPunchesThrown)*100)}% )</h5>
+            </div>
           </div>
           <div className="punches-landed-label">
             <h5>Engagement Rate:</h5>
