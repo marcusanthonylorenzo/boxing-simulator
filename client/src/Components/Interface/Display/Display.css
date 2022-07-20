@@ -171,3 +171,35 @@
 .pep-talk-buttons:not(:hover) {
   background-color: rgb(240, 234, 244);
 }
+
+
+/***  Scorecard Styling  ***/
+.scorecard {
+  display: flex;
+  background-color: white;
+  margin: 2% auto;
+  width: 15vw;
+  height: 22%;
+  border-radius: 2px;
+  box-shadow: 2px 1px 6px 0px rgba(72, 72, 69, 0.8);
+}
+
+.scorecard h4 {
+  margin: 1% auto;
+  padding: 2%;
+  width: 90%;
+  font-size: 0.96rem;
+}
+
+#winner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 30%;
+  padding-top: 1%;
+}
+
+#winner h3 {
+  margin: 2% auto;
+}

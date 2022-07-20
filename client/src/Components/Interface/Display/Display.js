@@ -5,7 +5,8 @@ import SelectMenu from '../SelectMenu/SelectMenu'
 const Display = ({
   ko, pbp, user, opp,
   fightStart, fightOver, roundStart, roundOver, roundCount,
-  judgeOne, judgeOneOfficialScorecard
+  judgeOneOfficialScorecard, judgeTwoOfficialScorecard,
+  winner
 }) => {
 
   const [fade, setFade] = useState({backgroundColor:`gray`});
@@ -37,7 +38,7 @@ const Display = ({
   useEffect(() => {
     setTimeout(() => {
       displayDiv.current.scrollTop = displayDiv.current.scrollHeight;
-    }, 1200);
+    }, 1500);
   });
 
   const fightIntroText = () => {
@@ -133,14 +134,33 @@ const Display = ({
     })
   };
 
-  const postFightModal = () => {
+  /*** Display scorecards, update win/loss, route to home page button. ***/
+  const postFightModal = () => { 
 
     const postFightText = () => <h4>A great fight!</h4>
-    const judgeOneDecision = () => {
+    const judgesDecision = () => {
+
+      // console.log(judgeOneOfficialScorecard, judgeTwoOfficialScorecard)
       return (
         <>
-          <h4>Judge One scores it:</h4>
-          <h4>{judgeOneOfficialScorecard.user} for {user.firstName} and {judgeOneOfficialScorecard.opp} for {opp.firstName}</h4>
+          <div className="scorecards">
+            <div className="scorecard" id="judge-one">
+              <h4>Judge One scores it:</h4>
+              <h4>{judgeOneOfficialScorecard.user} - {judgeOneOfficialScorecard.opp}</h4>
+            </div>
+            <div className="scorecard" id="judge-two">
+              <h4>Judge Two scores it:</h4>
+              <h4>{judgeTwoOfficialScorecard.opp} - {judgeTwoOfficialScorecard.user}</h4>
+            </div>
+            <div className="scorecard" id="judge-three">
+              <h4>Judge Three scores it:</h4>
+              <h4>{judgeOneOfficialScorecard.user} - {judgeOneOfficialScorecard.opp}</h4>
+            </div>
+            <div className="scorecard" id="winner">
+              <h4>For the winner, by decision...</h4>
+              <strong><h3>{winner.firstName} {winner.lastName}</h3></strong>
+            </div>
+          </div>
         </>
         )
     }
@@ -149,7 +169,7 @@ const Display = ({
       <>
         <div className="options">
           {postFightText()}
-          {judgeOneDecision()}
+          {judgesDecision()}
         </div>
       </>
     )
