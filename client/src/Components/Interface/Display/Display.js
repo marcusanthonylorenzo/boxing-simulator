@@ -2,7 +2,11 @@ import React, { useState, useRef, useEffect } from 'react'
 import './Display.css'
 import SelectMenu from '../SelectMenu/SelectMenu'
 
-const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundCount }) => {
+const Display = ({
+  ko, pbp, user, opp,
+  fightStart, fightOver, roundStart, roundOver, roundCount,
+  judgeOne, judgeOneOfficialScorecard
+}) => {
 
   const [fade, setFade] = useState({backgroundColor:`gray`});
   const [hide, setHide] = useState(`show`);
@@ -73,6 +77,40 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundC
     )
   }
 
+  
+  const modal = () => { //popup between rounds
+    const pepTalkEntries = Object.entries(user[`pepTalk`])      
+    return (
+      <>
+        <div className={`options ${hideModal}`}>
+          <div className={`options-select`}  style={{backgroundColor: user.cornerColor}}>
+            <h2>The bell sounds for round {roundCount}.</h2>
+            <h4>At your corner, Coach looks you in the eyes with stern advice:</h4>
+              <div className={`select-menu`}>
+                  {
+                    pepTalkEntries.map((entry, i)  => {
+                      const pepTalkLabel = entry[1][1];
+                      const pepTalkMethod = entry[1][2];
+                      return(
+                        <>
+                          <button key={pepTalkLabel} className={`pep-talk-buttons`} disabled={disableBtns}
+                            onClick={ e => {
+                              e.preventDefault();
+                              pepTalkMethod();
+                              setHideModal(`hide`);
+                            }}>
+                              <h4>{pepTalkLabel}</h4>                             
+                            </button>
+                        </>   
+                    )})
+                  }
+              </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   const mapPbp = () => {  //map Play By Play
     return pbp.map((scrap, i) => {
       let getAttacker = {
@@ -95,44 +133,34 @@ const Display = ({ ko, pbp, user, opp, fightStart, roundStart, roundOver, roundC
     })
   };
 
-    const modal = () => { //popup between rounds
-      const pepTalkEntries = Object.entries(user[`pepTalk`])      
+  const postFightModal = () => {
+
+    const postFightText = () => <h4>A great fight!</h4>
+    const judgeOneDecision = () => {
       return (
         <>
-          <div className={`options ${hideModal}`}>
-            <div className={`options-select`}  style={{backgroundColor: user.cornerColor}}>
-              <h2>The bell sounds for round {roundCount}.</h2>
-              <h4>At your corner, Coach looks you in the eyes with stern advice:</h4>
-                <div className={`select-menu`}>
-                    {
-                      pepTalkEntries.map((entry, i)  => {
-                        const pepTalkLabel = entry[1][1];
-                        const pepTalkMethod = entry[1][2];
-                        return(
-                          <>
-                            <button key={pepTalkLabel} className={`pep-talk-buttons`} disabled={disableBtns}
-                              onClick={ e => {
-                                e.preventDefault();
-                                pepTalkMethod();
-                                setHideModal(`hide`);
-                              }}>
-                                <h4>{pepTalkLabel}</h4>                             
-                              </button>
-                          </>   
-                      )})
-                    }
-                </div>
-            </div>
-          </div>
+          <h4>Judge One scores it:</h4>
+          {/* <h4>{judgeOneOfficialScorecard.user} for {user.firstName} and {judgeOneOfficialScorecard.opp} for {opp.firstName}</h4> */}
         </>
-      )
+        )
     }
+
+    return (
+      <>
+        <div className="options">
+          {postFightText()}
+          {judgeOneDecision()}
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
     <div ref={displayDiv} className={"Display"}>
       <div className="display-container">
           { roundCount === 0 ? fightIntroText() : null} {/* show ref intro pre-round 1 */}
-          {mapPbp()}         
+          { !fightOver ? mapPbp() : postFightModal()}         
       </div>
     </div> 
   </> 

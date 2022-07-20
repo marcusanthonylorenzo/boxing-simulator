@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './Navbar.css'
 // import Ticker from 'react-ticker'
 import oppBody from '../../../assets/images/oppBody.png'
 
-const Navbar = ({roundCount, judgeOne }) => {
+const Navbar = ({roundCount, roundOver, judgeOne }) => {
+
+  const [roundToIndexInit, setRoundToIndexInit] = useState(roundCount)
+  useEffect(() => { if (roundOver) setRoundToIndexInit(roundCount-1)}, [roundCount])
 
   // const navTickerInfo = () => {
   //   if (roundCount === 0) {
@@ -14,13 +17,7 @@ const Navbar = ({roundCount, judgeOne }) => {
   //     }
   //   }
   // }
-  const roundCountToIndex = roundCount - 1;
-  const mapScore = () => {
-    return (
-      judgeOne.length >= 1 ? <h3>Judge One: {judgeOne[roundCountToIndex][0]} x {judgeOne[roundCountToIndex][1]}</h3>
-      : <h3>Awaiting judges scorecard</h3>
-    )
-  }
+
 
   return (
     <div className="Navbar">
@@ -38,7 +35,6 @@ const Navbar = ({roundCount, judgeOne }) => {
       <div className="navbar-ticker">
         <div className="navbar-round-count">
           <h3 id="round-count">{roundCount === 0 ? "Fighter Introductions" : `Round: ${roundCount}`}</h3>
-          {/* { mapScore() } */}
 
         </div>
       </div>

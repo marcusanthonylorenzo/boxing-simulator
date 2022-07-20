@@ -12,7 +12,7 @@ const FightEngine = ({ user, enemy }) => {
   
   const { setObj, setCorner } = Functions(); //unpack functions from Helpers/Functions
 
-  /*** general state ***/
+  /*** General state ***/
   const [userActive, setUserActive] = useState(user); //point to an updated state of user attributes
   const [oppActive, setOppActive] = useState(enemy);
   const [userDmgScale, setUserDmgScale] = useState(); //store values for each total damage output for data
@@ -23,7 +23,7 @@ const FightEngine = ({ user, enemy }) => {
   const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
   const [delay] = useState(1000);  //toggle rate of text ouput
 
-  /***  match specific state ***/
+  /***  Match specific state ***/
   const [ko, setKo] = useState(false);
   const [disable, setDisable] = useState(false);
   const [roundCount, setRoundCount] = useState(0);
@@ -34,7 +34,10 @@ const FightEngine = ({ user, enemy }) => {
   const [totalRingControl, setTotalRingControl] = useState([]);
   const [totalAccuracy, setTotalAccuracy] = useState([]);
   const [finalTotals, setFinalTotals] = useState([]); //data for UI stat output
+
+  /*** Judges Decision state ***/
   const [judgeOne, setJudgeOne] = useState([]);
+  const [judgeOneOfficialScorecard, setJudgeOneOfficialScorecard] = useState();
 
 
   useEffect(() => { //shallow copy of user/enemy for manipulation
@@ -53,8 +56,8 @@ const FightEngine = ({ user, enemy }) => {
     }
   },[roundStart, ko, fightOver, user.knockdownCount, enemy.knockdownCount])
 
-  useEffect(() => {
-    if (roundCount === 3 && roundOver) {
+  useEffect(() => { //Set button toggle
+    if (roundCount === 1 && roundOver) {
       setDisable(true);
       setFightOver(true);
     }
@@ -68,9 +71,17 @@ const FightEngine = ({ user, enemy }) => {
     }
   }, [roundStart, fightOver])
 
-  useEffect(() => { 
-    if (fightOver) checkWinnerAndLoser(user, enemy);
-  },[fightOver])
+  useEffect(() => {  //End of fight processes
+    if (fightOver && roundOver) {
+      checkWinnerAndLoser(user, enemy);
+      /*** improve judging logic! ****/
+      const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
+      const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
+      console.log(judgeOneUserScore, judgeOneOppScore)
+      setJudgeOneOfficialScorecard({ user: judgeOneUserScore, opp: judgeOneOppScore })
+      console.log(`FIGHT OVER`);
+    }
+  },[])
 
 
   //HERE is where you set the fighters extra stats, randomize cornerColors in future, change before each new fight!
@@ -86,7 +97,7 @@ const FightEngine = ({ user, enemy }) => {
     }
   };
 
-  console.log(roundStart, roundOver, judgeOne)
+  console.log(roundStart, roundOver, fightOver, judgeOne)
   console.log(`user record`, user.win, user.loss);
   console.log(`opp record`, enemy.win, enemy.loss);
 
@@ -103,6 +114,7 @@ const FightEngine = ({ user, enemy }) => {
         userScore = 9;
         oppScore = 10;
         setJudgeOne(prev => [...prev, [userScore, oppScore]]);
+
       } else if (judgeOpp > judgeUser) {
         oppScore = 9;
         userScore = 10;
@@ -115,6 +127,7 @@ const FightEngine = ({ user, enemy }) => {
         oppScore++;
         setJudgeOne(prev => [...prev, [userScore, oppScore]]);
       }
+
       if (enemy.knockdownCount > 0) {
         oppScore -= enemy.knockdownCount;
         userScore++;
@@ -138,7 +151,7 @@ const FightEngine = ({ user, enemy }) => {
 
   /*** Adjust win or loss  ***/
   const checkWinnerAndLoser = (user, opp) => {
-    if (fightOver) {
+    if (fightOver && roundOver) {
       if (user.hp <= 0) {
         user.loss++;
         opp.win++;
@@ -146,25 +159,20 @@ const FightEngine = ({ user, enemy }) => {
         opp.win++;
         user.win++;
       } 
-
-        //improve judging logic! ****
-      const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
-      const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
-      console.log(judgeOneUserScore, judgeOneOppScore)
-      console.log(`FIGHT OVER`);
     }
   }
+  console.log(judgeOneOfficialScorecard)
 
 
+  /*** Determine if fighter gets up after knockdown or is unconscious ***/
   const determineKO = (offense, defense, hit, timeout ) => {
-
     /*** Initialize getUp abilites, update UI ***/
     if (defense.hp <= 0) {
       console.log("DETERMINING KO")
       const getUpTimer = setTimeout(() => { //slow down getUp post knock out text boxes.
         const takesShot = defense.getUp();
         const getUp = defense.getUp();
-        
+
         setPbp(prev => [...prev, {  //push to play-by-play array with new object.
           attacker: offense,
           defender: defense,
@@ -483,7 +491,7 @@ const FightEngine = ({ user, enemy }) => {
   return (
     <div className="fight-engine-wrap">
 
-      <Navbar roundCount={roundCount} judgeOne={judgeOne}/>
+      <Navbar roundCount={roundCount} roundOver={roundOver} judgeOne={judgeOne}/>
 
       <div className="main-container-wrap">
         <div className="main-container">
@@ -509,6 +517,7 @@ const FightEngine = ({ user, enemy }) => {
               roundCount={roundCount}
               fightOver={fightOver}
               ko={ko}
+              judgeOne={judgeOne} judgeOneOfficialScorecard={judgeOneOfficialScorecard}
               buttons={fightBtn}/>
             
             <div className="display-options">
