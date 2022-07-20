@@ -37,6 +37,10 @@ const FightEngine = ({ user, enemy }) => {
   const [winner, setWinner] = useState({});
   const [loser, setLoser] = useState({});
 
+  /*** Match Conditions ***/
+  const [knockdownRule, setKnockdownRule] = useState(false);
+  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState(1);
+
   /*** Judges Decision state ***/
   const [judgeOne, setJudgeOne] = useState([]);
   const [judgeOneOfficialScorecard, setJudgeOneOfficialScorecard] = useState();
@@ -49,16 +53,39 @@ const FightEngine = ({ user, enemy }) => {
     setOppActive(oppReady);
   },[])
 
-  useEffect(() => { //check start/stop conditions
-    if (user.knockdownCount === 3 || enemy.knockdownCount === 3) {
+  useEffect(() => { //manage 3 knockdown rule.
+
+    // REFACTOR later! Finish MVP first.
+    if (user.knockdownCount === knockdownRuleLimit) {
+      setKnockdownRule(true);
+      user.loss++;
+      enemy.win++;
+      setWinner(enemy);
+      setLoser(user);
+      console.log(`Ref waves it off. That's 3 knockdowns in a round!`)
       setKo(true)
       setFightOver(true);
-    }
+      setRoundOver(true);
+    } else if (enemy.knockdownCount === knockdownRuleLimit) {
+      setKnockdownRule(true);
+      enemy.loss++;
+      user.win++;
+      setWinner(user);
+      setLoser(enemy);
+      console.log(`Ref waves it off. That's 3 knockdowns in a round!`)
+      setKnockdownRule(true);
+      setKo(true)
+      setFightOver(true);
+      setRoundOver(true);
+    }  
+  }, [user.knockdownCount, enemy.knockdownCount])
+
+  useEffect(() => { //check start/stop conditions
     if (roundStart || ko || fightOver ) setDisable(true);
-    if (ko) {
+    if (ko || knockdownRule) {
       setFightOver(true);
     }
-  },[roundStart, ko, fightOver, user.knockdownCount, enemy.knockdownCount])
+  },[roundStart, ko, fightOver, knockdownRule])
 
   useEffect(() => { //Set button toggle
     if (roundCount === 2 && roundOver) {
@@ -68,20 +95,20 @@ const FightEngine = ({ user, enemy }) => {
   },[roundOver, roundCount])
 
   useEffect(() => { //toggle specific end-of-round (roundOver) and round start attributes
-    if (roundStart || fightOver) {
+    if (!knockdownRule && (roundStart || fightOver)) {
       judgeDecision(user, enemy, 'control', 'one');
       judgeDecision(user, enemy, 'accuracy', 'two');
       user.knockdownCount = 0;
       enemy.knockdownCount = 0;
     }
-  }, [roundStart, fightOver])
+  }, [roundStart, fightOver, knockdownRule])
 
   useEffect(() => {  //Similar to useEffect above, but within a record-altering function
-    if (fightOver && roundOver) {
+    if (fightOver) {
       checkWinnerAndLoser(user, enemy);
       console.log(`FIGHT OVER`);
     }
-  },[fightOver, roundOver])
+  },[fightOver])
 
   
   /***  Update judge's scorecard per round, update separately per mount!  ***/
@@ -107,7 +134,6 @@ const FightEngine = ({ user, enemy }) => {
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
   const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", true, oppDmgScale)
-
 
   const filterStats = (person, whatToFilter) => {
     for (let i = 0; i < finalTotals.length; i++){
@@ -143,28 +169,23 @@ const FightEngine = ({ user, enemy }) => {
         userScore = 9;
         oppScore = 10;
         chooseJudge(whichJudge);
-        // if (fightOver) updateWinLoss(user, enemy)
-
       } else if (judgeOpp > judgeUser) {
         oppScore = 9;
         userScore = 10;
         chooseJudge(whichJudge);
       }
     } else {
-
       if (user.knockdownCount > 0) {
         userScore -= user.knockdownCount;
         oppScore++;
         chooseJudge(whichJudge);
       }
-
       if (enemy.knockdownCount > 0) {
         oppScore -= enemy.knockdownCount;
         userScore++;
         chooseJudge(whichJudge);
-        // if (fightOver) updateWinLoss(user, enemy)
       }
-      
+
       if (user.knockdownCount > 0 && enemy.knockdownCount > 0) {
         if (user.knockdownCount > enemy.knockdownCount) {
           userScore = 9;
@@ -183,20 +204,22 @@ const FightEngine = ({ user, enemy }) => {
 
   /*** Adjust win or loss  ***/
   const checkWinnerAndLoser = (user, opp) => {
-    if (fightOver && roundOver) {
+    if (!knockdownRule && (fightOver && roundOver)) {
       if (user.hp <= 0) {
         updateWinLoss(opp, user);
       } else if (opp.hp <= 0) {
         updateWinLoss(user, opp);
       } else {
         console.log(`GO TO JUDGE'S DECISION`)
-        compareScorecards(user, opp);
+        if (!knockdownRule) compareScorecards(user, opp);
       }
     } 
   }
 
   /***  Tally scorecards  ***/
   const compareScorecards = (user, opp) => {
+    setFightOver(true);
+    setRoundOver(true);
     let userTally = 0;
     let oppTally = 0;
 
@@ -215,7 +238,7 @@ const FightEngine = ({ user, enemy }) => {
     //Judge Three (Judge One and Two are placeholders for now!)
     if (judgeTwoOfficialScorecard.user > judgeTwoOfficialScorecard.opp) {
       userTally++
-    } else if (judgeOneOfficialScorecard.user < judgeOneOfficialScorecard.opp){
+    } else if (judgeTwoOfficialScorecard.user < judgeTwoOfficialScorecard.opp){
       oppTally++
     }
 
@@ -382,6 +405,7 @@ const FightEngine = ({ user, enemy }) => {
     ***/
 
     /*** Fight balance favors defender ***/
+    if (fightOver || knockdownRule) clearTimeout(timeout);
 
     if (difference <= -35){ //Strong counters by defender
       hit = attacker.hp += difference; //reduce health
@@ -471,6 +495,7 @@ const FightEngine = ({ user, enemy }) => {
     let userOffense = user.engage();
     let oppOffense = opp.engage();
     let resultDmg;
+    if (fightOver || knockdownRule) clearTimeout(timeout);
 
     if (userOffense > oppOffense) {
       let userDmg = exchange(user, opp);
@@ -502,6 +527,9 @@ const FightEngine = ({ user, enemy }) => {
       let fightAction = setTimeout(()=>{
         let activity;
         let over; //placeholder for various text
+
+        console.log(knockdownRule)
+        if (fightOver || knockdownRule) clearTimeout(fightAction);
 
         /*** Replace with determineKO later, when various commentary is added  ***/
         if (user.hp <= 0) { //check for knockout
@@ -600,6 +628,7 @@ const FightEngine = ({ user, enemy }) => {
               roundCount={roundCount}
               fightOver={fightOver}
               ko={ko}
+              knockdownRule={knockdownRule}
               judgeOneOfficialScorecard={judgeOneOfficialScorecard}
               judgeTwoOfficialScorecard={judgeTwoOfficialScorecard}
               winner={winner}

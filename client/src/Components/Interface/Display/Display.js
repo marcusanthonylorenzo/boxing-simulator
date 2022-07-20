@@ -6,7 +6,7 @@ const Display = ({
   ko, pbp, user, opp,
   fightStart, fightOver, roundStart, roundOver, roundCount,
   judgeOneOfficialScorecard, judgeTwoOfficialScorecard,
-  winner
+  winner, loser, knockdownRule
 }) => {
 
   const [fade, setFade] = useState({backgroundColor:`gray`});
@@ -79,7 +79,7 @@ const Display = ({
   }
 
   
-  const modal = () => { //popup between rounds
+  const cornerModal = () => { //popup between rounds
     const pepTalkEntries = Object.entries(user[`pepTalk`])      
     return (
       <>
@@ -128,7 +128,7 @@ const Display = ({
       return (
         <>
           {!ko ? continueText(getAttacker, scrap) : koedText } {/* continue or show KO OR judgesDecision() */}
-          {!ko ? modal() : koedText }
+          {!ko ? cornerModal() : koedText }
         </>
       )
     })
@@ -136,11 +136,8 @@ const Display = ({
 
   /*** Display scorecards, update win/loss, route to home page button. ***/
   const postFightModal = () => { 
-
-    const postFightText = () => <h4>A great fight!</h4>
+    const postFightText = (comments) => <h4>{comments}</h4>
     const judgesDecision = () => {
-
-      // console.log(judgeOneOfficialScorecard, judgeTwoOfficialScorecard)
       return (
         <>
           <div className="scorecards">
@@ -165,11 +162,22 @@ const Display = ({
         )
     }
 
+
+    const knockdownRuleApplied = () => {
+      return (
+        <>
+          <div className={`knockdown-rule-text`}>
+            <h4>{loser.firstName} has hit the canvas one too many times! The ref waves it off!</h4>
+            <h4>{winner.firstName} is your winner, by technical knockout!</h4>
+          </div>
+        </>
+      )
+    }
     return (
       <>
         <div className="options">
-          {postFightText()}
-          {judgesDecision()}
+          {knockdownRule ? postFightText(`An onslaught of punches left, right, and center!`) : postFightText("A great contest between two warriors!")}
+          {knockdownRule ? knockdownRuleApplied() : judgesDecision()}
         </div>
       </>
     )
