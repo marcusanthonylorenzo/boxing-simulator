@@ -140,7 +140,7 @@ const Display = ({
       return (
         <>
           <h4>Judge One scores it:</h4>
-          {/* <h4>{judgeOneOfficialScorecard.user} for {user.firstName} and {judgeOneOfficialScorecard.opp} for {opp.firstName}</h4> */}
+          <h4>{judgeOneOfficialScorecard.user} for {user.firstName} and {judgeOneOfficialScorecard.opp} for {opp.firstName}</h4>
         </>
         )
     }

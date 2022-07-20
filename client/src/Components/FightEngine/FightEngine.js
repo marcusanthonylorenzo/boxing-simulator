@@ -57,7 +57,7 @@ const FightEngine = ({ user, enemy }) => {
   },[roundStart, ko, fightOver, user.knockdownCount, enemy.knockdownCount])
 
   useEffect(() => { //Set button toggle
-    if (roundCount === 1 && roundOver) {
+    if (roundCount === 4 && roundOver) {
       setDisable(true);
       setFightOver(true);
     }
@@ -74,14 +74,17 @@ const FightEngine = ({ user, enemy }) => {
   useEffect(() => {  //End of fight processes
     if (fightOver && roundOver) {
       checkWinnerAndLoser(user, enemy);
-      /*** improve judging logic! ****/
-      const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
-      const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
-      console.log(judgeOneUserScore, judgeOneOppScore)
-      setJudgeOneOfficialScorecard({ user: judgeOneUserScore, opp: judgeOneOppScore })
       console.log(`FIGHT OVER`);
     }
-  },[])
+  },[fightOver, roundOver])
+
+  useEffect(() => {
+    /*** improve judging logic! ****/
+    const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
+    const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
+    console.log(judgeOneUserScore, judgeOneOppScore)
+    setJudgeOneOfficialScorecard({ user: judgeOneUserScore, opp: judgeOneOppScore })
+  }, [judgeOne])
 
 
   //HERE is where you set the fighters extra stats, randomize cornerColors in future, change before each new fight!
@@ -108,7 +111,7 @@ const FightEngine = ({ user, enemy }) => {
     const judgeOpp = filterStats(enemy, whatToJudge);
     let userScore = 9;
     let oppScore = 9;
-
+    
     if (enemy.knockdownCount === user.knockdownCount) {
       if (judgeUser > judgeOpp){
         userScore = 9;
