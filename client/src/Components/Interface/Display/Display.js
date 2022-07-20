@@ -3,7 +3,7 @@ import './Display.css'
 import SelectMenu from '../SelectMenu/SelectMenu'
 
 const Display = ({
-  ko, pbp, user, opp,
+  ko, pbp, user, opp, fightNight, setFightNight,
   fightStart, fightOver, roundStart, roundOver, roundCount,
   judgeOneOfficialScorecard, judgeTwoOfficialScorecard,
   winner, loser, knockdownRule
@@ -17,14 +17,14 @@ const Display = ({
   const [hideModal, setHideModal] = useState(`hide`);
   const displayDiv = useRef(null) //auto scroll to bottom
   
-  useEffect(() => { if(roundStart)setHideModal('hide') }, [roundStart])
+  useEffect(() => { if(roundStart) setHideModal('hide') }, [roundStart])
 
   useEffect(() => fightStart ? setHideRules(`hide`) : setHideRules(`show`), [fightStart]);
   
   useEffect(() => {
-    if (!roundOver && !hideModal) {
+    if (!roundOver && fightStart) {
       setHideModal('hide');
-    } else if (roundOver && hideModal){
+    } else if (roundOver){
       setHideModal(`show`);
     }
   },[roundOver]); //toggle pepTalk buttons for each round
@@ -99,6 +99,7 @@ const Display = ({
                               e.preventDefault();
                               pepTalkMethod();
                               setHideModal(`hide`);
+                              console.log(hideModal)
                             }}>
                               <h4>{pepTalkLabel}</h4>                             
                             </button>
@@ -120,7 +121,7 @@ const Display = ({
       }
 
     const koedText = //KO result text
-      <div className={`options`} style={{color: `black`}}>
+      <div className={`options ${hideModal}`} style={{color: `black`}}>
         <h4>The fighters both in the pocket trading heavy blows right now!</h4>
         <h4>{scrap.text}</h4>
       </div>
@@ -128,7 +129,7 @@ const Display = ({
       return (
         <>
           {!ko ? continueText(getAttacker, scrap) : koedText } {/* continue or show KO OR judgesDecision() */}
-          {!ko ? cornerModal() : koedText }
+          {/* {roundOver ? cornerModal() : null } */}
         </>
       )
     })
@@ -162,7 +163,6 @@ const Display = ({
         )
     }
 
-
     const knockdownRuleApplied = () => {
       return (
         <>
@@ -173,15 +173,17 @@ const Display = ({
         </>
       )
     }
+
     return (
       <>
-        <div className="options">
+        <div className={`options ${hideModal} `}>
           {knockdownRule ? postFightText(`An onslaught of punches left, right, and center!`) : postFightText("A great contest between two warriors!")}
           {knockdownRule ? knockdownRuleApplied() : judgesDecision()}
         </div>
       </>
     )
   }
+
 
   return (
     <>

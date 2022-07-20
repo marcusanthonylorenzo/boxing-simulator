@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Home from '../../Pages/Home/Home'
 import Functions from '../Helpers/Functions'
 import Navbar from '../Interface/Navbar/Navbar'
 import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
@@ -8,11 +9,14 @@ import oppBody from '../../assets/images/oppBody.png'
 import SelectMenu from '../Interface/SelectMenu/SelectMenu'
 // import randomize from '../Helpers/Randomize'
 
-const FightEngine = ({ user, enemy }) => {
+const FightEngine = ({ user, enemy, urls, fightNight, setFightNight }) => {
   
   const { setObj, setCorner } = Functions(); //unpack functions from Helpers/Functions
 
   /*** General state ***/
+  const [ url, setUrl ] = useState(urls[1 ])
+  const [ homegymStyle, setHomegymStyle ] = useState();
+
   const [userActive, setUserActive] = useState(user); //point to an updated state of user attributes
   const [oppActive, setOppActive] = useState(enemy);
   const [userDmgScale, setUserDmgScale] = useState(); //store values for each total damage output for data
@@ -47,6 +51,18 @@ const FightEngine = ({ user, enemy }) => {
   const [judgeTwo, setJudgeTwo] = useState([]);
   const [judgeTwoOfficialScorecard, setJudgeTwoOfficialScorecard] = useState();
 
+
+  useEffect(() => {
+    switch (fightNight) {
+      case true:
+        setUrl(urls[0]);
+      break;
+      default: setUrl(urls[1]);
+      break;
+    }//change background depending on fighting or training
+  }, [fightNight]);
+
+  // console.log(fightNight);
 
   useEffect(() => { //shallow copy of user/enemy for manipulation
     setUserActive(userReady);
@@ -106,7 +122,6 @@ const FightEngine = ({ user, enemy }) => {
   useEffect(() => {  //Similar to useEffect above, but within a record-altering function
     if (fightOver) {
       checkWinnerAndLoser(user, enemy);
-      console.log(`FIGHT OVER`);
     }
   },[fightOver])
 
@@ -128,7 +143,6 @@ const FightEngine = ({ user, enemy }) => {
     // }
   }, [judgeTwo])
 
-  console.log(judgeOne, judgeTwo, judgeOneOfficialScorecard, judgeTwoOfficialScorecard)
 
   //HERE is where you set the fighters extra stats, randomize cornerColors in future, change before each new fight!
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
@@ -142,7 +156,6 @@ const FightEngine = ({ user, enemy }) => {
       }
     }
   };
-
 
   /*** Build logic for Judge criteria ***/ //REFACTOR
   const judgeDecision = (user, enemy, whatToJudge, whichJudge) => {
@@ -598,14 +611,70 @@ const FightEngine = ({ user, enemy }) => {
         enemy.roundRecovery();
     }}><h4>Fight</h4></button>
 
-  /***  rafce return jsx  ***/
+
+  //UI JSX for boxing match "fight night"\
+
+  const fightNightLoader = () => {
+    return (
+    <>
+        <div className="inner-container">
+
+          <Display pbp={pbp} user={userActive} opp={oppActive}
+            fightNight={fightNight}
+            setFightNight={setFightNight}
+            fightStart={fightStart}
+            roundStart={roundStart}
+            roundOver={roundOver}
+            roundCount={roundCount}
+            fightOver={fightOver}
+            ko={ko}
+            knockdownRule={knockdownRule}
+            judgeOneOfficialScorecard={judgeOneOfficialScorecard}
+            judgeTwoOfficialScorecard={judgeTwoOfficialScorecard}
+            winner={winner}
+            loser={loser}
+            buttons={fightBtn}/>
+          
+          <div className="display-options">
+            <SelectMenu buttons={fightBtn}
+            fightNight={fightNight}
+            setFightNight={setFightNight}
+            fightStart={fightStart}
+            fightOver={fightOver}
+            roundStart={roundStart} 
+            roundOver={roundOver}
+            ko={ko} />
+          </div>
+        </div>
+
+        <BoxerCard boxer={enemy} path={oppBody}
+          pbp={pbp}
+          roundStart={roundStart}
+          roundCount={roundCount}
+          roundOver={roundOver}
+          fightOver={fightOver}
+          exchangeCount={exchangeCount}
+          punchCount={punchCount}
+          setTotalRingControl={setTotalRingControl}
+          setTotalAccuracy={setTotalAccuracy}
+          finalTotals={finalTotals}
+          setFinalTotals={setFinalTotals}
+          corner={() => oppReady}/>
+    </>
+    )
+  }
+
   return (
     <div className="fight-engine-wrap">
 
       <Navbar roundCount={roundCount} roundOver={roundOver} judgeOne={judgeOne}/>
 
-      <div className="main-container-wrap">
+      <div className="main-container-wrap" style={{
+        backgroundImage: url
+      }}>
         <div className="main-container">
+
+        {/***  Boxer Card stays in this position as you navigate the site  ***/}
           <BoxerCard boxer={user} path={leftBoxer}
             pbp={pbp}
             roundStart={roundStart}
@@ -620,43 +689,16 @@ const FightEngine = ({ user, enemy }) => {
             setFinalTotals={setFinalTotals}
             corner={() => userReady}/>
 
-          <div className="inner-container">
-            <Display pbp={pbp} user={userActive} opp={oppActive}
-              fightStart={fightStart}
-              roundStart={roundStart}
-              roundOver={roundOver}
-              roundCount={roundCount}
-              fightOver={fightOver}
-              ko={ko}
-              knockdownRule={knockdownRule}
-              judgeOneOfficialScorecard={judgeOneOfficialScorecard}
-              judgeTwoOfficialScorecard={judgeTwoOfficialScorecard}
-              winner={winner}
-              loser={loser}
-              buttons={fightBtn}/>
-            
-            <div className="display-options">
-              <SelectMenu buttons={fightBtn}
-              fightStart={fightStart}
-              fightOver={fightOver}
-              roundStart={roundStart} 
-              ko={ko} />
-            </div>
-          </div>
+          { fightNight ?
 
-          <BoxerCard boxer={enemy} path={oppBody}
-            pbp={pbp}
-            roundStart={roundStart}
-            roundCount={roundCount}
-            roundOver={roundOver}
-            fightOver={fightOver}
-            exchangeCount={exchangeCount}
-            punchCount={punchCount}
-            setTotalRingControl={setTotalRingControl}
-            setTotalAccuracy={setTotalAccuracy}
-            finalTotals={finalTotals}
-            setFinalTotals={setFinalTotals}
-            corner={() => oppReady}/>
+           fightNightLoader() 
+
+          :
+
+          <Home user={user} setFightNight={setFightNight}/>
+
+          }
+          
         </div>
       </div>
     </div>

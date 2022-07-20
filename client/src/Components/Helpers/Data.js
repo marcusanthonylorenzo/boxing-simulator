@@ -1,4 +1,5 @@
 import Boxer from '../Boxer/BoxerClass';
+import homegym from '../../assets/images/homegym.jpg'
 
 const temp = () => {
 
@@ -17,7 +18,13 @@ const temp = () => {
     81, 83, 73, 83, 85  //stamina, agressivness, agility, strength, defense
   );
 
-  return { user, enemy }
+
+  const urls = [
+    `url('https://www.matchroomboxing.com/app/uploads/2020/07/Untitled-1-1.jpg')`,
+    `url('${homegym}')`
+  ]
+
+  return { user, enemy, urls }
 
 }
 
