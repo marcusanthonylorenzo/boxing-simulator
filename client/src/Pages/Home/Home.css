@@ -1,4 +1,6 @@
 .home-gym {
   display: grid;
   grid-template-columns: repeat(3 1fr);
+  height: 70vh;
+  margin: 5% auto;
 }

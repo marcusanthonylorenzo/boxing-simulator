@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import './SelectMenu.css'
 
-const SelectMenu = ({ buttons, roundOver, roundCount, fightStart, setFightStart, fightOver, setFightOver, fightNight, setFightNight }) => {
+const SelectMenu = (
+  { buttons, roundOver, roundCount, fightStart, setFightStart,
+    fightOver, setFightOver, fightNight, setFightNight,
+    resetFightBtn, setResetFightBtn
+  }) => {
 
-  const [resetFightBtn, setResetFightBtn] = useState(false);
   
   useEffect(() =>  {
-    if(fightNight) {
+    if(fightNight && roundCount === 0) {
       setResetFightBtn(true);
       setFightOver(false);
     }
   }, [fightNight])
 
-  console.log(fightNight, fightOver, resetFightBtn)
+  console.log( `SelectMenu state:`,
+    `fightNight`, fightNight,
+    `fightStart`, fightStart,
+    `fightOver`, fightOver,
+    `resetFightBtn`, resetFightBtn)
 
   const backToHomeButtons = () => {
     return (

@@ -9,7 +9,8 @@ import oppBody from '../../assets/images/oppBody.png'
 import SelectMenu from '../Interface/SelectMenu/SelectMenu'
 // import randomize from '../Helpers/Randomize'
 
-const FightEngine = ({ user, enemy, urls, fightNight, setFightNight }) => {
+const FightEngine = (
+  { user, enemy, urls, fightNight, setFightNight, resetFightBtn, setResetFightBtn, fightOver, setFightOver }) => {
   
   const { setObj, setCorner } = Functions(); //unpack functions from Helpers/Functions
 
@@ -34,7 +35,7 @@ const FightEngine = ({ user, enemy, urls, fightNight, setFightNight }) => {
   const [roundStart, setRoundStart] = useState(false);
   const [roundOver, setRoundOver] = useState(false);
   const [fightStart, setFightStart] = useState(false);
-  const [fightOver, setFightOver] = useState(false);
+  // const [fightOver, setFightOver] = useState(false);
   const [totalRingControl, setTotalRingControl] = useState([]);
   const [totalAccuracy, setTotalAccuracy] = useState([]);
   const [finalTotals, setFinalTotals] = useState([]); //data for UI stat output
@@ -51,6 +52,17 @@ const FightEngine = ({ user, enemy, urls, fightNight, setFightNight }) => {
   const [judgeTwo, setJudgeTwo] = useState([]);
   const [judgeTwoOfficialScorecard, setJudgeTwoOfficialScorecard] = useState();
 
+  console.log( `fight engine:`,
+    `fightNight`, fightNight,
+    `fightStart`, fightStart,
+    `fightOver`, fightOver )
+
+  useEffect(() =>  {
+    if(fightNight && roundCount === 0) {
+      setResetFightBtn(true);
+      setFightOver(false);
+    }
+  }, [fightNight])
 
   useEffect(() => {
     switch (fightNight) {
@@ -542,7 +554,9 @@ const FightEngine = ({ user, enemy, urls, fightNight, setFightNight }) => {
         let over; //placeholder for various text
 
         console.log(knockdownRule)
-        if (fightOver || knockdownRule) clearTimeout(fightAction);
+        if (knockdownRule) {
+          clearTimeout(fightAction)
+        };
 
         /*** Replace with determineKO later, when various commentary is added  ***/
         if (user.hp <= 0) { //check for knockout
@@ -646,6 +660,8 @@ const FightEngine = ({ user, enemy, urls, fightNight, setFightNight }) => {
             setFightOver={setFightOver}
             roundStart={roundStart} 
             roundOver={roundOver}
+            resetFightBtn={resetFightBtn}
+            setResetFightBtn={setResetFightBtn}
             ko={ko} />
           </div>
         </div>
