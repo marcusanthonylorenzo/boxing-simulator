@@ -8,35 +8,42 @@ const Home = (
   fightOver, setFightOver, setResetFightBtn }) => {
 
   const [disableWhenLowHP, setDisableWhenLowHP] = useState(false);
+  const [ url, setUrl ] = useState(urls[1])
 
   useEffect(() => {
     setFightNight(false)
+    user.knockdownCount = 0;
   }, [])
 
   useEffect(() => {
     if (user.hp <= user.maxHp*0.15) {
-      console.log(user.hp)
       setDisableWhenLowHP(true);
     }
   }, [])
 
-  // Must recover user.hp before continuing to next fight!
-
-
+  // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
 
   return (
-    <div className="home-gym">
-      <div className="home-title">WELCOME TO THE HOME GYM</div>
-        <div className="home-main">
+    <div className="main-container-wrap" style={{ backgroundImage: url }}>
+      <div className="main-container" id="home-gym-container">
 
-        <button disabled={disableWhenLowHP}
-          onClick={(e)=> {
-            e.preventDefault();
-            setFightOver(false);    
-            setFightNight(true);
-            setResetFightBtn(true);
-        }}
-        > Fight Night </button>
+        <div className='home-gym-nav'>
+          example text
+        </div>
+        
+        <div className={`inner-container`}>
+          <div className="display-options">
+            <button disabled={disableWhenLowHP}
+              onClick={(e)=> {
+                e.preventDefault();
+                setFightOver(false);    
+                setFightNight(true);
+                setResetFightBtn(true);
+            }}> Fight Night </button>
+          </div>
+        </div>
+            
+
       </div>
     </div>
   )

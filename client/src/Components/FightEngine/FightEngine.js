@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-// import Home from '../../Pages/Home/Home'
 import Functions from '../Helpers/Functions'
-import Navbar from '../Interface/Navbar/Navbar'
+// import Navbar from '../Interface/Navbar/Navbar'
 import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
 import Display from '../Interface/Display/Display'
 import leftBoxer from '../../assets/images/redgloves.png'
@@ -10,12 +9,14 @@ import SelectMenu from '../Interface/SelectMenu/SelectMenu'
 // import randomize from '../Helpers/Randomize'
 
 const FightEngine = (
-  { user, enemy, urls, fightNight, setFightNight, resetFightBtn, setResetFightBtn, fightOver, setFightOver }) => {
+  { user, enemy, urls, roundCount, setRoundCount, 
+    roundOver, setRoundOver, fightNight, setFightNight, 
+    resetFightBtn, setResetFightBtn, fightOver, setFightOver }) => {
   
   const { setObj, setCorner } = Functions(); //unpack functions from Helpers/Functions
 
   /*** General state ***/
-  const [ url, setUrl ] = useState(urls[1 ])
+  const [ url, setUrl ] = useState(urls[1])
   const [ homegymStyle, setHomegymStyle ] = useState();
 
   const [userActive, setUserActive] = useState(user); //point to an updated state of user attributes
@@ -31,9 +32,9 @@ const FightEngine = (
   /***  Match specific state ***/
   const [ko, setKo] = useState(false);
   const [disable, setDisable] = useState(false);
-  const [roundCount, setRoundCount] = useState(0);
+  // const [roundCount, setRoundCount] = useState(0);
   const [roundStart, setRoundStart] = useState(false);
-  const [roundOver, setRoundOver] = useState(false);
+  // const [roundOver, setRoundOver] = useState(false);
   const [fightStart, setFightStart] = useState(false);
   // const [fightOver, setFightOver] = useState(false);
   const [totalRingControl, setTotalRingControl] = useState([]);
@@ -62,16 +63,21 @@ const FightEngine = (
       setResetFightBtn(true);
       setFightOver(false);
     }
+    // else if (!fightNight) { //utilize only if rendering Home component in Fight Engine.
+    //   setWinner();
+    //   setLoser();
+    //   setKo(false);
+    //   setKnockdownRule(false);      
+    // }
   }, [fightNight])
 
-  useEffect(() => {
+  useEffect(() => { //change background depending on fighting or training
     switch (fightNight) {
-      case true:
-        setUrl(urls[0]);
+      case true: setUrl(urls[0]);
       break;
       default: setUrl(urls[1]);
       break;
-    }//change background depending on fighting or training
+    }
   }, [fightNight]);
 
   // console.log(fightNight);
@@ -651,17 +657,17 @@ const FightEngine = (
           
           <div className="display-options">
             <SelectMenu buttons={fightBtn}
-            fightNight={fightNight}
-            roundCount={roundCount}
-            setFightNight={setFightNight}
-            fightStart={fightStart}
-            setFightStart={setFightStart}
-            fightOver={fightOver}
-            setFightOver={setFightOver}
-            roundStart={roundStart} 
-            roundOver={roundOver}
-            resetFightBtn={resetFightBtn}
-            setResetFightBtn={setResetFightBtn}
+              fightNight={fightNight}
+              roundCount={roundCount}
+              setFightNight={setFightNight}
+              fightStart={fightStart}
+              setFightStart={setFightStart}
+              fightOver={fightOver}
+              setFightOver={setFightOver}
+              roundStart={roundStart} 
+              roundOver={roundOver}
+              resetFightBtn={resetFightBtn}
+              setResetFightBtn={setResetFightBtn}
             ko={ko} />
           </div>
         </div>
@@ -685,12 +691,7 @@ const FightEngine = (
 
   return (
     <div className="fight-engine-wrap">
-
-      <Navbar roundCount={roundCount} roundOver={roundOver} judgeOne={judgeOne}/>
-
-      <div className="main-container-wrap" style={{
-        backgroundImage: url
-      }}>
+      <div className="main-container-wrap" style={{ backgroundImage: url }}>
         <div className="main-container">
 
         {/***  Boxer Card stays in this position as you navigate the page  ***/}
@@ -710,12 +711,16 @@ const FightEngine = (
 
           { 
 
-           fightNightLoader() 
+          // fightNight ?
 
+          fightNightLoader() 
 
-          // <Home user={user} enemy={enemy} urls={urls} newFighLoad={ fightNightLoader }
-          // fightNight={fightNight} setFightNight={setFightNight}/>
+          // : 
 
+          // <Home user={user} enemy={enemy} urls={urls}
+          //   fightNight={fightNight} setFightNight={setFightNight}
+          //   fightOver={fightOver} setFightOver={setFightOver}
+          //   resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}/>
           }
           
         </div>
