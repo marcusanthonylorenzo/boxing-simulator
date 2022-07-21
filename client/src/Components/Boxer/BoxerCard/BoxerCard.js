@@ -5,11 +5,9 @@ import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
 
 const BoxerCard = ({
-
-  boxer, path, corner, fightOver,
+  boxer, path, corner, fightNight, fightOver,
   roundOver, roundCount, setFinalTotals,
   exchangeCount, punchCount
-
   }) => {
 
   const commentary = Commentary();  //unpack running function component to get objects to unpack
@@ -277,9 +275,18 @@ const BoxerCard = ({
       </>
     )}
 
+  const homepageColors = () => {
+    if (!fightNight) {
+      return {
+        backgroundColor: `white`,
+        color: `black`
+      }
+    }
+  }
+
   return (
     <>
-      <div className={`BoxerCard`} style={{}}>
+      <div className={`BoxerCard`}>
 
         { //if round count is 0, fight has not begun, display intro cards first
           roundCount === 0 ?

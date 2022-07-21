@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import Home from '../../Pages/Home/Home'
+// import Home from '../../Pages/Home/Home'
 import Functions from '../Helpers/Functions'
 import Navbar from '../Interface/Navbar/Navbar'
 import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
@@ -638,9 +638,12 @@ const FightEngine = ({ user, enemy, urls, fightNight, setFightNight }) => {
           <div className="display-options">
             <SelectMenu buttons={fightBtn}
             fightNight={fightNight}
+            roundCount={roundCount}
             setFightNight={setFightNight}
             fightStart={fightStart}
+            setFightStart={setFightStart}
             fightOver={fightOver}
+            setFightOver={setFightOver}
             roundStart={roundStart} 
             roundOver={roundOver}
             ko={ko} />
@@ -674,9 +677,9 @@ const FightEngine = ({ user, enemy, urls, fightNight, setFightNight }) => {
       }}>
         <div className="main-container">
 
-        {/***  Boxer Card stays in this position as you navigate the site  ***/}
+        {/***  Boxer Card stays in this position as you navigate the page  ***/}
           <BoxerCard boxer={user} path={leftBoxer}
-            pbp={pbp}
+            pbp={pbp} fightNight={fightNight}
             roundStart={roundStart}
             roundCount={roundCount}
             roundOver={roundOver}
@@ -689,13 +692,13 @@ const FightEngine = ({ user, enemy, urls, fightNight, setFightNight }) => {
             setFinalTotals={setFinalTotals}
             corner={() => userReady}/>
 
-          { fightNight ?
+          { 
 
            fightNightLoader() 
 
-          :
 
-          <Home user={user} setFightNight={setFightNight}/>
+          // <Home user={user} enemy={enemy} urls={urls} newFighLoad={ fightNightLoader }
+          // fightNight={fightNight} setFightNight={setFightNight}/>
 
           }
           
