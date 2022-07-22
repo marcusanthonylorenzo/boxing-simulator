@@ -7,7 +7,8 @@ const Functions = () => {
       }
     },
 
-    setCorner: (fighter, color, cornerColorLabel, side, champion, dmg) => { //set fight corner, color, champ status
+    setCorner: (fighter, color, cornerColorLabel, side, champion, dmg) => { 
+      fighter.champion = champion; //set fight corner, color, champ status
       return {
         ...fighter,
         cornerColor: color,

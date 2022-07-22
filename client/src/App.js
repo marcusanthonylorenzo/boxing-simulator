@@ -7,7 +7,7 @@ import temp from './Components/Helpers/Data'
 
 function App() {
   const { user, enemy, urls } = temp();
-   const [ changeAppBgColor, setChangeAppBgColor ] = useState(`rgb(234, 234, 234);`);
+  const [ changeAppBgColor, setChangeAppBgColor ] = useState(`rgb(234, 234, 234);`);
 
   /***  User and Opponent to pass down as state  ***/
   const [userState, setUserState ] = useState(user)

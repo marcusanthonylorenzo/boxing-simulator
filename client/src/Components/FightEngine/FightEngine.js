@@ -80,15 +80,12 @@ const FightEngine = (
     }
   }, [fightNight]);
 
-  // console.log(fightNight);
-
   useEffect(() => { //shallow copy of user/enemy for manipulation
     setUserActive(userReady);
     setOppActive(oppReady);
   },[])
 
   useEffect(() => { //manage 3 knockdown rule.
-
     // REFACTOR later! Finish MVP first.
     if (user.knockdownCount === knockdownRuleLimit) {
       setKnockdownRule(true);

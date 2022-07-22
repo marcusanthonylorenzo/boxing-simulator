@@ -197,6 +197,8 @@ const BoxerCard = ({
 
   const mainCard =  () => {
 
+    console.log(boxer.champion)
+
     return (
       <>
         <div className="boxer-info border padded" >

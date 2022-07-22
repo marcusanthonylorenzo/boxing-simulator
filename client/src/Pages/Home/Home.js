@@ -27,29 +27,39 @@ const Home = (
     <div className="main-container-wrap" id={`home-gym-container-wrap`} style={{ backgroundImage: url }}>
       <div className="main-container" id="home-gym-container">
 
+        {/*** Left Grid ***/}
+
         <div className='home-gym-nav'>
           <div className='home-gym-user'>
             <h2>{user.firstName}</h2>
             <h2>{user.lastName}</h2>
-          </div>
-
-          <div className='home-gym-stats'>
-            <h2>Stats go here</h2>
             <h4>Wins - Losses</h4>
             <h4>{user.win} - {user.loss}</h4>
           </div>
 
+          <div className='home-gym-stats'>
+            <h2>Stats go here</h2>
+
+          </div>
+
+          <div className='home-gym-train'>
+            <h4>Map week-to-week training here</h4>
+          </div>
+
         </div>
+
+        {/***  Center Grid  ***/}
 
         <div className='home-gym-main'>
           <div className='headlines'>
-              Headlines and progress go here
+            <h2>Headlines and progress go here</h2>
+            <h4>Or click to progress to next week</h4>
           </div>
           
 
           <div className={`inner-container`} id={`home-gym-feed`}>
             <div className='home-gym-display'>
-              Display week-to-week rankings, charts, and updates here.
+              <h2>Display week-to-week rankings, charts, and updates here.</h2>
             </div>
 
             <div className="home-options">
@@ -66,7 +76,20 @@ const Home = (
             </div>
           </div>
         </div>
-            
+
+        {/*** Right Grid ***/}
+
+        <div className="home-gym-rankings">
+          <div className="home-rankings-info">
+            <h2>Ranking list to go here</h2>
+
+            <div className="official-rankings">
+              <h5>Actual rankings</h5>
+            </div>
+
+          </div>
+   
+        </div>
 
       </div>
     </div>
