@@ -5,11 +5,19 @@ import './Home.css'
 
 const Home = (
   { user, enemy, urls, fightNight, setFightNight,
-    fightNumber, setFightNumber,
+    monthCounter, setMonthCounter, advanceMonth, setAdvanceMonth,
+    fightNumber, setFightNumber, stopFight, setStopFight,
     fightOver, setFightOver, setResetFightBtn }) => {
 
-  const [disableWhenLowHP, setDisableWhenLowHP] = useState(false);
-  const [ url, setUrl ] = useState(urls[1])
+
+  /***  General State  ***/
+  const [ url, setUrl ] = useState(urls[1]);
+  const [ getHistory, setGetHistory ] = useState(JSON.parse(localStorage.getItem('fightHistory')));
+
+  /***  Toggles, Counters  ***/
+  const [disableFightBtn, setDisableFightBtn] = useState(true);
+  const [trainingFinished, setTrainingFinished] = useState(false);
+
 
   useEffect(() => {
     setFightNight(false)
@@ -17,12 +25,19 @@ const Home = (
   }, [])
 
   useEffect(() => {
-    if (user.hp <= user.maxHp*0.15) {
-      setDisableWhenLowHP(true);
+    if (user.hp <= user.maxHp*0.35) {
+      setDisableFightBtn(true);
     }
   }, [])
 
+  useEffect(() => {
+    if (monthCounter === 5) {
+    setDisableFightBtn(false);
+    }
+  }, [monthCounter])
+
   // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
+  const getTrainingEntries = Object.entries(user.train);
 
   return (
     <div className="main-container-wrap" id={`home-gym-container-wrap`} style={{ backgroundImage: url }}>
@@ -34,8 +49,8 @@ const Home = (
           <div className='home-gym-user'>
             <h2>{user.firstName}</h2>
             <h2>{user.lastName}</h2>
-            <h4>Wins - Losses</h4>
-            <h4>{user.win} - {user.loss}</h4>
+            <h4>Record: {user.win} - {user.loss}</h4>
+            <h4>Condition: {Math.round((user.hp/user.maxHp)*100)}%</h4>
           </div>
 
           <div className='home-gym-stats'>
@@ -43,7 +58,20 @@ const Home = (
           </div>
 
           <div className='home-gym-train'>
-            <h4>Map week-to-week training here</h4>
+            <h4>Training (use icons later):</h4>
+            {getTrainingEntries.map((each, i) => {
+              return (
+                <button className="training-buttons" disabled={trainingFinished}
+                  onClick={()=>{
+                    console.log(each[1]);
+                    each[1]()
+                    setTrainingFinished(true);
+                    console.log(user.hp)
+                }}>
+                  <h5>{each[0]}</h5>
+                </button>
+              )
+            })}
           </div>
 
         </div>
@@ -64,14 +92,22 @@ const Home = (
 
             <div className="home-options">
               <div className="home-select-menu">
-
-                <button id={`home-to-fight-button`} disabled={disableWhenLowHP}
+                <button className={`home-buttons`} disabled={advanceMonth}
+                onClick={()=> {
+                  setMonthCounter(monthCounter+1)
+                  setTrainingFinished(false);
+                  if (monthCounter === 11) setMonthCounter(0);
+                }}>
+                  <h2>Advance Month</h2>
+                </button>
+                <button className={`home-buttons`} disabled={disableFightBtn}
                   onClick={(e)=> {
                     e.preventDefault();
                     setFightOver(false);    
                     setFightNight(true);
                     setResetFightBtn(true);
                     setFightNumber(fightNumber+1);
+                    setTrainingFinished(false);
                 }}> <h2>Fight Night</h2> </button>
               </div>
             </div>
@@ -82,10 +118,10 @@ const Home = (
 
         <div className="home-gym-rankings">
           <div className="home-rankings-info">
-            <h2>Ranking list to go here</h2>
+            <h2>Previous Fight History goes here.</h2>
 
             <div className="official-rankings">
-              <h5>Actual rankings</h5>
+              <h6>W (TKO) Fighter Example</h6>
             </div>
 
           </div>

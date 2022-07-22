@@ -32,12 +32,8 @@
   border-radius: 6px;
 }
 
-.home-gym-nav div:hover {
-  opacity: 80%;
-}
-
 .home-gym-nav h2, .home-gym-nav h4 {
-  margin: 0;
+  margin: 1%;
 }
 
 /*** User Info ***/
@@ -57,6 +53,19 @@
   border-radius: 6px;
 }
 
+.training-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 12%;
+  width: 50%;
+  margin: 1% auto;
+}
+
+.training-buttons:hover {
+  color:rgb(219, 116, 105);
+  cursor: pointer;
+}
 
 /*** Center Grid section ***/
 #home-gym-feed {
@@ -93,7 +102,7 @@
 
 
 .home-options {
-  height: 15%;
+  height: 35%;
   width: 97%;
   margin: 1%;
   box-shadow: inset 1px 1px 2px 1px rgba(19, 23, 19, 0.4);
@@ -102,6 +111,7 @@
 
 .home-select-menu {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -109,18 +119,20 @@
   border-radius: 6px;
 }
 
-#home-to-fight-button {
+.home-buttons {
   width: 98%;
   height: 4rem;
   border: none;
+  margin: 1% auto;
   font-weight: 600;
   font-style: italic;
   box-shadow: 1px 1px 3px 1px rgba(22, 21, 21, 0.7);
   border-radius: 6px;
 }
 
-#home-to-fight-button:hover {
+.home-buttons:hover {
   background-color: rgb(219, 116, 105);
+  color:rgb(242, 242, 234);
   cursor: pointer;
 }
 
@@ -142,7 +154,7 @@
 
 }
 
-.official-rankings h5 {
+.official-rankings h6 {
   margin: 0 auto;
   background-color: white;
   color: black;
@@ -150,7 +162,7 @@
   border-radius: 3px;
 }
 
-.official-rankings h5:hover {
+.official-rankings h6:hover {
   background-color:rgb(222, 207, 207);
   cursor: default;
 }

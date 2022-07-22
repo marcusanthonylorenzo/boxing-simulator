@@ -9,7 +9,7 @@ import SelectMenu from '../Interface/SelectMenu/SelectMenu'
 // import randomize from '../Helpers/Randomize'
 
 const FightEngine = (
-  { user, enemy, urls, roundCount, setRoundCount,
+  { user, enemy, urls, roundCount, setRoundCount, stopFight, setStopFight,
     fightNumber, setFightNumber, prevFightNumber, setPrevFightNumber,
     roundOver, setRoundOver, fightNight, setFightNight, 
     resetFightBtn, setResetFightBtn, fightOver, setFightOver, updateDataCollections }) => {
@@ -38,9 +38,10 @@ const FightEngine = (
   const [finalTotals, setFinalTotals] = useState([]); //data for UI stat output
   const [winner, setWinner] = useState({});
   const [loser, setLoser] = useState({});
+
   /*** Match Conditions ***/
   const [knockdownRule, setKnockdownRule] = useState(false);
-  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState(1);
+  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState(2);
 
   /*** Judges Decision state ***/
   const [judgeOne, setJudgeOne] = useState([]);
@@ -81,10 +82,18 @@ const FightEngine = (
     }
   },[roundStart, ko, fightOver, knockdownRule])
 
+  useEffect(() => {
+    if (fightOver && knockdownRule){
+    console.log(`done`)
+    stopFight.stop()
+    }
+  }, [fightOver, knockdownRule])
+
   useEffect(() => { //Set button toggle
     if (roundCount === 2 && roundOver) {
       setDisable(true);
       setFightOver(true);
+      stopFight.stop();
     }
   },[roundOver, roundCount])
 
@@ -486,7 +495,7 @@ const FightEngine = (
     let userOffense = user.engage();
     let oppOffense = opp.engage();
     let resultDmg;
-    if (fightOver || knockdownRule) clearTimeout(timeout);
+    if (fightOver || knockdownRule) stopFight.stop();
 
     if (userOffense > oppOffense) {
       let userDmg = exchange(user, opp);
@@ -516,6 +525,7 @@ const FightEngine = (
       setRoundCount(newRnd);
 
       let fightAction = setTimeout(()=>{
+        setStopFight({ stop: () => clearTimeout(fightAction)})
         let activity;
         let over;
 
@@ -539,7 +549,8 @@ const FightEngine = (
         }
         
         /***  FIGHT WORKFLOW ***/
-        let fightUnderway = engagement(user, enemy, fightAction); //takes fightAction and passes it in closure like props
+        let fightUnderway = engagement(user, enemy, fightAction);
+        if (fightOver || knockdownRule) stopFight.stop();
         setKo(false)
         setExchangeCount(k);
         activity = setObj(fightUnderway, "round", newRnd);
@@ -615,6 +626,7 @@ const FightEngine = (
             roundOver={roundOver}
             roundCount={roundCount}
             fightOver={fightOver}
+            stopFight={stopFight}
             ko={ko}
             knockdownRule={knockdownRule}
             judgeOneOfficialScorecard={judgeOneOfficialScorecard}

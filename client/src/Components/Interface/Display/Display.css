@@ -141,6 +141,15 @@
   margin: 5%;
 }
 
+/*** Corner Menu ***/
+
+
+.corner-select {
+  background-color: white;
+  height: 100%;
+  padding: 7%;
+}
+
 .pep-talk-buttons {
   display: flex;
   margin: 0 auto;

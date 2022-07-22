@@ -6,7 +6,7 @@ const Display = ({
   ko, pbp, user, opp, fightNight, setFightNight,
   fightStart, fightOver, roundStart, roundOver, roundCount,
   judgeOneOfficialScorecard, judgeTwoOfficialScorecard,
-  winner, loser, knockdownRule
+  winner, loser, knockdownRule, stopFight
 }) => {
 
   const [fade, setFade] = useState({backgroundColor:`gray`});
@@ -16,6 +16,8 @@ const Display = ({
   const [disableBtns, setDisableBtns] = useState(false);
   const [hideModal, setHideModal] = useState(`hide`);
   const displayDiv = useRef(null) //auto scroll to bottom
+
+  useEffect(() => { if (fightOver) stopFight.stop() }, [fightOver])
   
   useEffect(() => { if(roundStart) setHideModal('hide') }, [roundStart])
 
@@ -83,8 +85,8 @@ const Display = ({
     const pepTalkEntries = Object.entries(user[`pepTalk`])      
     return (
       <>
-        <div className={`options ${hideModal}`}>
-          <div className={`options-select`}  style={{backgroundColor: user.cornerColor}}>
+        <div className={`corner ${hideModal}`}>
+          <div className={`corner-select`} style={{ color: user.favoriteColor}}>
             <h2>The bell sounds for round {roundCount}.</h2>
             <h4>At your corner, Coach looks you in the eyes with stern advice:</h4>
               <div className={`select-menu`}>
@@ -125,11 +127,13 @@ const Display = ({
         <h4>The fighters both in the pocket trading heavy blows right now!</h4>
         <h4>{scrap.text}</h4>
       </div>
-
+      
+    const showCornerModal = cornerModal();
+      
       return (
         <>
           {!ko ? continueText(getAttacker, scrap) : koedText } {/* continue or show KO OR judgesDecision() */}
-          {/* {roundOver ? cornerModal() : null } */}
+          {roundOver ? showCornerModal : null }
         </>
       )
     })
@@ -137,7 +141,14 @@ const Display = ({
 
   /*** Display scorecards, update win/loss, route to home page button. ***/
   const postFightModal = () => { 
-    const postFightText = (comments) => <h4>{comments}</h4>
+    const postFightText = (comments) => {
+      if (fightOver || knockdownRule) stopFight.stop();
+      return (
+        <>
+        <h4>{comments}</h4>
+       </>
+      )
+    }
     const judgesDecision = () => {
       return (
         <>
