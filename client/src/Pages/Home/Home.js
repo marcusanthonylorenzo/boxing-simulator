@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import './Home.css'
-import BoxerCard from '../../Components/Boxer/BoxerCard/BoxerCard'
-import FightEngine from '../../Components/FightEngine/FightEngine'
+// import BoxerCard from '../../Components/Boxer/BoxerCard/BoxerCard'
+// import FightEngine from '../../Components/FightEngine/FightEngine'
 
 const Home = (
   { user, enemy, urls, fightNight, setFightNight,
-  fightOver, setFightOver, setResetFightBtn }) => {
+    fightNumber, setFightNumber,
+    fightOver, setFightOver, setResetFightBtn }) => {
 
   const [disableWhenLowHP, setDisableWhenLowHP] = useState(false);
   const [ url, setUrl ] = useState(urls[1])
@@ -39,7 +40,6 @@ const Home = (
 
           <div className='home-gym-stats'>
             <h2>Stats go here</h2>
-
           </div>
 
           <div className='home-gym-train'>
@@ -71,7 +71,8 @@ const Home = (
                     setFightOver(false);    
                     setFightNight(true);
                     setResetFightBtn(true);
-                }}> Fight Night </button>
+                    setFightNumber(fightNumber+1);
+                }}> <h2>Fight Night</h2> </button>
               </div>
             </div>
           </div>

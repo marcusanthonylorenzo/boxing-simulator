@@ -8,11 +8,12 @@ import temp from './Components/Helpers/Data'
 function App() {
   const { user, enemy, urls } = temp();
   const [ changeAppBgColor, setChangeAppBgColor ] = useState(`rgb(234, 234, 234);`);
+  const [ fightNumber, setFightNumber ] = useState(0);
+  const [ prevFightNumber, setPrevFightNumber ] = useState(fightNumber)
 
   /***  User and Opponent to pass down as state  ***/
   const [userState, setUserState ] = useState(user)
   const [oppState, setOppState ] = useState(enemy)
-
 
   /*** Match specific state ***/
   const [roundCount, setRoundCount] = useState(0);
@@ -20,12 +21,27 @@ function App() {
   const [resetFightBtn, setResetFightBtn] = useState(false);
   const [roundOver, setRoundOver] = useState(false);
   const [fightOver, setFightOver] = useState(false);
+  const [fightDataCollection, setFightDataCollection] = useState([])
 
+  useEffect(() => { !fightNight ? setChangeAppBgColor(`rgb(234, 234, 234);`) : setChangeAppBgColor(`black`)}, [fightNight]);
 
+  useEffect(() => {
+    persistInLocalStorage("fightHistory", JSON.stringify(fightDataCollection));
+  }, [fightDataCollection])
 
-  useEffect(() => { !fightNight ? setChangeAppBgColor(`rgb(234, 234, 234);`) : setChangeAppBgColor(`black`)}, []);
+  /***
+  * IMPORTANT: sends callback down to FightEngine, to collect fight data rendered.
+  * Persist this array in db to store historical fight data
+  ***/
 
-  console.log(`App state: fightNight`, fightNight, changeAppBgColor)
+  const updateDataCollections = (input) => {
+    setFightDataCollection(prev => [...prev, { matchDetails: input, matchId: fightNumber }])
+  }
+  console.log(fightDataCollection)
+
+  const persistInLocalStorage = (key, item) => {
+    localStorage.setItem(key, item);
+  }
 
   return (
     <div className="App" style={{ backgroundColor: changeAppBgColor }}>
@@ -40,7 +56,8 @@ function App() {
           roundCount={roundCount} setRoundCount={setRoundCount}
           fightNight={fightNight} setFightNight={setFightNight}
           fightOver={fightOver} setFightOver={setFightOver}
-          resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}/>
+          resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}
+          fightNumber={fightNumber} setFightNumber={setFightNumber} />
 
         :
 
@@ -49,7 +66,10 @@ function App() {
           roundOver={roundOver} setRoundOver={setRoundOver}
           fightNight={fightNight} setFightNight={setFightNight}
           fightOver={fightOver} setFightOver={setFightOver}
-          resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}/>
+          resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}
+          fightNumber={fightNumber} prevFightNumber={prevFightNumber}
+          setPrevFightNumber={setPrevFightNumber} 
+          updateDataCollections={updateDataCollections}/>
 
         }   
 

@@ -4,7 +4,7 @@ import './SelectMenu.css'
 const SelectMenu = (
   { buttons, roundOver, roundCount, fightStart, setFightStart,
     fightOver, setFightOver, fightNight, setFightNight,
-    resetFightBtn, setResetFightBtn
+    resetFightBtn, setResetFightBtn, fightNumber, setPrevFightNumber
   }) => {
 
   
@@ -25,12 +25,13 @@ const SelectMenu = (
     return (
       <>
         <button className='fight-button' id={`back-home-button`}
-          onClick={()=> {
-            console.log('route back to home!')
-            setFightNight(false);
-            setResetFightBtn(false);
-            setFightOver(true);
-          }
+            onClick={()=> {
+              console.log('route back to home!')
+              setFightNight(false);
+              setResetFightBtn(false);
+              setFightOver(true);
+              setPrevFightNumber(fightNumber);
+            }
           }>
           Back to Gym.
         </button>

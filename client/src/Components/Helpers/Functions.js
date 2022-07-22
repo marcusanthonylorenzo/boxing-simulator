@@ -18,7 +18,6 @@ const Functions = () => {
         dmgScale: () => dmg
       }
     }
-
   }
 }
 

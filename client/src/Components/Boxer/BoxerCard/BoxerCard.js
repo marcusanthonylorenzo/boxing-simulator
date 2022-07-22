@@ -7,8 +7,10 @@ import goldBelt from '../../../assets/images/goldBelt.png'
 const BoxerCard = ({
   boxer, path, corner, fightNight, fightOver,
   roundOver, roundCount, setFinalTotals,
-  exchangeCount, punchCount
+  exchangeCount, punchCount, fightNumber, setFightNumber, prevFightNumber
   }) => {
+
+    console.log(prevFightNumber, fightNumber)
 
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
@@ -99,25 +101,27 @@ const BoxerCard = ({
   },[punchCount])
 
   useEffect(() => {
-    if (cornerColor.side === "right"){ //timing delays for opponent
-      setTimeout(() => {
-        setShow(`show`); //show, fade, hide
-      }, 1000);
+    if(fightNumber === prevFightNumber+1) {
+      if (cornerColor.side === "right"){ //timing delays for opponent
+        setTimeout(() => {
+          setShow(`show`); //show, fade, hide
+        }, 1000);
 
-      setTimeout(() => {
-      setFade(`75%`);
-      }, 3600);
-
-    } else if (cornerColor.side === "left"){ //timing delays for user
-      setTimeout(() => {
-        setShow(`show`);
-      },  3000);
-
-      setTimeout(() => {
+        setTimeout(() => {
         setFade(`75%`);
-      },  7300);
-    }
-  }, []);
+        }, 3600);
+
+      } else if (cornerColor.side === "left"){ //timing delays for user
+        setTimeout(() => {
+          setShow(`show`);
+        },  3000);
+
+        setTimeout(() => {
+          setFade(`75%`);
+        },  7300);
+      }
+   }
+  });
   
   //adjust colors and position of image according to health percentage
   const koColor = (energy) => boxer.hp <= 0 ? `50%` : `${energy}%`
@@ -196,9 +200,6 @@ const BoxerCard = ({
   }
 
   const mainCard =  () => {
-
-    console.log(boxer.champion)
-
     return (
       <>
         <div className="boxer-info border padded" >
