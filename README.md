@@ -2,12 +2,18 @@
 
 Blog: https://achefthatcodes.com/
 
-### A comprehensive personal project in React, MERN stack.
+### A comprehensive personal project in React, MERN stack. (The focus of this project has shifted considerably.)
+#### Notes: The randomization in a sequence of events (the punches thrown) has yielded a strong demand for data management. Rather than focusing on a game, I want to focus on the collecting and outputing the data, and creating a historical directory of fight metrics locally and on the cloud.
+
+#### Gif of prototype below. UI is *not* finalised, this is just to help me visualize the seperation of components with a variety of colors.
+
+![ezgif com-gif-maker (4)](https://user-images.githubusercontent.com/100096239/180483777-957c5106-3227-40e6-8f61-716a278aa2f7.gif)
+
+- Fight engine tracks realtime 12 round fight, with damage, punch stats, and commentary.
 - Create a boxer and follow their rise or fall in the world rankings
 - User creates a boxer and faces 30 other randomly generated boxers
 - User's attributes are dictated by questionnaire
 - Dashboard tracks wins and losses, ranking, basic info.
-- Fight engine tracks realtime 12 round fight, with damage, punch stats, and commentary.
 
 
 ### Major Project MVP Components:
