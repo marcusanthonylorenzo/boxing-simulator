@@ -6,7 +6,7 @@
   grid-template-columns: 1fr 1fr 1fr;
   justify-content: left;
   align-items: center;
-  padding-left: 5vw;
+  padding-left: 10vw;
   opacity: 97%;
   box-shadow: 1px 0px 0px 1px rgba(2, 2, 3, 0.366);
 }

@@ -7,24 +7,25 @@ import temp from './Components/Helpers/Data'
 
 function App() {
   const { user, enemy, urls } = temp();
+   const [ changeAppBgColor, setChangeAppBgColor ] = useState(`rgb(234, 234, 234);`);
+
   /***  User and Opponent to pass down as state  ***/
   const [userState, setUserState ] = useState(user)
   const [oppState, setOppState ] = useState(enemy)
 
-  const [ changeAppBgColor, setChangeAppBgColor ] = useState(`black`);
 
   /*** Match specific state ***/
   const [roundCount, setRoundCount] = useState(0);
-  const [fightNight, setFightNight ] = useState(true);  
+  const [fightNight, setFightNight ] = useState(false);  
   const [resetFightBtn, setResetFightBtn] = useState(false);
   const [roundOver, setRoundOver] = useState(false);
   const [fightOver, setFightOver] = useState(false);
 
 
 
-  useEffect(() => { if (!fightNight) setChangeAppBgColor(`rgb(234, 234, 234);`) }, [fightNight]);
+  useEffect(() => { !fightNight ? setChangeAppBgColor(`rgb(234, 234, 234);`) : setChangeAppBgColor(`black`)}, []);
 
-  console.log(`App state: fightNight`, fightNight)
+  console.log(`App state: fightNight`, fightNight, changeAppBgColor)
 
   return (
     <div className="App" style={{ backgroundColor: changeAppBgColor }}>

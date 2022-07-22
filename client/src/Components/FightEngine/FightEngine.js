@@ -632,7 +632,7 @@ const FightEngine = (
     }}><h4>Fight</h4></button>
 
 
-  //UI JSX for boxing match "fight night"\
+  //UI JSX for boxing match "fight night"
 
   const fightNightLoader = () => {
     return (

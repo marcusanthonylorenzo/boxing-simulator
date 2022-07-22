@@ -17,7 +17,7 @@
   flex-direction: column;
   justify-content: center;
   position: absolute;
-  margin: 10% auto;
+  margin: auto;
   padding: 5%;
   height: 56vh;
   background-color: rgb(255, 255, 255);
@@ -32,7 +32,7 @@
   flex-direction: column;
   justify-content: center;
   position: absolute;
-  margin: 10% auto;
+  margin: auto;
   padding: 5%;
   height: 56vh;
   background-color: rgb(255, 255, 255);
@@ -53,8 +53,6 @@
 }
 
 .BoxerCard > div:hover {
-  /* background-color: rgb(255, 246, 246); */
-  /* color: rgb(253, 239, 135); */
   cursor: default;
 }
 
@@ -95,11 +93,18 @@
 }
 
 .boxer-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: rgb(27, 13, 13);
   margin-top: 5%;
-  /* padding: 2%; */
   width: 100%;
   height: 100%;
+}
+
+.boxer-info > * {
+  width: 90%;
+  margin: 5%;
 }
 
 /*boxer info and stats*/

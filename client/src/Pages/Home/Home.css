@@ -7,7 +7,112 @@
   margin: 5% auto;
 }
 
+/* #home-gym-container-wrap {
+  background-size: 100%;
+} */
+
 #home-gym-container {
   background-color: rgb(234, 234, 234);
   border-radius: 6px;
+  /* margin: auto; */
+}
+
+#home-gym-container > div {
+  box-shadow: 1px 1px 2px 1px rgba(9, 8, 8, 0.4);
+}
+
+.home-gym-nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  height: 98%;
+  width: 95%;
+  margin: 2% auto;
+  border-radius: 6px;
+}
+
+.home-gym-nav > div:hover {
+  opacity: 80%;
+}
+
+/*** User Info ***/
+
+.home-gym-user, .home-gym-stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(10, 10, 55, 1);
+  color: rgb(225, 220, 220);
+  font-weight: 600;
+  font-style: italic;
+  height: 33%;
+  width: 95%;
+  margin: 1%;
+  border-radius: 6px;
+}
+
+
+/*** Center main section ***/
+#home-gym-feed {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  margin-top: 15%;
+  height: 50vh;
+  width: 85%;
+  border-radius: 6px;
+}
+
+.home-gym-main {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 97.5%;
+  margin: 0 2%;
+  border-radius: 6px;
+}
+
+.home-gym-display {
+  background-color:rgba(9, 8, 8, 0.4);
+  height: 75%;
+  width: 95%;
+  padding: 1%;
+}
+
+
+.home-options {
+  height: 15%;
+  width: 97%;
+  margin: 1%;
+  box-shadow: inset 1px 1px 2px 1px rgba(19, 23, 19, 0.4);
+  border-radius: 6px;
+}
+
+.home-select-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+}
+
+#home-to-fight-button {
+  width: 98%;
+  height: 4rem;
+  border: none;
+  box-shadow: 1px 1px 3px 1px rgba(22, 21, 21, 0.7);
+  border-radius: 6px;
+}
+
+#home-to-fight-button:hover {
+  background-color: rgb(219, 116, 105);
+  cursor: pointer;
 }

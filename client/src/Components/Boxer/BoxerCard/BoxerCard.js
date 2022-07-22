@@ -275,15 +275,6 @@ const BoxerCard = ({
       </>
     )}
 
-  const homepageColors = () => {
-    if (!fightNight) {
-      return {
-        backgroundColor: `white`,
-        color: `black`
-      }
-    }
-  }
-
   return (
     <>
       <div className={`BoxerCard`}>
