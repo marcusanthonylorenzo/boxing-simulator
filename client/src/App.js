@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Landing from './Pages/Landing/Landing'
 import Home from './Pages/Home/Home'
 import './App.css'
 import Navbar from './Components/Interface/Navbar/Navbar'
@@ -6,7 +7,11 @@ import FightEngine from './Components/FightEngine/FightEngine'
 import temp from './Components/Helpers/Data'
 
 function App() {
+  /*** Main  ***/
   const { user, enemy, urls } = temp(); //import new fighters here
+  const [landingPage, setLandingPage] = useState(true);
+
+  /*** Counters ***/
   const [ changeAppBgColor, setChangeAppBgColor ] = useState(`rgb(234, 234, 234);`);
   const [ fightNumber, setFightNumber ] = useState(0);
   const [ prevFightNumber, setPrevFightNumber ] = useState(fightNumber)
@@ -46,10 +51,9 @@ function App() {
     localStorage.setItem(key, item);
   }
 
-
-  return (
-    <div className="App" style={{ backgroundColor: changeAppBgColor }}>
-
+  const loadGame = () => {
+    return (
+      <>
         <Navbar
           roundCount={roundCount} roundOver={roundOver}
           monthCounter={monthCounter} fightNight={fightNight}/>
@@ -81,9 +85,28 @@ function App() {
           stopFight={stopFight} setStopFight={setStopFight}
           updateDataCollections={updateDataCollections}/>
 
-        }   
+        }
 
+      </>
+    )
+  }
+
+
+  return (
+    <div className="App" style={{ backgroundColor: changeAppBgColor }}>
+
+      {
+        landingPage ?
+
+        <Landing landingPage={landingPage} setLandingPage={setLandingPage}/>
+
+        :
+        
+        loadGame()
+
+      }
+     
     </div>
-  );
+  )
 }
 export default App;

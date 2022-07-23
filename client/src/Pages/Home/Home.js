@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import './Home.css'
-// import BoxerCard from '../../Components/Boxer/BoxerCard/BoxerCard'
-// import FightEngine from '../../Components/FightEngine/FightEngine'
+import './Home.scss'
+import Ticker from 'react-ticker'
 
 const Home = (
   { user, enemy, urls, fightNight, setFightNight,
@@ -35,6 +34,13 @@ const Home = (
     setDisableFightBtn(false);
     }
   }, [monthCounter])
+
+
+  // const loadTicker = () => {
+  //   return (
+
+  //   )
+  // };
 
   // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
   const getTrainingEntries = Object.entries(user.train);
@@ -79,16 +85,29 @@ const Home = (
         {/***  Center Grid  ***/}
 
         <div className='home-gym-main'>
-          <div className='headlines'>
+          {/* <div className='headlines'> */}
             <div className='headlines-container'>
-              <h2>Headlines and progress go here</h2>
-              <h4>Or click to progress to next week</h4>
-            </div>
+              {/* CSS Ticker */}
+              <div className="ticker-wrap">
+                <div className="ticker">
+                  <div className="ticker__item">
+                    <h5>Welcome to the home gym.</h5>
+                  </div>
+                  <div className="ticker__item">
+                    <h5>Click to train, advance the month, or just sit and appreciate life.</h5>
+                  </div>
+                  <div className="ticker__item">
+                    <h5>You take fights every 4 months no questions asked!</h5>
+                  </div>
+                </div>
+              </div>
+            {/* </div> */}
           </div>
-          
+
           <div className={`inner-container`} id={`home-gym-feed`}>
             <div className='home-gym-display'>
-              <h2>Display week-to-week rankings, charts, and updates here.</h2>
+              <h2>Welcome to the home gym.</h2>
+              <h4>Click to progress to next week</h4>
             </div>
 
             <div className="home-options">

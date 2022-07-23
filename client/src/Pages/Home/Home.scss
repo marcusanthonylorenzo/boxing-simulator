@@ -69,15 +69,17 @@
 
 /*** Center Grid section ***/
 
-.headlines {
+.headlines-container{
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: rgb(204, 204, 210);
   border-radius: 6px;
-  width: 80%;
-  height: 15%;
-  padding: 3% 1%;
+  width: 77%;
+  height: 12%;
+  padding: 3% auto;
+  margin-bottom: 5%;
 }
 
 #home-gym-feed {
@@ -195,4 +197,74 @@
 .official-rankings h6:hover {
   background-color:rgb(222, 207, 207);
   cursor: default;
+}
+
+
+/*** Ticker ***/
+$duration: 20s;
+
+@-webkit-keyframes ticker {
+  0% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+  }
+
+  100% {
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes ticker {
+  0% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+  }
+
+  100% {
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+.ticker-wrap {
+
+  width: 1vw;
+  height: 8rem;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  background-color: rgba(#000, 0.9); 
+  padding-left: 100%;
+  border-radius: 5px;
+  
+  .ticker {
+
+    display: inline-block;
+    height: 4rem;
+    line-height: 5rem;  
+    white-space: nowrap;
+    padding-right: 90%;
+    box-sizing: content-box;
+
+    -webkit-animation-iteration-count: infinite; 
+            animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+   -webkit-animation-name: ticker;
+            animation-name: ticker;
+    -webkit-animation-duration: $duration;
+            animation-duration: $duration;
+
+    &__item {
+
+      display: inline-block;
+      padding: 0 2rem;
+      font-size: 1.5rem;
+      color: white;
+    }
+  }
 }

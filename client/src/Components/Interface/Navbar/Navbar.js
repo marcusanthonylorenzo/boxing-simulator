@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import './Navbar.css'
-// import Ticker from 'react-ticker'
 import oppBody from '../../../assets/images/oppBody.png'
 
 const Navbar = ({roundCount, monthCounter, roundOver, fightNight }) => {

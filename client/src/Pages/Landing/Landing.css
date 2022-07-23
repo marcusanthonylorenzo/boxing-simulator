@@ -1,0 +1,60 @@
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: right;
+  background-color: rgba(10, 10, 55, 1);
+  height: 90vh;
+
+  margin: 0;
+  color: rgba(245, 245, 245, 0.98);
+  padding: 0 1%;
+  font-size: 2.7rem;
+  font-style: italic;
+  opacity: 90%;
+}
+
+h2, h3, h5 {
+  margin: 0;
+}
+
+.landing-container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  place-items: center;
+  width: 80vw;
+  height: 100%;
+  margin-left: -35%;
+}
+
+.landing-container .navbar-logo {
+  transform: scale(2.2);
+}
+
+.landing-title {
+  width: 100%;
+}
+
+.enter {
+  display: flex;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.enter:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+  transition-duration: 190ms;
+  animation-timing-function: ease-in-out;
+  opacity: 90%;
+}
+
+.enter:active {
+  transform: scale(0.99);
+}
+
+.landing-logo {
+  box-shadow: 1px 0px 3px 1px rgba(67, 62, 62, 0.161);
+}
