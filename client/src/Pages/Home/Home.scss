@@ -115,6 +115,34 @@
   border-radius: 6px;
 }
 
+/*** Generate Boxer Button **/
+
+.generate-boxer-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(26, 162, 26, 0.923);
+  margin: 5% auto;
+  width: 50%;
+  height: 10%;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px 0px rgba(47, 45, 45, 0.5);
+  border: none;
+}
+
+#generator-btn {
+  display: block;
+  background-color: transparent;
+  color:aliceblue;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+#generator-btn:hover {
+  cursor: pointer;
+}
+
 
 .home-options {
   height: 35%;

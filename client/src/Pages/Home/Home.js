@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './Home.scss'
+import randomUserAPI from '../../Components/API/API';
 
 const Home = (
   { user, enemy, urls, fightNight, setFightNight,
@@ -9,11 +10,18 @@ const Home = (
 
   /***  General State  ***/
   const [ url, setUrl ] = useState(urls[1]);
-  const [ getHistory, setGetHistory ] = useState(JSON.parse(localStorage.getItem('fightHistory')));
+  const [getHistory, setGetHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
+  const [newBoxerList, setNewBoxerList ] = useState([]);
 
   /***  Toggles, Counters  ***/
+  const [hideGenerateBoxerBtn, setHideGenerateBoxerBtn] = useState(false)
   const [disableFightBtn, setDisableFightBtn] = useState(true);
   const [trainingFinished, setTrainingFinished] = useState(false);
+
+  /***  Data Retreival ***/
+  const [updateStatus, setUpdateStatus] = useState("Looking for a fight...");
+  const getTrainingEntries = Object.entries(user.train);
+  const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
 
   useEffect(() => {
     setFightNight(false)
@@ -32,8 +40,47 @@ const Home = (
     }
   }, [monthCounter])
 
+  // update localStorage everytime newBoxerList is updated
+  useEffect(() => {
+    localStorage.setItem('boxers', JSON.stringify([...newBoxerList]))
+    setUpdateStatus('Opponents found.')
+  }, [newBoxerList])
+
+
   // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
-  const getTrainingEntries = Object.entries(user.train);
+
+  /***  Make calls to randomUserAPI to aggregate list of opponents, set conditions later  ***/
+  const generateBoxer = () => {
+    randomUserAPI.get()
+      .then(response => {
+        console.log(response.data.results)
+        setHideGenerateBoxerBtn(true);
+        setNewBoxerList(prev => [...prev, ...response.data.results])
+      })
+      .catch(err => setUpdateStatus("No opponents found yet! Advance month for a new search."))
+  }
+
+  const mapOpponents = () => {
+    return boxerListFromLocal.map((each, i) => {
+      console.log(each)
+      return (
+        <div className='boxer-card'>
+          <h5>{each.name.first + ` ` + each.name.last}</h5>
+        </div>
+      )
+    })
+  }
+
+  const generateListOfBoxers = //Button that generates a new list of opponents, makes API calls
+      <button id={'generator-btn'} onClick={() => {
+        setUpdateStatus('Searching...')
+        console.log("Looking for a fight...");
+        generateBoxer();
+        setHideGenerateBoxerBtn(true);
+        }}>
+        <h5>Search new opponents</h5>
+      </button>
+
 
   return (
     <div className="main-container-wrap" id={`home-gym-container-wrap`} style={{ backgroundImage: url }}>
@@ -57,13 +104,10 @@ const Home = (
             <h4>Training (use icons later):</h4>
             {getTrainingEntries.map((each, i) => {
               return (
-                <button className="training-buttons" disabled={trainingFinished}
+                <button key={`training-buttons-${i}`} className="training-buttons" disabled={trainingFinished}
                   onClick={()=>{
-                    console.log(each[1]);
-                    each[1]()
-                    setTrainingFinished(true);
-                    console.log(user.hp)
-                }}>
+                    each[1]();
+                    setTrainingFinished(true); }}>
                   <h5>{each[0]}</h5>
                 </button>
               )
@@ -93,15 +137,18 @@ const Home = (
 
           <div className={`inner-container`} id={`home-gym-feed`}>
             <div className='home-gym-display'>
-              <h2>Welcome to the home gym.</h2>
-              <h4>Click to progress to next week</h4>
+              <div className='generate-boxer-button'>
+                <h5>{!hideGenerateBoxerBtn ? generateListOfBoxers : updateStatus}</h5>
+              </div>
+              {mapOpponents()}
             </div>
 
             <div className="home-options">
               <div className="home-select-menu">
                 <button className={`home-buttons advance`} disabled={advanceMonth}
                 onClick={()=> {
-                  setMonthCounter(monthCounter+1)
+                  setHideGenerateBoxerBtn(false);
+                  setMonthCounter(monthCounter+1);
                   setTrainingFinished(false);
                   if (monthCounter === 11) setMonthCounter(0);
                 }}>
