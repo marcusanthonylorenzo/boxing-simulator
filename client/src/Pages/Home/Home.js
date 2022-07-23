@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import './Home.scss'
 import randomUserAPI from '../../Components/API/API';
+import Boxer from '../../Components/Boxer/BoxerClass';
+import Randomize from '../../Components/Helpers/Randomize'
 
 const Home = (
   { user, enemy, urls, fightNight, setFightNight,
+    setUserState, setOppState,
     monthCounter, setMonthCounter, advanceMonth, setAdvanceMonth,
     fightNumber, setFightNumber, stopFight, setStopFight,
     fightOver, setFightOver, setResetFightBtn }) => {
@@ -26,26 +29,33 @@ const Home = (
   useEffect(() => {
     setFightNight(false)
     user.knockdownCount = 0;
+    setDisableFightBtn(true);
   }, [])
 
   useEffect(() => {
-    if (user.hp <= user.maxHp*0.35) {
+    if (user.hp <= user.maxHp*0.35 || !fightNight) {
+      console.log("check hp");
       setDisableFightBtn(true);
     }
   }, [])
 
   useEffect(() => {
-    if (monthCounter === 5) {
+    if (monthCounter === 4) {
     setDisableFightBtn(false);
     }
   }, [monthCounter])
 
   // update localStorage everytime newBoxerList is updated
   useEffect(() => {
-    localStorage.setItem('boxers', JSON.stringify([...newBoxerList]))
-    setUpdateStatus('Opponents found.')
+    const createBoxerInstanceForEach = newBoxerList.map(boxer => {
+      return generateBoxerWithAPI(boxer);
+    })
+    console.log(createBoxerInstanceForEach)
+    localStorage.setItem('boxers', JSON.stringify([...createBoxerInstanceForEach]));
+    setUpdateStatus('Opponents found.');
   }, [newBoxerList])
 
+  console.log(newBoxerList)
 
   // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
 
@@ -53,16 +63,40 @@ const Home = (
   const generateBoxer = () => {
     randomUserAPI.get()
       .then(response => {
-        console.log(response.data.results)
         setHideGenerateBoxerBtn(true);
-        setNewBoxerList(prev => [...prev, ...response.data.results])
+        setNewBoxerList(prev => [...prev, ...response.data.results]);
+        setUpdateStatus('Opponents found.');
       })
-      .catch(err => setUpdateStatus("No opponents found yet! Advance month for a new search."))
+      .catch(err => {
+        // setHideGenerateBoxerBtn(true);
+        setUpdateStatus("No opponents found yet! Advance month for a new search.");
+      })
+  }
+
+  const generateBoxerWithAPI = (newUserFromAPI) => {
+    //create level scaling later
+    const firstName = newUserFromAPI.name.first;
+    const nickname = '';
+    const lastName = newUserFromAPI.name.last
+    const hometown = `${newUserFromAPI.location.city}, ${newUserFromAPI.location.country}`;
+    const weight = Randomize(125, 250);
+    const favColor = ``;
+
+    const stamina = Randomize(1, 100);
+    const aggression = Randomize(1, 100);
+    const agility = Randomize(1, 100);
+    const strength = Randomize(1, 100);
+    const defense = Randomize(1, 100);
+    const heart = Randomize(1, 100);
+
+    return new Boxer(
+      firstName, nickname, lastName, hometown, weight, favColor,
+      stamina, aggression, agility, strength, defense, heart
+    );
   }
 
   const mapOpponents = () => {
-    return boxerListFromLocal.map((each, i) => {
-      console.log(each)
+    return newBoxerList.map((each, i) => {
       return (
         <div className='boxer-card'>
           <h5>{each.name.first + ` ` + each.name.last}</h5>
@@ -74,7 +108,6 @@ const Home = (
   const generateListOfBoxers = //Button that generates a new list of opponents, makes API calls
       <button id={'generator-btn'} onClick={() => {
         setUpdateStatus('Searching...')
-        console.log("Looking for a fight...");
         generateBoxer();
         setHideGenerateBoxerBtn(true);
         }}>
@@ -177,7 +210,6 @@ const Home = (
             <div className="official-rankings">
               <h6>W (TKO) Fighter Example</h6>
             </div>
-
           </div>
    
         </div>

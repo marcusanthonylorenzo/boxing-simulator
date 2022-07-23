@@ -39,6 +39,7 @@ function App() {
   /***
   * IMPORTANT: sends callback down to FightEngine, to collect fight data rendered and setState at App level.
   ***/
+ 
 
   const updateDataCollections = (input) => { setFightDataCollection(prev => [...prev, { matchDetails: input, matchId: fightNumber }])}
 
@@ -56,6 +57,7 @@ function App() {
         !fightNight ?
 
         <Home user={userState} enemy={oppState} urls={urls}
+          setUserState={setUserState} setOppState={setOppState}
           monthCounter={monthCounter} setMonthCounter={setMonthCounter}
           advanceMonth={advanceMonth} setAdvanceMonth={setAdvanceMonth}
           stopFight={stopFight} setStopFight={setStopFight}

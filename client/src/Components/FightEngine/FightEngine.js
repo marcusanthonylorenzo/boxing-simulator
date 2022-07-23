@@ -86,7 +86,12 @@ const FightEngine = (
   },[roundStart, ko, fightOver, knockdownRule])
 
   useEffect(() => {
-    if (fightOver && knockdownRule){ stopFight.stop() }
+    if (fightOver && knockdownRule){ 
+      stopFight.stop();
+    }
+    // return (
+    //   stopFight.stop()
+    // )
   }, [fightOver, knockdownRule])
 
   useEffect(() => { //Set button toggle

@@ -5,7 +5,7 @@ class Boxer {
   constructor(
     firstName, nickname, lastName,
     hometown, weightClass, favoriteColor,
-    sta, agr, agi, str, def,
+    sta, agr, agi, str, def, hrt
   ){
 
     this.firstName = firstName; this.nickname = nickname; this.lastName = lastName;
@@ -15,7 +15,7 @@ class Boxer {
     this.pow = (this.str*0.7)+(this.agi*0.3)
 
     //eventually determine by survey at create page
-    this.heart = 75
+    this.heart = hrt
     this.chin = ((this.sta*0.4)+(this.str*0.3)+(this.heart*0.3))
 
     //eventually split into head and body, max is static, non-max decrements in battle
