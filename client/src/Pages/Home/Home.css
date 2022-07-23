@@ -68,6 +68,18 @@
 }
 
 /*** Center Grid section ***/
+
+.headlines {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(204, 204, 210);
+  border-radius: 6px;
+  width: 80%;
+  height: 15%;
+  padding: 3% 1%;
+}
+
 #home-gym-feed {
   display: flex;
   flex-direction: column;
@@ -130,12 +142,30 @@
   border-radius: 6px;
 }
 
-.home-buttons:hover {
-  background-color: rgb(219, 116, 105);
-  color:rgb(242, 242, 234);
-  cursor: pointer;
+.home-buttons:active, .training-buttons:active {
+  transform: scale(0.95);
 }
 
+.home-buttons:disabled {
+  opacity: 70%;
+  color: rgb(151, 149, 149);
+}
+
+.home-buttons:hover {
+  color:rgb(242, 242, 234);
+  cursor: pointer;
+  opacity: 90%;
+}
+
+.advance {
+  background-color: rgba(26, 162, 26, 0.923);
+  color: white;
+}
+
+.to-fight {
+  background-color: #d64040;
+  color: white;
+}
 
 /*** Right Grid section ***/
 

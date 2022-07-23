@@ -25,7 +25,6 @@ const Navbar = ({roundCount, monthCounter, roundOver, fightNight }) => {
     }
   }
 
-
   return (
     <div className="Navbar">
       

@@ -6,11 +6,10 @@ import FightEngine from './Components/FightEngine/FightEngine'
 import temp from './Components/Helpers/Data'
 
 function App() {
-  const { user, enemy, urls } = temp();
+  const { user, enemy, urls } = temp(); //import new fighters here
   const [ changeAppBgColor, setChangeAppBgColor ] = useState(`rgb(234, 234, 234);`);
   const [ fightNumber, setFightNumber ] = useState(0);
   const [ prevFightNumber, setPrevFightNumber ] = useState(fightNumber)
-
   const [monthCounter, setMonthCounter] = useState(0);
   const [advanceMonth, setAdvanceMonth] = useState(false);
 
@@ -42,12 +41,10 @@ function App() {
   const updateDataCollections = (input) => {
     setFightDataCollection(prev => [...prev, { matchDetails: input, matchId: fightNumber }])
   }
-  console.log(fightDataCollection)
 
   const persistInLocalStorage = (key, item) => {
     localStorage.setItem(key, item);
   }
-
 
 
   return (

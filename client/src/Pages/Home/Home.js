@@ -80,11 +80,12 @@ const Home = (
 
         <div className='home-gym-main'>
           <div className='headlines'>
-            <h2>Headlines and progress go here</h2>
-            <h4>Or click to progress to next week</h4>
+            <div className='headlines-container'>
+              <h2>Headlines and progress go here</h2>
+              <h4>Or click to progress to next week</h4>
+            </div>
           </div>
           
-
           <div className={`inner-container`} id={`home-gym-feed`}>
             <div className='home-gym-display'>
               <h2>Display week-to-week rankings, charts, and updates here.</h2>
@@ -92,7 +93,7 @@ const Home = (
 
             <div className="home-options">
               <div className="home-select-menu">
-                <button className={`home-buttons`} disabled={advanceMonth}
+                <button className={`home-buttons advance`} disabled={advanceMonth}
                 onClick={()=> {
                   setMonthCounter(monthCounter+1)
                   setTrainingFinished(false);
@@ -100,7 +101,7 @@ const Home = (
                 }}>
                   <h2>Advance Month</h2>
                 </button>
-                <button className={`home-buttons`} disabled={disableFightBtn}
+                <button className={`home-buttons to-fight`} disabled={disableFightBtn}
                   onClick={(e)=> {
                     e.preventDefault();
                     setFightOver(false);    
