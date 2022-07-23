@@ -3,18 +3,15 @@ import randomizer from '../Helpers/Randomize.js'
 class Boxer {
 
   constructor(
-
     firstName, nickname, lastName,
     hometown, weightClass, favoriteColor,
     sta, agr, agi, str, def,
-
   ){
 
     this.firstName = firstName; this.nickname = nickname; this.lastName = lastName;
     this.hometown = hometown; this.weightClass = weightClass; this.favoriteColor = favoriteColor;
     
     this.sta = sta; this.agr = agr; this.agi = agi; this.str = str; this.def = def;
-
     this.pow = (this.str*0.7)+(this.agi*0.3)
 
     //eventually determine by survey at create page
@@ -27,7 +24,6 @@ class Boxer {
 
     this.maxHp = (this.sta + this.chin + this.heart + this.maxCon + this.str)*12;
     this.hp = this.maxHp*this.con;
-
     this.win = 0;
     this.loss = 0;
     this.rank = 31;
@@ -38,9 +34,7 @@ class Boxer {
   }
 
   /***
-  
   FIGHT WORKFLOW
-
   ***/
 
   isChamp = (trueOrFalse) => {
@@ -64,21 +58,18 @@ class Boxer {
     let handSpd = combos/10;
     let min = (this.pow*this.con)*handSpd/100;
     let max = (this.pow)
-    // console.log(`handSpd, min, max`, handSpd, min, max)
     let rand = randomizer(min, max);
     this.energyLoss();
-
     return rand;
   }
 
   //determines the ability to reduce damage input by matching attackers punches (and evading them)
   defend = (combo) => {
-    let counterSpd = combo/10;
+    // let counterSpd = combo/10;
     let defense = ((this.def*0.8)+(this.chin*0.2))
     let minDef = defense*this.con
     let defRand = randomizer(minDef, defense)
     this.energyLoss();
-    // console.log(`defender`, this.firstName, defRand, combo)
     return defRand
   }
 
@@ -90,8 +81,7 @@ class Boxer {
   }
 
   handSpeed = () => {
-    let min = this.agi*this.con;
-    let max = this.agi
+    let max = this.agi;
     return randomizer(1, max)
   }
 
@@ -108,7 +98,6 @@ class Boxer {
     return randomizer(this.chin, willToGetUp);
   }
 
-
   //increase attributes between rounds, with 1 or 2 negative effects
   pepTalk = {
 
@@ -120,10 +109,9 @@ class Boxer {
       1: "Hey...relax mate. Be patient. Do your thing.",
       2: () => {
         this.agi *= 0.96;
-        this.pow *= 1.09;
+        this.pow *= 1.07;
         this.con *= 1.09;
-        this.def *= 1.09
-        console.log(this.agi, this.pow, this.con)
+        this.def *= 1.09;
       }
     },
     youGottaGo: {
@@ -151,16 +139,14 @@ class Boxer {
   lifeLeft = () => this.hp/this.maxHp
 
   record = {
-  //update wins/loss in endFight function
+    //update wins/loss in endFight function
     updateLoss: () => this.loss += 1,
     updateWin: () => this.win += 1 
   }
 
-/***
-
+  /***
   GYM METHODS
-
- ***/
+  ***/
 
   //increase attributes during fight week
   train = {
@@ -190,17 +176,14 @@ class Boxer {
     },
 
     rest: () => {
-      console.log("rested")
       if (!this.hp < this.maxHp) {
         this.hp *= 1.09;
       } else if (this.hp > this.maxHp) {
         this.hp = this.maxHp;
       }
       this.con *= 1.09;
-      console.log(this.hp)
     }
   }
-
 }
 
 export default Boxer

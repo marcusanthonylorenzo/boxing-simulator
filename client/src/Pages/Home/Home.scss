@@ -185,7 +185,6 @@
   width: 95%;
   margin: 1%;
   border-radius: 6px;
-
 }
 
 .official-rankings h6 {
@@ -256,7 +255,7 @@ $duration: 20s;
             animation-iteration-count: infinite;
     -webkit-animation-timing-function: linear;
             animation-timing-function: linear;
-   -webkit-animation-name: ticker;
+    -webkit-animation-name: ticker;
             animation-name: ticker;
     -webkit-animation-duration: $duration;
             animation-duration: $duration;

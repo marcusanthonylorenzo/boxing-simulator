@@ -169,8 +169,9 @@ const BoxerCard = ({
           <div className="punches-landed-data">
             <h5>{boxer.knockdownCount}</h5>
           </div>
+
           <div className="punches-landed-label">
-            <h5>Accuracy: </h5>
+            <h5>Accuracy (By Round, Total): </h5>
           </div>
           <div className="punches-landed-data">
             <div className="punches-landed-accuracy-round">
@@ -182,12 +183,14 @@ const BoxerCard = ({
               <h5>( {Math.ceil((getTotalPunchesLanded/getTotalPunchesThrown)*100)}% )</h5>
             </div>
           </div>
+
           <div className="punches-landed-label">
             <h5>Engagement Rate:</h5>
           </div>
           <div className="punches-landed-data">
             <h5>{ maxEngagementRate() }%</h5>
           </div>
+
           <div className="punches-landed-label">
             <h5>Ring Control:</h5>
           </div>
@@ -224,8 +227,7 @@ const BoxerCard = ({
           <div className="boxer-condition" style={{
             backgroundColor: changeColor(life),
             opacity: koColor(energy),
-            transform: `scale(${dmgScaleRegulator()}% )`
-          }}>
+            transform: `scale(${dmgScaleRegulator()}% )` }}>
             <div className={`boxer-condition-body ${flip()}`} //exists if you want to flip a profile pic in future
               style={{
               backgroundColor: changeColor(life), //Change phyiscal condition by color, red is near knockout
@@ -237,8 +239,7 @@ const BoxerCard = ({
                 className="boxer-pic"
                 style={{ 
                 transform: `scale(${dmgScaleRegulator()}%)`,
-                opacity: koColor(),
-              }}/>
+                opacity: koColor() }}/>
               <h5 style={{display: 'flex', position: 'absolute', color: `white`}}>
                 {Math.round(boxer.hp)}
                 {life}
@@ -288,9 +289,7 @@ const BoxerCard = ({
             style={{opacity: fade, color: boxer.favoriteColor}}
             onClick={(e) => {
               e.preventDefault();
-              showHide(); }
-              }>
-            {/* // style={{backgroundColor: }}> */}
+              showHide(); }}>
             {
               commentary.setIntros({...cornerColor,
                 weightClass: commentary.weightClassName(boxer)},
@@ -299,6 +298,7 @@ const BoxerCard = ({
           </div> 
 
           : mainCard()
+
         }
       </div>
     </>

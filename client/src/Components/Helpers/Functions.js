@@ -1,4 +1,4 @@
-const Functions = () => {
+const Functions = () => { //returning an object differently than the Data.js
   return {
     setObj: (resultObj, key, value) => { //Composition create key
       return {

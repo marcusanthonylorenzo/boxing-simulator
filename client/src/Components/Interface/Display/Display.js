@@ -3,8 +3,10 @@ import './Display.css'
 import SelectMenu from '../SelectMenu/SelectMenu'
 
 const Display = ({
-  ko, pbp, user, opp, fightNight, setFightNight,
-  fightStart, fightOver, roundStart, roundOver, roundCount,
+  ko, pbp, user, opp,
+  fightNight, setFightNight,
+  fightStart, fightOver,
+  roundStart, roundOver, roundCount,
   judgeOneOfficialScorecard, judgeTwoOfficialScorecard,
   winner, loser, knockdownRule, stopFight
 }) => {
@@ -35,13 +37,10 @@ const Display = ({
     setFade({backgroundColor: `white`});
     setHide(`hide`);
     setHideRefTalk(`black`);
-  },  6900);
+  }, 6900);
 
-  useEffect(() => {
-    setTimeout(() => {
-      displayDiv.current.scrollTop = displayDiv.current.scrollHeight;
-    }, 1500);
-  });
+  useEffect(() => { setTimeout(() => { displayDiv.current.scrollTop = displayDiv.current.scrollHeight }, 1500) });
+  
 
   const fightIntroText = () => {
     return (
@@ -73,8 +72,7 @@ const Display = ({
       <div className={`textbox`} style={{
         backgroundColor: getAttacker.favoriteColor,
         color: fontCol,
-        fontSize: fontSiz
-      }}>
+        fontSize: fontSiz }}>
         {scrap.text}
       </div>
     )
@@ -90,24 +88,23 @@ const Display = ({
             <h2>The bell sounds for round {roundCount}.</h2>
             <h4>At your corner, Coach looks you in the eyes with stern advice:</h4>
               <div className={`select-menu`}>
-                  {
-                    pepTalkEntries.map((entry, i)  => {
-                      const pepTalkLabel = entry[1][1];
-                      const pepTalkMethod = entry[1][2];
-                      return(
-                        <>
-                          <button key={pepTalkLabel} className={`pep-talk-buttons`} disabled={disableBtns}
-                            onClick={ e => {
-                              e.preventDefault();
-                              pepTalkMethod();
-                              setHideModal(`hide`);
-                              console.log(hideModal)
-                            }}>
-                              <h4>{pepTalkLabel}</h4>                             
-                            </button>
-                        </>   
-                    )})
-                  }
+                {
+                  pepTalkEntries.map((entry, i)  => {
+                    const pepTalkLabel = entry[1][1];
+                    const pepTalkMethod = entry[1][2];
+                    return(
+                      <>
+                        <button key={pepTalkLabel} className={`pep-talk-buttons`} disabled={disableBtns}
+                          onClick={ e => {
+                            e.preventDefault();
+                            pepTalkMethod();
+                            setHideModal(`hide`); }}>
+                            <h4>{pepTalkLabel}</h4>                             
+                          </button>
+                      </>   
+                    )
+                  })
+                }
               </div>
           </div>
         </div>
@@ -116,7 +113,7 @@ const Display = ({
   }
 
   const mapPbp = () => {  //map Play By Play
-    return pbp.map((scrap, i) => {
+    return pbp.map((scrap) => {
       let getAttacker = {
         ...scrap.attacker,
         cornerColor: scrap.favoriteColor,
@@ -127,9 +124,8 @@ const Display = ({
         <h4>The fighters both in the pocket trading heavy blows right now!</h4>
         <h4>{scrap.text}</h4>
       </div>
-      
+
     const showCornerModal = cornerModal();
-      
       return (
         <>
           {!ko ? continueText(getAttacker, scrap) : koedText } {/* continue or show KO OR judgesDecision() */}
@@ -140,15 +136,17 @@ const Display = ({
   };
 
   /*** Display scorecards, update win/loss, route to home page button. ***/
-  const postFightModal = () => { 
+  const postFightModal = () => {
+
     const postFightText = (comments) => {
       if (fightOver || knockdownRule) stopFight.stop();
       return (
         <>
         <h4>{comments}</h4>
-       </>
+        </>
       )
     }
+
     const judgesDecision = () => {
       return (
         <>
@@ -171,7 +169,7 @@ const Display = ({
             </div>
           </div>
         </>
-        )
+      )
     }
 
     const knockdownRuleApplied = () => {
@@ -185,7 +183,7 @@ const Display = ({
       )
     }
 
-    return (
+    return ( //return postFightModal()
       <>
         <div className={`options ${hideModal} `}>
           {knockdownRule ? postFightText(`An onslaught of punches left, right, and center!`) : postFightText("A great contest between two warriors!")}
@@ -193,8 +191,7 @@ const Display = ({
         </div>
       </>
     )
-  }
-
+  } //postFightModal() closing bracket
 
   return (
     <>

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import './Home.scss'
-import Ticker from 'react-ticker'
 
 const Home = (
   { user, enemy, urls, fightNight, setFightNight,
     monthCounter, setMonthCounter, advanceMonth, setAdvanceMonth,
     fightNumber, setFightNumber, stopFight, setStopFight,
     fightOver, setFightOver, setResetFightBtn }) => {
-
 
   /***  General State  ***/
   const [ url, setUrl ] = useState(urls[1]);
@@ -16,7 +14,6 @@ const Home = (
   /***  Toggles, Counters  ***/
   const [disableFightBtn, setDisableFightBtn] = useState(true);
   const [trainingFinished, setTrainingFinished] = useState(false);
-
 
   useEffect(() => {
     setFightNight(false)
@@ -34,13 +31,6 @@ const Home = (
     setDisableFightBtn(false);
     }
   }, [monthCounter])
-
-
-  // const loadTicker = () => {
-  //   return (
-
-  //   )
-  // };
 
   // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
   const getTrainingEntries = Object.entries(user.train);
@@ -79,13 +69,11 @@ const Home = (
               )
             })}
           </div>
-
         </div>
 
         {/***  Center Grid  ***/}
 
         <div className='home-gym-main'>
-          {/* <div className='headlines'> */}
             <div className='headlines-container'>
               {/* CSS Ticker */}
               <div className="ticker-wrap">
@@ -101,7 +89,6 @@ const Home = (
                   </div>
                 </div>
               </div>
-            {/* </div> */}
           </div>
 
           <div className={`inner-container`} id={`home-gym-feed`}>

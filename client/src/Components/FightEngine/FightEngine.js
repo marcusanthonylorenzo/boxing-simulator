@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import Functions from '../Helpers/Functions'
-// import Navbar from '../Interface/Navbar/Navbar'
 import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
 import Display from '../Interface/Display/Display'
 import leftBoxer from '../../assets/images/redgloves.png'
@@ -9,10 +8,16 @@ import SelectMenu from '../Interface/SelectMenu/SelectMenu'
 // import randomize from '../Helpers/Randomize'
 
 const FightEngine = (
-  { user, enemy, urls, roundCount, setRoundCount, stopFight, setStopFight,
-    fightNumber, setFightNumber, prevFightNumber, setPrevFightNumber,
-    roundOver, setRoundOver, fightNight, setFightNight, 
-    resetFightBtn, setResetFightBtn, fightOver, setFightOver, updateDataCollections }) => {
+  { user, enemy, urls,
+    fightNight, setFightNight,
+    roundCount, setRoundCount,
+    stopFight, setStopFight,
+    fightNumber, setFightNumber,
+    prevFightNumber, setPrevFightNumber,
+    roundOver, setRoundOver,
+    resetFightBtn, setResetFightBtn,
+    fightOver, setFightOver,
+    updateDataCollections }) => {
 
   const { setObj, setCorner } = Functions(); //unpack functions from Helpers/Functions
 
@@ -49,7 +54,7 @@ const FightEngine = (
   const [judgeTwo, setJudgeTwo] = useState([]);
   const [judgeTwoOfficialScorecard, setJudgeTwoOfficialScorecard] = useState();
 
-  useEffect(() =>  {
+  useEffect(() =>  { //Check if beginning of a new fight
     if(fightNight && roundCount === 0) {
       setResetFightBtn(true);
       setFightOver(false);
@@ -76,17 +81,12 @@ const FightEngine = (
   }, [user.knockdownCount, enemy.knockdownCount])
 
   useEffect(() => { //check start/stop conditions
-    if (roundStart || ko || fightOver ) setDisable(true);
-    if (ko || knockdownRule) {
-      setFightOver(true);
-    }
+    if (roundStart || ko || fightOver ) setDisable(true) //disable buttons
+    if (ko || knockdownRule)  setFightOver(true) //end fight if KO
   },[roundStart, ko, fightOver, knockdownRule])
 
   useEffect(() => {
-    if (fightOver && knockdownRule){
-    console.log(`done`)
-    stopFight.stop()
-    }
+    if (fightOver && knockdownRule){ stopFight.stop() }
   }, [fightOver, knockdownRule])
 
   useEffect(() => { //Set button toggle
@@ -113,7 +113,9 @@ const FightEngine = (
     }
   },[fightOver])
   
-  /***  Update judge's scorecard per round, update separately per mount!  ***/
+  /***
+  * Update judge's scorecard per round, update individually per mount. Otherwise will rerender each other if together.
+  ***/
   useEffect(() => {
       const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
       const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
@@ -125,9 +127,10 @@ const FightEngine = (
       const judgeTwoOppScore = judgeTwo.reduce((acc, curr, i) => acc += curr[1], 0);
       setJudgeTwoOfficialScorecard({ user: judgeTwoUserScore, opp: judgeTwoOppScore });
   }, [judgeTwo])
-  /****/
 
-  /*** where you set the fighters extra stats, randomize cornerColors in future, change before each new fight!  ***/
+  /***
+  * Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
+  ***/
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
   const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", true, oppDmgScale)
@@ -143,7 +146,8 @@ const FightEngine = (
   /*** Build logic for Judge criteria ***/
 
   const judgeDecision = (user, enemy, whatToJudge, whichJudge) => {
-    const judgeUser = filterStats(user, whatToJudge);
+    //Use the judges criteria to filter the aggregated stats of each fighter.
+    const judgeUser = filterStats(user, whatToJudge); 
     const judgeOpp = filterStats(enemy, whatToJudge);
     let userScore = 9;
     let oppScore = 9;
@@ -162,6 +166,7 @@ const FightEngine = (
     }
     
     if (enemy.knockdownCount === user.knockdownCount) {
+      //If all counts are equal, judge the winner based on judges criteria filtered above.
       if (judgeUser > judgeOpp){
         userScore = 9;
         oppScore = 10;
@@ -172,6 +177,7 @@ const FightEngine = (
         chooseJudge(whichJudge);
       }
     } else {
+      //For each knockdown, adjust scores
       if (user.knockdownCount > 0) {
         userScore -= user.knockdownCount;
         oppScore++;
@@ -184,6 +190,7 @@ const FightEngine = (
       }
 
       if (user.knockdownCount > 0 && enemy.knockdownCount > 0) {
+        //If users are both getting knocked down, winner is the one with less knockdowns.
         if (user.knockdownCount > enemy.knockdownCount) {
           userScore = 9;
           oppScore = 10;
@@ -215,6 +222,7 @@ const FightEngine = (
   /***  Tally scorecards  ***/
 
   const compareScorecards = (user, opp) => {
+    //Add commentary for Split (2/3 winner)/Unanimous Decisions (3/3 winner) in future.
     setFightOver(true);
     setRoundOver(true);
     let userTally = 0;
@@ -250,7 +258,7 @@ const FightEngine = (
       } else if (userTally < oppTally) {
         updateWinLoss(opp, user)
       } else if (userTally === oppTally) {
-        console.log(`We have a draw! *Crowd boos*`)
+        console.log(`We have a draw! *Crowd boos*`) //remove later
       }
     }
   }
@@ -282,12 +290,13 @@ const FightEngine = (
   const determineKO = (offense, defense, hit, timeout ) => {
     /*** Initialize getUp abilites, update UI ***/
     if (defense.hp <= 0) {
-      console.log("DETERMINING KO")
-      const getUpTimer = setTimeout(() => { //slow down getUp post knock out text boxes.
+      const getUpTimer = setTimeout(() => {
+        //slow down getUp post knock out text boxes.
         const takesShot = defense.getUp();
         const getUp = defense.getUp();
 
-        setPbp(prev => [...prev, {  //push to play-by-play array with new object.
+        setPbp(prev => [...prev, { 
+        //push to play-by-play array with new object.
           attacker: offense,
           defender: defense,
           hit: hit,
@@ -295,8 +304,9 @@ const FightEngine = (
         ])
         defense.knockdownCount++;
 
-        /*** Check getUp, if greater than first "will" to get up, boxer gets up  ***/
+
         if (getUp > takesShot) {
+        // Check getUp, if greater than first "will" to get up, boxer gets up.          
           setKo(false)          
           setPbp(prev => [...prev, {
             attacker: offense,
@@ -307,7 +317,8 @@ const FightEngine = (
           defense.hp*=1.2;
           return determineKO;
           
-        } else {  //fight is over, clear timeout, set the play-by-play to notify user and return
+        } else { 
+          //fight is over, clear timeout, set the play-by-play to notify user and return
           setFightOver(true); 
           clearTimeout(timeout)
           setPbp(prev => [prev, {
@@ -488,7 +499,6 @@ const FightEngine = (
     return result
   };
 
-
   //Phase 3: tie everything together
 
   const engagement = (user, opp, timeout) => {  //engagement determines who initiates the attack   
@@ -595,7 +605,6 @@ const FightEngine = (
         enemy.roundRecovery();
     }}><h4>Fight</h4></button>
 
-
   //UI JSX for fight night
 
   const fightNightLoader = () => {
@@ -677,7 +686,6 @@ const FightEngine = (
         <div className="main-container">
 
         {/***  Boxer Card stays in this position as you navigate the page  ***/}
-
           { fightNightLoader()}
           
         </div>

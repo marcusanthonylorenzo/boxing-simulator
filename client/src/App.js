@@ -4,12 +4,17 @@ import Home from './Pages/Home/Home'
 import './App.css'
 import Navbar from './Components/Interface/Navbar/Navbar'
 import FightEngine from './Components/FightEngine/FightEngine'
-import temp from './Components/Helpers/Data'
+import data from './Components/Helpers/Data'
 
 function App() {
+
   /*** Main  ***/
-  const { user, enemy, urls } = temp(); //import new fighters here
+  const { user, enemy, urls } = data(); //import new fighters here
   const [landingPage, setLandingPage] = useState(true);
+  
+  /***  User and Opponent to pass down as state  ***/
+  const [userState, setUserState ] = useState(user)
+  const [oppState, setOppState ] = useState(enemy)
 
   /*** Counters ***/
   const [ changeAppBgColor, setChangeAppBgColor ] = useState(`rgb(234, 234, 234);`);
@@ -17,10 +22,6 @@ function App() {
   const [ prevFightNumber, setPrevFightNumber ] = useState(fightNumber)
   const [monthCounter, setMonthCounter] = useState(0);
   const [advanceMonth, setAdvanceMonth] = useState(false);
-
-  /***  User and Opponent to pass down as state  ***/
-  const [userState, setUserState ] = useState(user)
-  const [oppState, setOppState ] = useState(enemy)
 
   /*** Match specific state ***/
   const [roundCount, setRoundCount] = useState(0);
@@ -30,7 +31,6 @@ function App() {
   const [fightOver, setFightOver] = useState(false);
   const [fightDataCollection, setFightDataCollection] = useState([])
   const [stopFight, setStopFight] = useState({});
-  console.log(stopFight)
 
   useEffect(() => { !fightNight ? setChangeAppBgColor(`rgb(234, 234, 234);`) : setChangeAppBgColor(`black`)}, [fightNight]);
 
@@ -40,7 +40,6 @@ function App() {
 
   /***
   * IMPORTANT: sends callback down to FightEngine, to collect fight data rendered.
-  * Persist this array in db to store historical fight data
   ***/
 
   const updateDataCollections = (input) => {
@@ -86,15 +85,11 @@ function App() {
           updateDataCollections={updateDataCollections}/>
 
         }
-
       </>
     )
   }
-
-
   return (
     <div className="App" style={{ backgroundColor: changeAppBgColor }}>
-
       {
         landingPage ?
 
@@ -103,9 +98,7 @@ function App() {
         :
         
         loadGame()
-
-      }
-     
+      }    
     </div>
   )
 }

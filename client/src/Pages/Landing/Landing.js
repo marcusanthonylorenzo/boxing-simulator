@@ -3,6 +3,7 @@ import './Landing.css'
 import oppBody from '../../assets/images/oppBody.png'
 
 const Landing = ({setLandingPage}) => {
+
   return (
     <>
       <div className='landing-page'>

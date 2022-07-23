@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import './Navbar.css'
 import oppBody from '../../../assets/images/oppBody.png'
+import data from '../../Helpers/Data.js'
 
 const Navbar = ({roundCount, monthCounter, roundOver, fightNight }) => {
-
+  
+  const { monthNames } = data();
   const [roundToIndexInit, setRoundToIndexInit] = useState(roundCount)
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   useEffect(() => { if (roundOver) setRoundToIndexInit(roundCount-1)}, [roundCount])
 
   const navTickerInfo = () => {
-
     if (fightNight) {
       if (roundCount === 0) {
         return "Fight Introductions"
@@ -40,7 +40,6 @@ const Navbar = ({roundCount, monthCounter, roundOver, fightNight }) => {
       <div className="navbar-ticker">
         <div className="navbar-round-count">
           <h3 id="round-count">{navTickerInfo()}</h3>
-
         </div>
       </div>
     
