@@ -7,7 +7,6 @@ class Boxer {
     hometown, weightClass, favoriteColor,
     sta, agr, agi, str, def, hrt
   ){
-
     this.firstName = firstName; this.nickname = nickname; this.lastName = lastName;
     this.hometown = hometown; this.weightClass = weightClass; this.favoriteColor = favoriteColor;
     
@@ -30,7 +29,6 @@ class Boxer {
     this.champion = false;
     this.id = uuidv4();
     this.knockdownCount = 0;
-
   }
 
   /***

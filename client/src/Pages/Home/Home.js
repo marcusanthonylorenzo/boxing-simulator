@@ -13,15 +13,17 @@ const Home = (
 
   /***  General State  ***/
   const [ url, setUrl ] = useState(urls[1]);
-  const [getHistory, setGetHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
   const [newBoxerList, setNewBoxerList ] = useState([]);
+  const [officialBoxerList, setOfficialBoxerList ] = useState([]);
 
   /***  Toggles, Counters  ***/
   const [hideGenerateBoxerBtn, setHideGenerateBoxerBtn] = useState(false)
   const [disableFightBtn, setDisableFightBtn] = useState(true);
   const [trainingFinished, setTrainingFinished] = useState(false);
+  const [opponentsFound, setOpponentsFound] = useState(false);
 
   /***  Data Retreival ***/
+  const [getHistory, setGetHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
   const [updateStatus, setUpdateStatus] = useState("Looking for a fight...");
   const getTrainingEntries = Object.entries(user.train);
   const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
@@ -45,17 +47,16 @@ const Home = (
     }
   }, [monthCounter])
 
-  // update localStorage everytime newBoxerList is updated
-  useEffect(() => {
+  
+  useEffect(() => { // update localStorage everytime newBoxerList is updated]
     const createBoxerInstanceForEach = newBoxerList.map(boxer => {
-      return generateBoxerWithAPI(boxer);
+      const makeBoxer = generateBoxerWithAPI(boxer);
+      return makeBoxer
     })
-    console.log(createBoxerInstanceForEach)
+    setOfficialBoxerList([...createBoxerInstanceForEach])
     localStorage.setItem('boxers', JSON.stringify([...createBoxerInstanceForEach]));
     setUpdateStatus('Opponents found.');
   }, [newBoxerList])
-
-  console.log(newBoxerList)
 
   // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
 
@@ -66,22 +67,22 @@ const Home = (
         setHideGenerateBoxerBtn(true);
         setNewBoxerList(prev => [...prev, ...response.data.results]);
         setUpdateStatus('Opponents found.');
+        setOpponentsFound(true);
       })
       .catch(err => {
-        // setHideGenerateBoxerBtn(true);
         setUpdateStatus("No opponents found yet! Advance month for a new search.");
       })
   }
 
-  const generateBoxerWithAPI = (newUserFromAPI) => {
+  const generateBoxerWithAPI = (input) => {
+    const newUserFromAPI = input
     //create level scaling later
-    const firstName = newUserFromAPI.name.first;
+    const firstName = `${newUserFromAPI.name.first}`;
     const nickname = '';
-    const lastName = newUserFromAPI.name.last
+    const lastName = `${newUserFromAPI.name.last}`;
     const hometown = `${newUserFromAPI.location.city}, ${newUserFromAPI.location.country}`;
     const weight = Randomize(125, 250);
     const favColor = ``;
-
     const stamina = Randomize(1, 100);
     const aggression = Randomize(1, 100);
     const agility = Randomize(1, 100);
@@ -89,30 +90,34 @@ const Home = (
     const defense = Randomize(1, 100);
     const heart = Randomize(1, 100);
 
-    return new Boxer(
+    const newBoxer = new Boxer(
       firstName, nickname, lastName, hometown, weight, favColor,
       stamina, aggression, agility, strength, defense, heart
     );
+    //Optional attributes before returning
+    newBoxer.win = Randomize(1, 100);
+    newBoxer.loss = Randomize(1, 100);
+    return newBoxer;
   }
 
-  const mapOpponents = () => {
-    return newBoxerList.map((each, i) => {
+  const mapOpponents = () => { //Map these badboys onto the DOM
+    return officialBoxerList.map((each, i) => {
       return (
         <div className='boxer-card'>
-          <h5>{each.name.first + ` ` + each.name.last}</h5>
+          <h5>{each.firstName}</h5>
         </div>
       )
     })
   }
 
   const generateListOfBoxers = //Button that generates a new list of opponents, makes API calls
-      <button id={'generator-btn'} onClick={() => {
-        setUpdateStatus('Searching...')
-        generateBoxer();
-        setHideGenerateBoxerBtn(true);
-        }}>
-        <h5>Search new opponents</h5>
-      </button>
+    <button id={'generator-btn'} onClick={() => {
+      setUpdateStatus('Searching...')
+      generateBoxer();
+      setHideGenerateBoxerBtn(true);
+      }}>
+      <h5>Search new opponents</h5>
+    </button>
 
 
   return (
@@ -173,7 +178,7 @@ const Home = (
               <div className='generate-boxer-button'>
                 <h5>{!hideGenerateBoxerBtn ? generateListOfBoxers : updateStatus}</h5>
               </div>
-              {mapOpponents()}
+              { mapOpponents() }
             </div>
 
             <div className="home-options">
