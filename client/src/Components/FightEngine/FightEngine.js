@@ -26,7 +26,7 @@ const FightEngine = (
   const [punchCount, setPunchCount] = useState([]); //data for each punch/counter punch thrown, for historical fight record
   const [rateOfExchange] = useState(10);  //toggle number of punches in one round based on boxer handSpeed
   const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
-  const [delay] = useState(2000);  //toggle rate of text ouput
+  const [delay] = useState(1500);  //toggle rate of text ouput
 
   /***  Match specific state ***/
   const [ko, setKo] = useState(false);

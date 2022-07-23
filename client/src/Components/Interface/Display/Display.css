@@ -132,9 +132,7 @@
   align-items: center;
   width: 20vw;
   height: 60%;
-  /* margin-top: 5%; */
   border-radius: 1px;
-  /* box-shadow: 1px 1px 2px 1px rgba(77, 76, 76, 0.3); */
 }
 
 .options-select > * {
@@ -143,11 +141,16 @@
 
 /*** Corner Menu ***/
 
+.corner {
+  position: fixed;
+  width: 40%;
+}
 
 .corner-select {
   background-color: white;
   height: 100%;
   padding: 7%;
+  border-radius: 4px;
 }
 
 .pep-talk-buttons {

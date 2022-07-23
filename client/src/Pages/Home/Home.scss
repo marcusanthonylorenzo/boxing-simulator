@@ -100,6 +100,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 98%;
   height: 97.5%;
   margin: 0 2%;
   border-radius: 6px;
@@ -150,6 +151,7 @@
 
 .home-buttons:disabled {
   opacity: 70%;
+  background-color: rgb(210, 204, 204);
   color: rgb(151, 149, 149);
 }
 
@@ -240,7 +242,7 @@ $duration: 20s;
   background-color: rgba(#000, 0.9); 
   padding-left: 100%;
   border-radius: 5px;
-  
+
   .ticker {
 
     display: inline-block;
