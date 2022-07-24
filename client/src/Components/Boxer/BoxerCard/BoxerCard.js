@@ -208,18 +208,18 @@ const BoxerCard = ({
         <div className="boxer-info border padded" >
           <div className="boxer-info-name">
             <h4 className={'name'} style={{
-              backgroundColor: cornerColor.favoriteColor }}>
+              backgroundColor: cornerColor.cornerColor }}>
               <em>{boxer.firstName}</em>
             </h4>
 
             <h4 id={`nickname`} style={{
               fontWeight: `200px`,
-              backgroundColor: favColor}}>
+              backgroundColor: cornerColor.cornerColor }}>
               <em>"{boxer.nickname}"</em>
             </h4>
 
             <h4 className={'name'} style={{
-              backgroundColor: favColor }}>
+              backgroundColor: cornerColor.cornerColor  }}>
               <em>{boxer.lastName}</em>
             </h4>
           </div>
@@ -239,7 +239,8 @@ const BoxerCard = ({
                 className="boxer-pic"
                 style={{ 
                 transform: `scale(${dmgScaleRegulator()}%)`,
-                opacity: koColor() }}/>
+                opacity: koColor(),
+              }}/>
               <h5 style={{display: 'flex', position: 'absolute', color: `white`}}>
                 {Math.round(boxer.hp)}
                 {life}

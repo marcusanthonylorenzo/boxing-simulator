@@ -4,6 +4,7 @@ import randomUserAPI from '../../Components/API/API'
 import Boxer from '../../Components/Boxer/BoxerClass'
 import Randomize from '../../Components/Helpers/Randomize'
 import Commentary from '../../Components/Helpers/Commentary'
+import Data from '../../Components/Helpers/Data'
 
 const Home = (
   { user, enemy, urls, fightNight, setFightNight,
@@ -29,6 +30,7 @@ const Home = (
   const [updateStatus, setUpdateStatus] = useState("Looking for a fight...");
   const getTrainingEntries = Object.entries(user.train);
   const commentary = Commentary();
+  const data = Data();
   // const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
 
   useEffect(() => {
@@ -72,6 +74,7 @@ const Home = (
   }
 
   const generateBoxerWithAPI = (input) => {
+    console.log(input)
     const newUserFromAPI = input
     //create level scaling later
     const firstName = `${newUserFromAPI.name.first}`;
@@ -80,12 +83,12 @@ const Home = (
     const hometown = `${newUserFromAPI.location.city}, ${newUserFromAPI.location.country}`;
     const weight = Randomize(125, 250);
     const favColor = ``;
-    const stamina = Randomize(1, 100);
-    const aggression = Randomize(1, 100);
-    const agility = Randomize(1, 100);
-    const strength = Randomize(1, 100);
-    const defense = Randomize(1, 100);
-    const heart = Randomize(1, 100);
+    const stamina = Randomize(50, 100);
+    const aggression = Randomize(50, 100);
+    const agility = Randomize(50, 100);
+    const strength = Randomize(50, 100);
+    const defense = Randomize(50, 100);
+    const heart = Randomize(50, 100);
 
     const newBoxer = new Boxer(
       firstName, nickname, lastName, hometown, weight, favColor,
@@ -94,6 +97,7 @@ const Home = (
     //Optional attributes before returning
     newBoxer.win = Randomize(1, 50);
     newBoxer.loss = Randomize(1, 50);
+    newBoxer.favoriteColor = data.colorNames[Randomize(0, data.colorNames.length )]
     return newBoxer;
   }
 

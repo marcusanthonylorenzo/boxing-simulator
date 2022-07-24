@@ -89,9 +89,6 @@ const FightEngine = (
     if (fightOver && knockdownRule){ 
       stopFight.stop();
     }
-    // return (
-    //   stopFight.stop()
-    // )
   }, [fightOver, knockdownRule])
 
   useEffect(() => { //Set button toggle
@@ -138,7 +135,7 @@ const FightEngine = (
   ***/
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
-  const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", true, oppDmgScale)
+  const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", false, oppDmgScale)
 
   const filterStats = (person, whatToFilter) => {
     for (let i = 0; i < finalTotals.length; i++){

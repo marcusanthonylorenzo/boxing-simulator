@@ -69,7 +69,7 @@ const Display = ({
       fontCol = `white`;
     }
     return (
-      <div className={`textbox`} style={{
+      <div className={`textbox`} style={{ //adjust text boxes here
         backgroundColor: getAttacker.favoriteColor,
         color: fontCol,
         fontSize: fontSiz }}>
@@ -116,7 +116,7 @@ const Display = ({
     return pbp.map((scrap) => {
       let getAttacker = {
         ...scrap.attacker,
-        cornerColor: scrap.favoriteColor,
+        cornerColor: scrap.cornerColor,
       }
 
     const koedText = //KO result text
