@@ -36,7 +36,6 @@ const Home = (
 
   useEffect(() => {
     if (user.hp <= user.maxHp*0.35 || !fightNight) {
-      console.log("check hp");
       setDisableFightBtn(true);
     }
   }, [])
@@ -47,17 +46,6 @@ const Home = (
     }
   }, [monthCounter])
 
-  
-  useEffect(() => { // update localStorage everytime newBoxerList is updated]
-    const createBoxerInstanceForEach = newBoxerList.map(boxer => {
-      const makeBoxer = generateBoxerWithAPI(boxer);
-      return makeBoxer
-    })
-    setOfficialBoxerList([...createBoxerInstanceForEach])
-    localStorage.setItem('boxers', JSON.stringify([...createBoxerInstanceForEach]));
-    setUpdateStatus('Opponents found.');
-  }, [newBoxerList])
-
   // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
 
   /***  Make calls to randomUserAPI to aggregate list of opponents, set conditions later  ***/
@@ -65,7 +53,9 @@ const Home = (
     randomUserAPI.get()
       .then(response => {
         setHideGenerateBoxerBtn(true);
-        setNewBoxerList(prev => [...prev, ...response.data.results]);
+        //create instance of boxer directly, outside of this method will re-instantiate each object.
+        const convertRandosToBoxers = [...response.data.results].map(each => generateBoxerWithAPI(each))
+        setNewBoxerList(prev => [...prev, ...convertRandosToBoxers]);
         setUpdateStatus('Opponents found.');
         setOpponentsFound(true);
       })
@@ -101,10 +91,13 @@ const Home = (
   }
 
   const mapOpponents = () => { //Map these badboys onto the DOM
-    return officialBoxerList.map((each, i) => {
+    return newBoxerList.map((each, i) => {
       return (
         <div className='boxer-card'>
-          <h5>{each.firstName}</h5>
+          <div className='boxer-card-row'>
+            <h4>{`${each.firstName} ${each.lastName}`} {`${each.win}-${each.loss}`}</h4 >            
+          </div>
+
         </div>
       )
     })

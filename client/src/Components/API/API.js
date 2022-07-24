@@ -6,6 +6,7 @@ const randomUserAPI = {
       axios
         .get("https://randomuser.me/api/?results=3")
         .then((response) => {
+          console.log("called")
           resolve(response);
         })
         .catch((error) => {
