@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import './Home.scss'
-import randomUserAPI from '../../Components/API/API';
-import Boxer from '../../Components/Boxer/BoxerClass';
+import randomUserAPI from '../../Components/API/API'
+import Boxer from '../../Components/Boxer/BoxerClass'
 import Randomize from '../../Components/Helpers/Randomize'
+import Commentary from '../../Components/Helpers/Commentary'
 
 const Home = (
   { user, enemy, urls, fightNight, setFightNight,
@@ -19,6 +20,7 @@ const Home = (
   /***  Toggles, Counters  ***/
   const [hideGenerateBoxerBtn, setHideGenerateBoxerBtn] = useState(false)
   const [disableFightBtn, setDisableFightBtn] = useState(true);
+  const [disableBoxer, setDisableBoxer] = useState(false);
   const [trainingFinished, setTrainingFinished] = useState(false);
   const [opponentsFound, setOpponentsFound] = useState(false);
 
@@ -26,7 +28,8 @@ const Home = (
   const [getHistory, setGetHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
   const [updateStatus, setUpdateStatus] = useState("Looking for a fight...");
   const getTrainingEntries = Object.entries(user.train);
-  const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
+  const commentary = Commentary();
+  // const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
 
   useEffect(() => {
     setFightNight(false)
@@ -45,6 +48,10 @@ const Home = (
     setDisableFightBtn(false);
     }
   }, [monthCounter])
+
+  useEffect(() => {
+    if (newBoxerList.length > 0) localStorage.setItem('boxers', JSON.stringify([...newBoxerList]));
+  },[newBoxerList])
 
   // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
 
@@ -85,20 +92,33 @@ const Home = (
       stamina, aggression, agility, strength, defense, heart
     );
     //Optional attributes before returning
-    newBoxer.win = Randomize(1, 100);
-    newBoxer.loss = Randomize(1, 100);
+    newBoxer.win = Randomize(1, 50);
+    newBoxer.loss = Randomize(1, 50);
     return newBoxer;
   }
 
   const mapOpponents = () => { //Map these badboys onto the DOM
     return newBoxerList.map((each, i) => {
       return (
-        <div className='boxer-card'>
+        <button className='boxer-card' disabled={disableBoxer} onClick={(e) => {
+          console.log(each)
+          setOppState(each);
+          setDisableBoxer(true); }}>
           <div className='boxer-card-row'>
-            <h4>{`${each.firstName} ${each.lastName}`} {`${each.win}-${each.loss}`}</h4 >            
+            <div className='boxer-card-column'>
+              <h4><strong>{`${each.firstName} ${each.lastName}`}</strong></h4>
+            </div>
+            <div className='boxer-card-column'>
+              <h4>{`${each.win}-${each.loss}`}</h4>
+            </div>
+            <div className='boxer-card-column'>
+              <h5>{commentary.weightClassName(each)}</h5>
+            </div>
+            <div className='boxer-card-column'>
+              <h5>Rank: {each.rank}</h5>
+            </div> 
           </div>
-
-        </div>
+      </button>
       )
     })
   }
@@ -171,7 +191,10 @@ const Home = (
               <div className='generate-boxer-button'>
                 <h5>{!hideGenerateBoxerBtn ? generateListOfBoxers : updateStatus}</h5>
               </div>
-              { mapOpponents() }
+              <div class='boxer-list'>
+                { mapOpponents() }                
+              </div>
+
             </div>
 
             <div className="home-options">

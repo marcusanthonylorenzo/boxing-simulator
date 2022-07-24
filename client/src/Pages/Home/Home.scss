@@ -116,6 +116,40 @@
   overflow: auto;
 }
 
+.boxer-list {
+  height: fit-content;
+}
+
+.boxer-card {
+  margin: 1%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.boxer-card:hover {
+  color:rgb(219, 116, 105);
+  cursor: default;
+  box-shadow: 1px 0px 2px 1px rgb(219, 116, 105);
+}
+
+.boxer-card-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+.boxer-card-row h4 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+  margin: 1% auto;
+}
+
+
 /*** Generate Boxer Button **/
 
 .generate-boxer-button {
@@ -144,6 +178,7 @@
   cursor: pointer;
 }
 
+/*****/
 
 .home-options {
   height: 35%;
