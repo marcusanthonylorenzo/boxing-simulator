@@ -5,7 +5,7 @@ import SelectMenu from '../SelectMenu/SelectMenu'
 const Display = ({
   ko, pbp, user, opp,
   fightNight, setFightNight,
-  fightStart, fightOver,
+  fightStart, fightOver, setRateOfExchange,
   roundStart, roundOver, roundCount,
   judgeOneOfficialScorecard, judgeTwoOfficialScorecard,
   winner, loser, knockdownRule, stopFight
@@ -68,6 +68,8 @@ const Display = ({
     } else { 
       fontCol = `white`;
     }
+
+    console.log(scrap.text)
     return (
       <div className={`textbox`} style={{ //adjust text boxes here
         backgroundColor: getAttacker.favoriteColor,

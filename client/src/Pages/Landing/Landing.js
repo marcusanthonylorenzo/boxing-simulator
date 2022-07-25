@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './Landing.css'
 import oppBody from '../../assets/images/oppBody.png'
 
-const Landing = ({setLandingPage}) => {
+const Landing = ({setLandingPage, generateBoxerFunc}) => {
+
+  // useEffect(() => { console.log(generateBoxerFunc) },[])
+
+  // console.log(generateBoxerFunc)
 
   return (
     <>
@@ -15,8 +19,9 @@ const Landing = ({setLandingPage}) => {
           </div>
           <div className="navbar-logo">
             <div className="enter" onClick={() =>{
-                console.log('welcome');
                 setLandingPage(false);
+                // generateBoxersOnLanding.generate();
+                console.log(`welcome`);
             }}>
               <img src={oppBody} alt={"Ringcraft"} className="landing-logo" id={`logo`}/>
             </div>

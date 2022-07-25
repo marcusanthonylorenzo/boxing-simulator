@@ -18,7 +18,7 @@ const Navbar = ({roundCount, monthCounter, roundOver, fightNight }) => {
     } else if (!fightNight) {
       return (
         <>
-          <h4>Month: { monthNames[monthCounter] }</h4>
+          Month: { monthNames[monthCounter] }
         </>
       )
     }

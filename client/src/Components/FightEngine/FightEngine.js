@@ -29,7 +29,9 @@ const FightEngine = (
   const [oppDmgScale, setOppDmgScale] = useState();
   const [pbp, setPbp] = useState([]); //a combination of above state in objects, for historical fight record
   const [punchCount, setPunchCount] = useState([]); //data for each punch/counter punch thrown, for historical fight record
-  const [rateOfExchange] = useState(10);  //toggle number of punches in one round based on boxer handSpeed
+  const [rateOfExchange, setRateOfExchange] = useState(10);  //toggle number of punches in one round based on boxer handSpeed
+  const [incrementor, setIncrementor] = useState(0);
+  console.log(rateOfExchange)
   const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
   const [delay] = useState(1500);  //toggle rate of text ouput
 
@@ -46,7 +48,7 @@ const FightEngine = (
 
   /*** Match Conditions ***/
   const [knockdownRule, setKnockdownRule] = useState(false);
-  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState(2);
+  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState(1);
 
   /*** Judges Decision state ***/
   const [judgeOne, setJudgeOne] = useState([]);
@@ -82,11 +84,13 @@ const FightEngine = (
 
   useEffect(() => { //check start/stop conditions
     if (roundStart || ko || fightOver ) setDisable(true) //disable buttons
-    if (ko || knockdownRule)  setFightOver(true) //end fight if KO
+    if (ko || knockdownRule)  setFightOver(true)
   },[roundStart, ko, fightOver, knockdownRule])
 
-  useEffect(() => {
-    if (fightOver && knockdownRule){ 
+  useEffect(() => { //This is where you stop the fight if Koed or too many downs
+    if (fightOver && knockdownRule){
+      console.log("use effect check")
+      setRateOfExchange(0);
       stopFight.stop();
     }
   }, [fightOver, knockdownRule])
@@ -290,8 +294,10 @@ const FightEngine = (
   }
 
   const determineKO = (offense, defense, hit, timeout ) => {
+    if (defense.knockdownCount === knockdownRuleLimit) { console.log("determineKO first layer") }
     /*** Initialize getUp abilites, update UI ***/
     if (defense.hp <= 0) {
+      if (defense.knockdownCount === knockdownRuleLimit) { console.log("determineKO second layer") }
       const getUpTimer = setTimeout(() => {
         //slow down getUp post knock out text boxes.
         const takesShot = defense.getUp();
@@ -326,7 +332,7 @@ const FightEngine = (
           setPbp(prev => [prev, {
             attacker: offense,
             defender: defense,
-            hit: hit,
+            hit: 0, //Change here for ko damage trailing
             text: `THIS FIGHT IS OVER. The ref waves it off! ${offense.firstName} PUTS ${defense.firstName} AWAY.`
           }])
           return determineKO;
@@ -338,6 +344,7 @@ const FightEngine = (
 
 
   const determinePowerShot = (off, def, diff) => {
+    if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
     let powerShot = off.ko(def); //determine powershot, then if KO
     if (powerShot > def.chin){  //check if powershot is stronger than chin
       setPbp(prev => [...prev, {
@@ -349,6 +356,7 @@ const FightEngine = (
 
     const consciousness = def.getUp();
     if (consciousness < powerShot){  //check if powershot is stronger than def ability to getUp (take a shot)
+      if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
       setKo(true);
       def.knockdownCount++;
       setPbp(prev => [...prev, {
@@ -376,37 +384,44 @@ const FightEngine = (
    //Phase 1 = exchange() determines who wins the trading of blows
 
   const exchange = (attacker, defender) => {
-    let atkCombos = attacker.handSpeed(); //determine punch volume
-    let defCombos = defender.handSpeed();
-    let atk = attacker.attack(atkCombos);
-    let def = defender.defend(defCombos);
-    let difference = atk - def;
+    /***  Important: This is the mean line where you can stop all extra damage after the KO. Fight should end on KO or too many Knockdowns  ***/
+    if (defender.knockdownCount === knockdownRuleLimit || attacker.knockdownCount === knockdownRuleLimit) {
+      setKnockdownRule(true)
+      setFightOver(true)
+      return 0;
+    } else {
+      let atkCombos = attacker.handSpeed(); //determine punch volume
+      let defCombos = defender.handSpeed();
+      let atk = attacker.attack(atkCombos);
+      let def = defender.defend(defCombos);
+      let difference = atk - def;
 
-    //activity of fighters changes length of loop, makes it more or less active
-    let attackerPunchesLanded = Math.round(((atk*(atkCombos/100))/rateOfExchange)*attacker.maxCon);
-    let defenderPunchesLanded = Math.round(((def*(defCombos/100))/rateOfExchange)*defender.maxCon);
+      //activity of fighters changes length of loop, makes it more or less active
+      let attackerPunchesLanded = Math.round(((atk*(atkCombos/100))/rateOfExchange)*attacker.maxCon);
+      let defenderPunchesLanded = Math.round(((def*(defCombos/100))/rateOfExchange)*defender.maxCon);
 
-    setPunchCount(prev => [...prev, {  //set punchCount list, to store punchStats
-      attacker: {
-        name: attacker.firstName,
-        punchesThrown: Math.ceil((atkCombos/rateOfExchange)*1.1), //round up a randomized no. of punches in combo
-        punchesLanded: attackerPunchesLanded, //round 
-        engagementRate: atk/10,
-        ringControl: Math.round((atk/(atk+def))*100),
-        engagement: `aggressor`
-      },
-      defender: {
-        name: defender.firstName,
-        punchesThrown: Math.ceil((defCombos/rateOfExchange)*1.1),
-        punchesLanded: defenderPunchesLanded,
-        engagementRate: def/10,
-        ringControl: Math.round((def/(def+atk))*100),
-        engagement: `counter`
-      },
-      difference: difference,
-      round: roundCount+1
-    }])
-    return difference
+        setPunchCount(prev => [...prev, {  //set punchCount list, to store punchStats
+          attacker: {
+            name: attacker.firstName,
+            punchesThrown: Math.ceil((atkCombos/rateOfExchange)*1.1), //round up a randomized no. of punches in combo
+            punchesLanded: attackerPunchesLanded, //round 
+            engagementRate: atk/10,
+            ringControl: Math.round((atk/(atk+def))*100),
+            engagement: `aggressor`
+          },
+          defender: {
+            name: defender.firstName,
+            punchesThrown: Math.ceil((defCombos/rateOfExchange)*1.1),
+            punchesLanded: defenderPunchesLanded,
+            engagementRate: def/10,
+            ringControl: Math.round((def/(def+atk))*100),
+            engagement: `counter`
+          },
+          difference: difference,
+          round: roundCount+1
+        }])
+      return difference
+      }
   };
 
 
@@ -425,7 +440,10 @@ const FightEngine = (
 
     /*** Fight balance favors defender ***/
 
-    if (fightOver || knockdownRule) clearTimeout(timeout);
+    // if (fightOver || knockdownRule) {
+    //   console.log("check ko rules in calcDamge func")
+    //   clearTimeout(timeout)
+    // }
 
     if (difference <= -35){ //Strong counters by defender
       hit = attacker.hp += difference; //reduce health
@@ -498,7 +516,16 @@ const FightEngine = (
       result.totalDmg = normalOrPowerPunch;
       result.text = `${attacker.firstName} laying some hard, clean shots with ${defender.firstName} trapped in the corner!`;
     }
-    return result
+    
+    if (attacker.knockdownCount === knockdownRuleLimit || defender.knockdownCount === knockdownRuleLimit) {
+      setKnockdownRule(true);
+      console.log(`down`, knockdownRule)
+      return;
+    } else {
+      console.log(` not down `, knockdownRule, attacker.knockdownCount, defender.knockdownCount)
+      return result      
+    }
+
   };
 
   //Phase 3: tie everything together
@@ -507,7 +534,11 @@ const FightEngine = (
     let userOffense = user.engage();
     let oppOffense = opp.engage();
     let resultDmg;
-    if (fightOver || knockdownRule) stopFight.stop();
+    if (fightOver || knockdownRule) {
+      console.log("check ko on engagement()")
+      stopFight.stop();
+      clearTimeout(timeout);
+    }
 
     if (userOffense > oppOffense) {
       let userDmg = exchange(user, opp);
@@ -538,6 +569,7 @@ const FightEngine = (
 
       let fightAction = setTimeout(()=>{
         setStopFight({ stop: () => clearTimeout(fightAction)})
+        if(knockdownRule) return fight;
         let activity;
         let over;
 
@@ -562,8 +594,7 @@ const FightEngine = (
         
         /***  FIGHT WORKFLOW ***/
         let fightUnderway = engagement(user, enemy, fightAction);
-        if (fightOver || knockdownRule) stopFight.stop();
-        setKo(false)
+        setKo(false);
         setExchangeCount(k);
         activity = setObj(fightUnderway, "round", newRnd);
         setPbp((prev) => [...prev, activity]);
@@ -613,8 +644,10 @@ const FightEngine = (
     return (
     <>
           <BoxerCard boxer={user} path={leftBoxer}
+            setIncrementor={setIncrementor}
             pbp={pbp} fightNight={fightNight}
-            fightNumber={fightNumber} prevFightNumber={prevFightNumber}
+            fightNumber={fightNumber}
+            prevFightNumber={prevFightNumber}
             roundStart={roundStart}
             roundCount={roundCount}
             roundOver={roundOver}
@@ -630,6 +663,7 @@ const FightEngine = (
         <div className="inner-container">
 
           <Display pbp={pbp} user={userActive} opp={oppActive}
+            setRateOfExchange={setRateOfExchange}
             fightNight={fightNight}
             setFightNight={setFightNight}
             fightStart={fightStart}
@@ -666,6 +700,7 @@ const FightEngine = (
         </div>
 
         <BoxerCard boxer={enemy} path={oppBody}
+          setIncrementor={setIncrementor}
           pbp={pbp} fightNumber={fightNumber} prevFightNumber={prevFightNumber}
           roundStart={roundStart}
           roundCount={roundCount}

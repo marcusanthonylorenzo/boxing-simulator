@@ -11,7 +11,8 @@ function App() {
   /*** Main  ***/
   const { user, enemy, urls } = data(); //import new fighters here
   const [landingPage, setLandingPage] = useState(true);
-  
+  const [generateBoxerFunc, setGenerateBoxersFunc] = useState();
+
   /***  User and Opponent to pass down as state  ***/
   const [userState, setUserState ] = useState(user);
   const [oppState, setOppState ] = useState(enemy);
@@ -32,21 +33,18 @@ function App() {
   const [fightDataCollection, setFightDataCollection] = useState([]);
   const [stopFight, setStopFight] = useState({});
 
+  useEffect(() => { if (fightNumber === 0 && !landingPage) 
+    generateBoxerFunc.generate() },[generateBoxerFunc])
+
   useEffect(() => { !fightNight ? setChangeAppBgColor(`rgb(234, 234, 234)`) : setChangeAppBgColor(`black`) }, [fightNight])
 
   useEffect(() => { persistInLocalStorage("fightHistory", JSON.stringify(fightDataCollection)) }, [fightDataCollection])
-
-  /***
-  * IMPORTANT: sends callback down to FightEngine, to collect fight data rendered and setState at App level.
-  ***/
- 
 
   const updateDataCollections = (input) => { setFightDataCollection(prev => [...prev, { matchDetails: input, matchId: fightNumber }])}
 
   const persistInLocalStorage = (key, item) => { localStorage.setItem(key, item) }
 
-  const loadGame = () => {
-    return (
+  const loadGame = 
       <>
         <Navbar
           roundCount={roundCount} roundOver={roundOver}
@@ -57,6 +55,7 @@ function App() {
         !fightNight ?
 
         <Home user={userState} enemy={oppState} urls={urls}
+          landingPage={landingPage} setGenerateBoxersFunc={setGenerateBoxersFunc}
           setUserState={setUserState} setOppState={setOppState}
           monthCounter={monthCounter} setMonthCounter={setMonthCounter}
           advanceMonth={advanceMonth} setAdvanceMonth={setAdvanceMonth}
@@ -82,18 +81,20 @@ function App() {
 
         }
       </>
-    )
-  }
+
   return (
     <div className="App" style={{ backgroundColor: changeAppBgColor }}>
       {
         landingPage ?
 
-        <Landing landingPage={landingPage} setLandingPage={setLandingPage}/>
+        <Landing landingPage={landingPage} setLandingPage={setLandingPage} generateBoxerFunc={generateBoxerFunc}
+        />
 
         :
         
-        loadGame()
+        <>
+          { loadGame }
+        </>
       }    
     </div>
   )

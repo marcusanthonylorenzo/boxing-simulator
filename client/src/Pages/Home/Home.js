@@ -8,7 +8,7 @@ import Data from '../../Components/Helpers/Data'
 
 const Home = (
   { user, enemy, urls, fightNight, setFightNight,
-    setUserState, setOppState,
+    setUserState, setOppState, landingPage, setGenerateBoxersFunc,
     monthCounter, setMonthCounter, advanceMonth, setAdvanceMonth,
     fightNumber, setFightNumber, stopFight, setStopFight,
     fightOver, setFightOver, setResetFightBtn }) => {
@@ -31,9 +31,15 @@ const Home = (
   const getTrainingEntries = Object.entries(user.train);
   const commentary = Commentary();
   const data = Data();
-  // const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
+  const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
 
   useEffect(() => {
+    setGenerateBoxersFunc({ generate: generateBoxer });
+    setDisableFightBtn(true);
+  }, [])
+
+  useEffect(() => {
+    if (monthCounter > 0) setNewBoxerList([...boxerListFromLocal]);
     setFightNight(false)
     user.knockdownCount = 0;
     setDisableFightBtn(true);
@@ -51,10 +57,6 @@ const Home = (
     }
   }, [monthCounter])
 
-  useEffect(() => {
-    if (newBoxerList.length > 0) localStorage.setItem('boxers', JSON.stringify([...newBoxerList]));
-  },[newBoxerList])
-
   // Must recover user.hp before continuing to next fight! Map all training and recovery options, sync with weekly calendar.
 
   /***  Make calls to randomUserAPI to aggregate list of opponents, set conditions later  ***/
@@ -65,6 +67,7 @@ const Home = (
         //create instance of boxer directly, outside of this method will re-instantiate each object.
         const convertRandosToBoxers = [...response.data.results].map(each => generateBoxerWithAPI(each))
         setNewBoxerList(prev => [...prev, ...convertRandosToBoxers]);
+        localStorage.setItem('boxers', JSON.stringify(convertRandosToBoxers))
         setUpdateStatus('Opponents found.');
         setOpponentsFound(true);
       })
@@ -72,7 +75,7 @@ const Home = (
         setUpdateStatus("No opponents found yet! Advance month for a new search.");
       })
   }
-
+  
   const generateBoxerWithAPI = (input) => {
     console.log(input)
     const newUserFromAPI = input
@@ -128,13 +131,9 @@ const Home = (
   }
 
   const generateListOfBoxers = //Button that generates a new list of opponents, makes API calls
-    <button id={'generator-btn'} onClick={() => {
-      setUpdateStatus('Searching...')
-      generateBoxer();
-      setHideGenerateBoxerBtn(true);
-      }}>
-      <h5>Search new opponents</h5>
-    </button>
+    <div id={'generator-btn'}>
+      <h5>Searching for Opponents...</h5>
+    </div>
 
 
   return (
@@ -195,7 +194,7 @@ const Home = (
               <div className='generate-boxer-button'>
                 <h5>{!hideGenerateBoxerBtn ? generateListOfBoxers : updateStatus}</h5>
               </div>
-              <div class='boxer-list'>
+              <div className='boxer-list'>
                 { mapOpponents() }                
               </div>
 

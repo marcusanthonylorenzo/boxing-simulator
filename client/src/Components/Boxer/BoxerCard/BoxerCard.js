@@ -10,8 +10,6 @@ const BoxerCard = ({
   exchangeCount, punchCount, fightNumber, setFightNumber, prevFightNumber
   }) => {
 
-    console.log(prevFightNumber, fightNumber)
-
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
   const energy = Math.round((boxer.con*100)+35);
@@ -27,7 +25,7 @@ const BoxerCard = ({
   const [dmgTracker, setDmgTracker] = useState([]); //tracks each punch for graphs
   const [engagementCount, setEngagementCount] = useState(0);
   const [boxerPunchData, setBoxerPunchData] = useState([]);
-  const [roundByRoundData, setRoundByRoundData] = useState([]);
+  // const [roundByRoundData, setRoundByRoundData] = useState([]);
 
 
   const showHide = (show, set) => {
