@@ -56,6 +56,7 @@ const FightEngine = (
   const [judgeTwo, setJudgeTwo] = useState([]);
   const [judgeTwoOfficialScorecard, setJudgeTwoOfficialScorecard] = useState();
 
+
   useEffect(() =>  { //Check if beginning of a new fight
     if(fightNight && roundCount === 0) {
       setResetFightBtn(true);
@@ -117,11 +118,12 @@ const FightEngine = (
       updateDataCollections({ pbp: pbp, finalTotals: finalTotals });
       checkWinnerAndLoser(user, enemy);
     }
-  },[fightOver, winner, loser])
+  },[fightOver])
+
   
-  /***
-  * Update judge's scorecard per round, update individually per mount. Otherwise will rerender each other if together.
+  /*** Update judge's scorecard per round, update individually per mount. Otherwise will rerender each other if together.
   ***/
+
   useEffect(() => {
       const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
       const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
@@ -135,11 +137,7 @@ const FightEngine = (
   }, [judgeTwo])
 
 
-  console.log(user, enemy)
-
-
-  /***
-  * Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
+  /*** Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
   ***/
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)

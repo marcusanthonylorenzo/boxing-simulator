@@ -71,6 +71,7 @@ const BoxerCard = ({
       setFinalTotals(prev => [...prev, preserveRoundByRoundData])
     }
   }, [roundOver]);
+  
 
   useEffect(() =>{ //update damage tracking collection
     setEngagementCount(engagementCount + 1)

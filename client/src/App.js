@@ -33,8 +33,7 @@ function App() {
   const [fightDataCollection, setFightDataCollection] = useState([]);
   const [stopFight, setStopFight] = useState({});
 
-  useEffect(() => { if (fightNumber === 0 && !landingPage) 
-    generateBoxerFunc.generate() },[generateBoxerFunc])
+  useEffect(() => { if (fightNumber === 0 && !landingPage) generateBoxerFunc.generate() },[generateBoxerFunc])
 
   useEffect(() => { !fightNight ? setChangeAppBgColor(`rgb(234, 234, 234)`) : setChangeAppBgColor(`black`) }, [fightNight])
 

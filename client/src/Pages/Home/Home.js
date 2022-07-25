@@ -7,11 +7,16 @@ import Commentary from '../../Components/Helpers/Commentary'
 import Data from '../../Components/Helpers/Data'
 
 const Home = (
-  { user, enemy, urls, fightNight, setFightNight,
-    setUserState, setOppState, landingPage, setGenerateBoxersFunc,
-    monthCounter, setMonthCounter, advanceMonth, setAdvanceMonth,
-    fightNumber, setFightNumber, stopFight, setStopFight,
-    fightOver, setFightOver, setResetFightBtn }) => {
+  { user, enemy, urls,
+    fightNight, setFightNight,
+    setUserState, setOppState,
+    landingPage, setGenerateBoxersFunc,
+    monthCounter, setMonthCounter,
+    advanceMonth, setAdvanceMonth,
+    fightNumber, setFightNumber,
+    // stopFight, setStopFight,
+    fightOver, setFightOver,
+    setResetFightBtn }) => {
 
   /***  General State  ***/
   const [ url, setUrl ] = useState(urls[1]);
@@ -26,6 +31,7 @@ const Home = (
   const [opponentsFound, setOpponentsFound] = useState(false);
   const [toggleCard, setToggleCard] = useState(`hide`);
   const [showCardStyle, setShowCardStyle] = useState({});
+  const [selectedBoxer, setSelectedBoxer] = useState({})
 
   /***  Data Retreival ***/
   const [getHistory, setGetHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
@@ -67,7 +73,10 @@ const Home = (
       .then(response => {
         setHideGenerateBoxerBtn(true);
         //create instance of boxer directly, outside of this method will re-instantiate each object.
-        const convertRandosToBoxers = [...response.data.results].map(each => generateBoxerWithAPI(each))
+        const convertRandosToBoxers = [...response.data.results].map(each => {
+          const newOne = generateBoxerWithAPI(each)
+          return newOne
+        })
         setNewBoxerList(prev => [...prev, ...convertRandosToBoxers]);
         localStorage.setItem('boxers', JSON.stringify(convertRandosToBoxers))
         setUpdateStatus('Opponents found.');
@@ -83,7 +92,7 @@ const Home = (
   }
   
   const generateBoxerWithAPI = (input) => {
-    console.log(input)
+
     const newUserFromAPI = input
     //create level scaling later
     const firstName = `${newUserFromAPI.name.first}`;
@@ -104,27 +113,61 @@ const Home = (
       stamina, aggression, agility, strength, defense, heart
     );
     //Optional attributes before returning
-    newBoxer.win = Randomize(1, 50);
-    newBoxer.loss = Randomize(1, 50);
+    newBoxer.win = Randomize(0, 40);
+    newBoxer.loss = Randomize(0, 40);
     newBoxer.favoriteColor = data.colorNames[Randomize(0, data.colorNames.length )]
+
     return newBoxer;
   }
+
+  const expandCardOnClick = (each, toggle) => {
+    return (
+    <>
+      <div className='boxer-card-row'>
+        <div className='boxer-card-column'>
+          <h4><strong>{`${each.firstName} ${each.lastName}`}</strong></h4>
+        </div>
+        <div className='boxer-card-column'>
+          <h4>{`${each.win}-${each.loss}`}</h4>
+        </div>
+        <div className='boxer-card-column'>
+          <h5>{commentary.weightClassName(each)}</h5>
+        </div>
+        <div className='boxer-card-column'>
+          <h5>Rank: {each.rank}</h5>
+        </div> 
+      </div>
+      <div className={`boxer-card-details ${toggleCard}`}>
+        <h3>Hometown:</h3>
+        <h4 className='hometown-h4'>{each.hometown}</h4>
+
+        <ul className='attributes'>
+          <h3>Ratings:</h3>
+          <li><h4>Speed: {each.agi}</h4></li>
+          <li><h4>Power: {each.str}</h4></li>
+          <li><h4>Conditioning: {Math.round(each.con*100)}</h4></li>
+          <li><h4>Defense: {each.def}</h4></li>
+          <li><h4>Chin: {Math.round(each.chin)}</h4></li>
+          <li><h4>Heart: {each.heart}</h4></li>
+        </ul> 
+      </div>
+    </>
+    )
+}
 
 
   const mapOpponents = () => { //Map these badboys onto the DOM
     return newBoxerList.map((each, i) => {
-      console.log(each)
       return (
         <button className='boxer-card' disabled={disableBoxer}
         style={showCardStyle}
-        
         onClick={(e) => {
-          console.log(e.target)
+          setSelectedBoxer(each)
           if (toggleCard === 'hide') {
             setToggleCard('show')
             setShowCardStyle({
               display: 'flex',
-              position: 'absolute',
+              position: 'fixed',
               left: `10%`,
               flexDirection: 'column',
               justifyContent: 'center',
@@ -135,47 +178,22 @@ const Home = (
               transitionDuration: `300ms`,
               boxShadow: `2px 2px 8px 1px rgba(25,25,25, 0.1)`
             })
+            setOppState(each);
+            expandCardOnClick(selectedBoxer, toggleCard)
           } else {
-            setToggleCard('hide')  
+            setToggleCard('hide')
+            // setDisableBoxer(true);
             setShowCardStyle({})
           }
+          console.log(each, newBoxerList[i]); }}>
 
-          setOppState(each); }}>
-          <div className='boxer-card-row'>
-            <div className='boxer-card-column'>
-              <h4><strong>{`${each.firstName} ${each.lastName}`}</strong></h4>
-            </div>
-            <div className='boxer-card-column'>
-              <h4>{`${each.win}-${each.loss}`}</h4>
-            </div>
-            <div className='boxer-card-column'>
-              <h5>{commentary.weightClassName(each)}</h5>
-            </div>
-            <div className='boxer-card-column'>
-              <h5>Rank: {each.rank}</h5>
-            </div> 
-          </div>
+          { toggleCard === 'hide' ? expandCardOnClick(each, toggleCard) : expandCardOnClick(selectedBoxer, toggleCard) }
 
-          <div className={`boxer-card-details ${toggleCard}`}>
-            <h3>Hometown:</h3>
-            <h4 className='hometown-h4'>{each.hometown}</h4>
-
-            <ul className='attributes'>
-              <h3>Ratings:</h3>
-              <li><h4>Speed: {each.agi}</h4></li>
-              <li><h4>Power: {each.str}</h4></li>
-              <li><h4>Conditioning: {Math.round(each.con*100)}</h4></li>
-              <li><h4>Defense: {each.def}</h4></li>
-              <li><h4>Chin: {each.chin}</h4></li>
-              <li><h4>Heart: {each.heart}</h4></li>
-            </ul>
-              
-          </div>
       </button>
       )
     })
   }
-
+  y
   const generateListOfBoxers = //Button that generates a new list of opponents, makes API calls
     <div id={'generator-btn'}>
       <h5>Searching for Opponents...</h5>
