@@ -275,7 +275,7 @@ ul {
 /*** Right Grid section ***/
 
 .home-rankings-info {
-  background-color: #8b0000;
+  background-color: #ffffff;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -284,8 +284,17 @@ ul {
   font-style: italic;
   height: 98%;
   width: 95%;
-  margin: 1%;
+  margin: 1% auto;
   border-radius: 6px;
+}
+
+.home-rankings-info > div {
+  background-color: #8b0000;
+  margin: 2% auto;
+}
+
+.home-rankings-info > *h4 {
+  margin: 1% auto;
 }
 
 .official-rankings h6 {

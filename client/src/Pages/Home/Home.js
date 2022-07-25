@@ -32,6 +32,8 @@ const Home = (
   const [toggleCard, setToggleCard] = useState(`hide`);
   const [showCardStyle, setShowCardStyle] = useState({});
   const [selectedBoxer, setSelectedBoxer] = useState({})
+  const [userToggle, setUserToggle] = useState(true);
+  const [oppToggle, setOppToggle] = useState(false);
 
   /***  Data Retreival ***/
   const [getHistory, setGetHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
@@ -162,12 +164,13 @@ const Home = (
         <button className='boxer-card' disabled={disableBoxer}
         style={showCardStyle}
         onClick={(e) => {
-          setSelectedBoxer(each)
+          setSelectedBoxer(each);
+          setOppToggle(true);
           if (toggleCard === 'hide') {
             setToggleCard('show')
             setShowCardStyle({
               display: 'flex',
-              position: 'fixed',
+              position: 'absolute',
               left: `10%`,
               flexDirection: 'column',
               justifyContent: 'center',
@@ -179,13 +182,14 @@ const Home = (
               boxShadow: `2px 2px 8px 1px rgba(25,25,25, 0.1)`
             })
             setOppState(each);
-            expandCardOnClick(selectedBoxer, toggleCard)
+            expandCardOnClick(selectedBoxer, toggleCard);
           } else {
-            setToggleCard('hide')
+            setSelectedBoxer(selectedBoxer);
+            setToggleCard('hide');
             // setDisableBoxer(true);
-            setShowCardStyle({})
+            setShowCardStyle({});
           }
-          console.log(each, newBoxerList[i]); }}>
+        }}>
 
           { toggleCard === 'hide' ? expandCardOnClick(each, toggleCard) : expandCardOnClick(selectedBoxer, toggleCard) }
 
@@ -193,11 +197,37 @@ const Home = (
       )
     })
   }
-  y
+  
   const generateListOfBoxers = //Button that generates a new list of opponents, makes API calls
     <div id={'generator-btn'}>
       <h5>Searching for Opponents...</h5>
     </div>
+
+  const boxerCardsAtHomePage = (boxer , toggle) => {
+    return (
+      <>
+        <div className='home-gym-user'>
+          { toggle ? 
+          <div className='home-gym-boxer-info'>
+            <h2>{boxer.firstName}</h2>
+            <h2>{boxer.lastName}</h2>
+            <h4>Record: {boxer.win} - {boxer.loss}</h4>
+            <h4>Condition: {Math.round((boxer.hp/boxer.maxHp)*100)}%</h4>
+          </div>
+
+          :
+
+          <div className="no-selected-boxer">
+            <h2>Select your next opponent</h2>
+          </div>
+        }
+        </div>
+        <div className='home-gym-stats'>
+          <h2>Stats go here</h2>
+        </div>
+      </>
+    )
+  }
 
 
   return (
@@ -207,16 +237,8 @@ const Home = (
         {/*** Left Grid ***/}
 
         <div className='home-gym-nav'>
-          <div className='home-gym-user'>
-            <h2>{user.firstName}</h2>
-            <h2>{user.lastName}</h2>
-            <h4>Record: {user.win} - {user.loss}</h4>
-            <h4>Condition: {Math.round((user.hp/user.maxHp)*100)}%</h4>
-          </div>
 
-          <div className='home-gym-stats'>
-            <h2>Stats go here</h2>
-          </div>
+          {boxerCardsAtHomePage(user, true)}
 
           <div className='home-gym-train'>
             <h4>Training (use icons later):</h4>
@@ -293,13 +315,14 @@ const Home = (
 
         <div className="home-gym-rankings">
           <div className="home-rankings-info">
-            <h2>Previous Fight History goes here.</h2>
 
+            { boxerCardsAtHomePage(selectedBoxer, oppToggle) }
+
+            <h2>Previous Fight History goes here.</h2>
             <div className="official-rankings">
               <h6>W (TKO) Fighter Example</h6>
             </div>
           </div>
-   
         </div>
 
       </div>
