@@ -7,9 +7,13 @@
   margin: 5% auto;
 }
 
-/* #home-gym-container-wrap {
-  background-size: 100%;
-} */
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}
 
 #home-gym-container {
   background-color: rgb(234, 234, 234);
@@ -116,6 +120,13 @@
   overflow: auto;
 }
 
+.no-luck {
+  background-color: white;
+  padding: 3%;
+  border-radius: 4px;
+  width: 14vw;
+}
+
 .boxer-list {
   height: fit-content;
 }
@@ -139,6 +150,7 @@
 .boxer-card-row {
   display: grid;
   grid-template-columns: 2fr 1fr;
+  margin-bottom: 3%;
 }
 
 .boxer-card-row h4 {
@@ -149,6 +161,31 @@
   margin: 1% auto;
 }
 
+/*** Details Modal on Home Screen ***/
+
+.boxer-card-details .show {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+}
+
+.attributes h4{
+  margin: 1%;
+}
+
+.hometown-h4 {
+  margin: 2% auto;
+}
+
+ul {
+  list-style: none;
+  margin: 2% auto;
+  padding: 0;
+  margin-top: 20%;
+  text-align: center;
+}
 
 /*** Generate Boxer Button **/
 

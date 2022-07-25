@@ -24,6 +24,8 @@ const Home = (
   const [disableBoxer, setDisableBoxer] = useState(false);
   const [trainingFinished, setTrainingFinished] = useState(false);
   const [opponentsFound, setOpponentsFound] = useState(false);
+  const [toggleCard, setToggleCard] = useState(`hide`);
+  const [showCardStyle, setShowCardStyle] = useState({});
 
   /***  Data Retreival ***/
   const [getHistory, setGetHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
@@ -72,7 +74,11 @@ const Home = (
         setOpponentsFound(true);
       })
       .catch(err => {
-        setUpdateStatus("No opponents found yet! Advance month for a new search.");
+        setHideGenerateBoxerBtn(true);
+        setUpdateStatus(
+          <div className='no-luck'>
+            <h5>"No opponents found yet! Advance month for a new search."</h5>
+          </div>);
       })
   }
   
@@ -104,13 +110,37 @@ const Home = (
     return newBoxer;
   }
 
+
   const mapOpponents = () => { //Map these badboys onto the DOM
     return newBoxerList.map((each, i) => {
+      console.log(each)
       return (
-        <button className='boxer-card' disabled={disableBoxer} onClick={(e) => {
-          console.log(each)
-          setOppState(each);
-          setDisableBoxer(true); }}>
+        <button className='boxer-card' disabled={disableBoxer}
+        style={showCardStyle}
+        
+        onClick={(e) => {
+          console.log(e.target)
+          if (toggleCard === 'hide') {
+            setToggleCard('show')
+            setShowCardStyle({
+              display: 'flex',
+              position: 'absolute',
+              left: `10%`,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: `10%`,
+              height: '30vh',
+              width: `80%`,
+              transitionDuration: `300ms`,
+              boxShadow: `2px 2px 8px 1px rgba(25,25,25, 0.1)`
+            })
+          } else {
+            setToggleCard('hide')  
+            setShowCardStyle({})
+          }
+
+          setOppState(each); }}>
           <div className='boxer-card-row'>
             <div className='boxer-card-column'>
               <h4><strong>{`${each.firstName} ${each.lastName}`}</strong></h4>
@@ -124,6 +154,22 @@ const Home = (
             <div className='boxer-card-column'>
               <h5>Rank: {each.rank}</h5>
             </div> 
+          </div>
+
+          <div className={`boxer-card-details ${toggleCard}`}>
+            <h3>Hometown:</h3>
+            <h4 className='hometown-h4'>{each.hometown}</h4>
+
+            <ul className='attributes'>
+              <h3>Ratings:</h3>
+              <li><h4>Speed: {each.agi}</h4></li>
+              <li><h4>Power: {each.str}</h4></li>
+              <li><h4>Conditioning: {Math.round(each.con*100)}</h4></li>
+              <li><h4>Defense: {each.def}</h4></li>
+              <li><h4>Chin: {each.chin}</h4></li>
+              <li><h4>Heart: {each.heart}</h4></li>
+            </ul>
+              
           </div>
       </button>
       )

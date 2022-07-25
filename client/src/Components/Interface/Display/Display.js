@@ -19,7 +19,11 @@ const Display = ({
   const [hideModal, setHideModal] = useState(`hide`);
   const displayDiv = useRef(null) //auto scroll to bottom
 
-  useEffect(() => { if (fightOver) stopFight.stop() }, [fightOver])
+  useEffect(() => {
+    if (fightOver) {
+      stopFight.stop() 
+    }
+  }, [fightOver])
   
   useEffect(() => { if(roundStart) setHideModal('hide') }, [roundStart])
 

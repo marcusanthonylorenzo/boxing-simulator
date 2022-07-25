@@ -117,7 +117,7 @@ const FightEngine = (
       updateDataCollections({ pbp: pbp, finalTotals: finalTotals });
       checkWinnerAndLoser(user, enemy);
     }
-  },[fightOver])
+  },[fightOver, winner, loser])
   
   /***
   * Update judge's scorecard per round, update individually per mount. Otherwise will rerender each other if together.
@@ -133,6 +133,10 @@ const FightEngine = (
       const judgeTwoOppScore = judgeTwo.reduce((acc, curr, i) => acc += curr[1], 0);
       setJudgeTwoOfficialScorecard({ user: judgeTwoUserScore, opp: judgeTwoOppScore });
   }, [judgeTwo])
+
+
+  console.log(user, enemy)
+
 
   /***
   * Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
@@ -439,11 +443,6 @@ const FightEngine = (
       let normalOrPowerPunch;
 
     /*** Fight balance favors defender ***/
-
-    // if (fightOver || knockdownRule) {
-    //   console.log("check ko rules in calcDamge func")
-    //   clearTimeout(timeout)
-    // }
 
     if (difference <= -35){ //Strong counters by defender
       hit = attacker.hp += difference; //reduce health
