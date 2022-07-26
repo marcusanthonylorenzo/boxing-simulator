@@ -5,18 +5,19 @@ import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
 
 const BoxerCard = ({
-  boxer, path, corner, fightNight, fightOver,
+  boxer, path, corner,
   roundOver, roundCount, setFinalTotals,
-  exchangeCount, punchCount, fightNumber, setFightNumber, prevFightNumber
-  }) => {
+  exchangeCount, punchCount, fightNumber, prevFightNumber }) => {
+
+  console.log(boxer.hp)
 
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
   const energy = Math.round((boxer.con*100)+35);
   const cornerColor = corner(); //boxers ready with extra fight properties compared to normal user/enemy
   const dmgScale = cornerColor.dmgScale(); //scales animation properties based on health
-  const getColor = cornerColor.cornerColor; //color of corner
-  const favColor = cornerColor.favoriteColor; //get boxer shorts color
+  // const getColor = cornerColor.cornerColor; //color of corner
+  // const favColor = cornerColor.favoriteColor; //get boxer shorts color
   const boxerName = boxer.firstName;
 
   //toggles, collection data
@@ -249,7 +250,7 @@ const BoxerCard = ({
           </div>
         </div>
 
-        <div className={`fight-stats border padded`}>
+        <div className={`fight-stats border`}>
 
           <div className="graphs">
             {mapPunchData()}
@@ -281,26 +282,28 @@ const BoxerCard = ({
 
   return (
     <>
-      <div className={`BoxerCard`}>
-
+    <div className="home-gym">
         { //if round count is 0, fight has not begun, display intro cards first
           roundCount === 0 ?
-          <div className={`intros-${cornerColor.side} ${show}`}
-            style={{opacity: fade, color: boxer.favoriteColor}}
-            onClick={(e) => {
-              e.preventDefault();
-              showHide(); }}>
-            {
-              commentary.setIntros({...cornerColor,
-                weightClass: commentary.weightClassName(boxer)},
-                boxer.favoriteColor)
-            }
-          </div> 
+   
+            <div className={`intros ${show}`}
+              style={{opacity: fade, color: boxer.favoriteColor}}
+              onClick={(e) => {
+                e.preventDefault();
+                showHide(); }}>
+              {
+                commentary.setIntros({...cornerColor,
+                  weightClass: commentary.weightClassName(boxer)},
+                  boxer.favoriteColor)
+              }
+            </div> 
 
-          : mainCard()
-
+          :
+          <div className={`BoxerCard`}>
+              {mainCard()}
+          </div>
         }
-      </div>
+        </div> 
     </>
   )
 }

@@ -49,7 +49,6 @@ const Home = (
   }, [])
 
   useEffect(() => {
-    if (monthCounter > 0) setNewBoxerList([...boxerListFromLocal]);
     setFightNight(false)
     user.knockdownCount = 0;
     setDisableFightBtn(true);
@@ -58,8 +57,9 @@ const Home = (
   useEffect(() => {
     if (user.hp <= user.maxHp*0.35 || !fightNight) {
       setDisableFightBtn(true);
+      setOppToggle(false)
     }
-  }, [])
+  }, [fightNight, user.maxHp, user.hp])
 
   useEffect(() => {
     if (monthCounter === 4) {
@@ -80,7 +80,6 @@ const Home = (
           return newOne
         })
         setNewBoxerList(prev => [...prev, ...convertRandosToBoxers]);
-        localStorage.setItem('boxers', JSON.stringify(convertRandosToBoxers))
         setUpdateStatus('Opponents found.');
         setOpponentsFound(true);
       })
@@ -94,7 +93,6 @@ const Home = (
   }
   
   const generateBoxerWithAPI = (input) => {
-
     const newUserFromAPI = input
     //create level scaling later
     const firstName = `${newUserFromAPI.name.first}`;
@@ -116,7 +114,7 @@ const Home = (
     );
     //Optional attributes before returning
     newBoxer.win = Randomize(0, 40);
-    newBoxer.loss = Randomize(0, 40);
+    newBoxer.loss = Randomize(0, 30);
     newBoxer.favoriteColor = data.colorNames[Randomize(0, data.colorNames.length )]
 
     return newBoxer;
@@ -160,14 +158,17 @@ const Home = (
 
   const mapOpponents = () => { //Map these badboys onto the DOM
     return newBoxerList.map((each, i) => {
+
       return (
         <button className='boxer-card' disabled={disableBoxer}
         style={showCardStyle}
         onClick={(e) => {
+          e.stopPropagation();
           setSelectedBoxer(each);
           setOppToggle(true);
           if (toggleCard === 'hide') {
             setToggleCard('show')
+            setOppState(each);
             setShowCardStyle({
               display: 'flex',
               position: 'absolute',
@@ -181,10 +182,10 @@ const Home = (
               transitionDuration: `300ms`,
               boxShadow: `2px 2px 8px 1px rgba(25,25,25, 0.1)`
             })
-            setOppState(each);
             expandCardOnClick(selectedBoxer, toggleCard);
+            console.log(newBoxerList)
           } else {
-            setSelectedBoxer(selectedBoxer);
+            setSelectedBoxer(enemy);
             setToggleCard('hide');
             // setDisableBoxer(true);
             setShowCardStyle({});
@@ -289,11 +290,14 @@ const Home = (
             <div className="home-options">
               <div className="home-select-menu">
                 <button className={`home-buttons advance`} disabled={advanceMonth}
-                onClick={()=> {
+                onClick={(event)=> {
                   setHideGenerateBoxerBtn(false);
                   setMonthCounter(monthCounter+1);
                   setTrainingFinished(false);
                   if (monthCounter === 11) setMonthCounter(0);
+                  event.stopPropagation();
+                  console.log(`check selectedBoxer at advance`, selectedBoxer, selectedBoxer.lifeLeft())
+
                 }}>
                   <h2>Advance Month</h2>
                 </button>
@@ -305,6 +309,7 @@ const Home = (
                     setResetFightBtn(true);
                     setFightNumber(fightNumber+1);
                     setTrainingFinished(false);
+                    console.log(`check selectedBoxer at fightBtn`, selectedBoxer, selectedBoxer.lifeLeft())
                 }}> <h2>Fight Night</h2> </button>
               </div>
             </div>

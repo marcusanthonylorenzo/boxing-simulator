@@ -4,9 +4,8 @@ const randomUserAPI = {
   get: () => {
     return new Promise((resolve, reject) => {
       axios
-        .get("https://randomuser.me/api/?results=5")
+        .get("https://randomuser.me/api/?results=3")
         .then((response) => {
-          console.log("called")
           resolve(response);
         })
         .catch((error) => {

@@ -33,9 +33,15 @@ function App() {
   const [fightDataCollection, setFightDataCollection] = useState([]);
   const [stopFight, setStopFight] = useState({});
 
-  useEffect(() => { if (fightNumber === 0 && !landingPage) generateBoxerFunc.generate() },[generateBoxerFunc])
+  useEffect(() => { if (!landingPage) generateBoxerFunc.generate() },[generateBoxerFunc])
 
-  useEffect(() => { !fightNight ? setChangeAppBgColor(`rgb(234, 234, 234)`) : setChangeAppBgColor(`black`) }, [fightNight])
+  useEffect(() => { 
+    if(!fightNight) {
+      setChangeAppBgColor(`rgb(234, 234, 234)`)
+      setOppState(enemy);
+    } else {   
+      setChangeAppBgColor(`black`)
+    }}, [fightNight])
 
   useEffect(() => { persistInLocalStorage("fightHistory", JSON.stringify(fightDataCollection)) }, [fightDataCollection])
 

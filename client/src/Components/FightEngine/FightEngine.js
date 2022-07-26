@@ -278,6 +278,10 @@ const FightEngine = (
     setWinner(winner);
     loser.loss++;
     setLoser(loser);
+    setJudgeOne([]);
+    setJudgeTwo([]);
+    setJudgeOneOfficialScorecard();
+    setJudgeTwoOfficialScorecard();
   }
 
   /*** Determine if fighter gets up after knockdown or is unconscious ***/
@@ -640,6 +644,7 @@ const FightEngine = (
   const fightNightLoader = () => {
     return (
     <>
+  
           <BoxerCard boxer={user} path={leftBoxer}
             setIncrementor={setIncrementor}
             pbp={pbp} fightNight={fightNight}
