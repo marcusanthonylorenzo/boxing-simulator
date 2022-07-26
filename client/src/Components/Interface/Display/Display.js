@@ -43,8 +43,8 @@ const Display = ({
     setHideRefTalk(`black`);
   }, 6900);
 
-  useEffect(() => { setTimeout(() => { displayDiv.current.scrollTop = displayDiv.current.scrollHeight }, 1500) });
-  
+  useEffect(() => { setTimeout(() => { displayDiv.current.scrollTop = displayDiv.current.scrollHeight }, 1500) },[]);
+
 
   const fightIntroText = () => {
     return (
@@ -73,7 +73,6 @@ const Display = ({
       fontCol = `white`;
     }
 
-    console.log(scrap.text)
     return (
       <div className={`textbox`} style={{ //adjust text boxes here
         backgroundColor: getAttacker.favoriteColor,
@@ -192,8 +191,8 @@ const Display = ({
     return ( //return postFightModal()
       <>
         <div className={`options ${hideModal} `}>
-          {knockdownRule ? postFightText(`An onslaught of punches left, right, and center!`) : postFightText("A great contest between two warriors!")}
-          {knockdownRule ? knockdownRuleApplied() : judgesDecision()}
+          {knockdownRule && fightOver ? postFightText(`An onslaught of punches left, right, and center!`) : postFightText("A great contest between two warriors!")}
+          {knockdownRule && fightOver ? knockdownRuleApplied() : judgesDecision()}
         </div>
       </>
     )

@@ -3,21 +3,18 @@ import React, { useState, useEffect} from 'react'
 import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
+import BoxerStats from '../BoxerStats/BoxerStats'
 
 const BoxerCard = ({
   boxer, path, corner,
   roundOver, roundCount, setFinalTotals,
   exchangeCount, punchCount, fightNumber, prevFightNumber }) => {
 
-  console.log(boxer.hp)
-
   const commentary = Commentary();  //unpack running function component to get objects to unpack
   const life = Math.round(boxer.lifeLeft()*100);
   const energy = Math.round((boxer.con*100)+35);
   const cornerColor = corner(); //boxers ready with extra fight properties compared to normal user/enemy
   const dmgScale = cornerColor.dmgScale(); //scales animation properties based on health
-  // const getColor = cornerColor.cornerColor; //color of corner
-  // const favColor = cornerColor.favoriteColor; //get boxer shorts color
   const boxerName = boxer.firstName;
 
   //toggles, collection data
@@ -26,8 +23,6 @@ const BoxerCard = ({
   const [dmgTracker, setDmgTracker] = useState([]); //tracks each punch for graphs
   const [engagementCount, setEngagementCount] = useState(0);
   const [boxerPunchData, setBoxerPunchData] = useState([]);
-  // const [roundByRoundData, setRoundByRoundData] = useState([]);
-
 
   const showHide = (show, set) => {
     if (show) {
@@ -160,8 +155,12 @@ const BoxerCard = ({
       }
     }
 
+    
+
     return (
       <>
+      {/* <BoxerStats stats={{boxerPunchData}} /> */}
+
         <div className="fight-stats-punches-data">
           <div className="punches-landed-label">
             <h5>Knockdowns:</h5>
@@ -251,7 +250,6 @@ const BoxerCard = ({
         </div>
 
         <div className={`fight-stats border`}>
-
           <div className="graphs">
             {mapPunchData()}
           </div>

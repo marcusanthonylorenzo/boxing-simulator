@@ -26,11 +26,11 @@ const data = () => {
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   const colorNames = [
-    "AliceBlue",
-    "AntiqueWhite",
+    // "AliceBlue",
+    // "AntiqueWhite",
     "Aqua",
-    "Aquamarine",
-    "Azure",
+    // "Aquamarine",
+    // "Azure",
     "Beige",
     "Bisque",
     "Black",
@@ -44,7 +44,7 @@ const data = () => {
     "Chocolate",
     "Coral",
     "CornflowerBlue",
-    "Cornsilk",
+    // "Cornsilk",
     "Crimson",
     "Cyan",
     "DarkBlue",
@@ -170,8 +170,8 @@ const data = () => {
     "Turquoise",
     "Violet",
     "Wheat",
-    "White",
-    "WhiteSmoke",
+    // "White",
+    // "WhiteSmoke",
     "Yellow",
     "YellowGreen",
   ];

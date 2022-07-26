@@ -31,7 +31,6 @@ const FightEngine = (
   const [punchCount, setPunchCount] = useState([]); //data for each punch/counter punch thrown, for historical fight record
   const [rateOfExchange, setRateOfExchange] = useState(10);  //toggle number of punches in one round based on boxer handSpeed
   const [incrementor, setIncrementor] = useState(0);
-  console.log(rateOfExchange)
   const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
   const [delay] = useState(1500);  //toggle rate of text ouput
 
@@ -48,14 +47,38 @@ const FightEngine = (
 
   /*** Match Conditions ***/
   const [knockdownRule, setKnockdownRule] = useState(false);
-  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState(1);
+  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState();
 
   /*** Judges Decision state ***/
   const [judgeOne, setJudgeOne] = useState([]);
   const [judgeOneOfficialScorecard, setJudgeOneOfficialScorecard] = useState();
   const [judgeTwo, setJudgeTwo] = useState([]);
   const [judgeTwoOfficialScorecard, setJudgeTwoOfficialScorecard] = useState();
+  const [judgeThree, setJudgeThree] = useState([]);
+  const [judgeThreeOfficialScorecard, setJudgeThreeOfficialScorecard] = useState();
 
+  console.log(`roundCount, roundOver, fightStart, fightOver, knockdownRule`)
+  console.log(roundCount, roundOver, fightStart, fightOver, knockdownRule, winner.firstName, loser.firstName)
+
+  useEffect(() => {
+    localStorage.setItem('finalTotals', JSON.stringify(
+      {
+        fightNumber: fightNumber,
+        finalTotals: finalTotals,
+        round: roundCount
+      }
+    ));
+  }, [finalTotals])
+
+  useEffect(() => {  //Similar to useEffect above, but within a record-altering function
+    console.log('fight over and round over mounted')
+    if (fightOver && roundOver) {
+      checkWinnerAndLoser(user, enemy);
+      updateDataCollections({ pbp: pbp, finalTotals: finalTotals });
+    }
+  },[fightOver, roundOver])
+
+  console.log(winner, loser)
 
   useEffect(() =>  { //Check if beginning of a new fight
     if(fightNight && roundCount === 0) {
@@ -97,28 +120,24 @@ const FightEngine = (
   }, [fightOver, knockdownRule])
 
   useEffect(() => { //Set button toggle
-    if (roundCount === 2 && roundOver) {
+    if (roundCount === 1 && roundOver) {
       setDisable(true);
       setFightOver(true);
+      setFightStart(false);
       stopFight.stop();
     }
   },[roundOver, roundCount])
 
   useEffect(() => { //toggle specific end-of-round (roundOver) and round start attributes
-    if (!knockdownRule && (roundStart || fightOver)) {
+    if ( (!knockdownRule && fightOver)) {
+      console.log(`!knockdownRule && .... useEffect`)
       judgeDecision(user, enemy, 'control', 'one');
       judgeDecision(user, enemy, 'accuracy', 'two');
+      judgeDecision(user, enemy, 'accuracy', 'three');
       user.knockdownCount = 0;
       enemy.knockdownCount = 0;
     }
-  }, [roundStart, fightOver, knockdownRule])
-
-  useEffect(() => {  //Similar to useEffect above, but within a record-altering function
-    if (fightOver) {
-      updateDataCollections({ pbp: pbp, finalTotals: finalTotals });
-      checkWinnerAndLoser(user, enemy);
-    }
-  },[fightOver])
+  }, [fightOver])
 
   
   /*** Update judge's scorecard per round, update individually per mount. Otherwise will rerender each other if together.
@@ -135,6 +154,12 @@ const FightEngine = (
       const judgeTwoOppScore = judgeTwo.reduce((acc, curr, i) => acc += curr[1], 0);
       setJudgeTwoOfficialScorecard({ user: judgeTwoUserScore, opp: judgeTwoOppScore });
   }, [judgeTwo])
+
+  useEffect(() => {
+    const judgeThreeUserScore = judgeThree.reduce((acc, curr, i) => acc += curr[0], 0);
+    const judgeThreeOppScore = judgeThree.reduce((acc, curr, i) => acc += curr[1], 0);
+    setJudgeThreeOfficialScorecard({ user: judgeThreeUserScore, opp: judgeThreeOppScore });
+}, [judgeThree])
 
 
   /*** Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
@@ -154,6 +179,7 @@ const FightEngine = (
   /*** Build logic for Judge criteria ***/
 
   const judgeDecision = (user, enemy, whatToJudge, whichJudge) => {
+    console.log(`judgeDecision`)
     //Use the judges criteria to filter the aggregated stats of each fighter.
     const judgeUser = filterStats(user, whatToJudge); 
     const judgeOpp = filterStats(enemy, whatToJudge);
@@ -167,6 +193,9 @@ const FightEngine = (
         return;
         case "two":
         setJudgeTwo(prev => [...prev, [userScore, oppScore]]);
+        return;
+        case "three":
+        setJudgeThree(prev => [...prev, [userScore, oppScore]]);
         return;
         default:
         return;
@@ -216,12 +245,13 @@ const FightEngine = (
   /*** Adjust win or loss  ***/
 
   const checkWinnerAndLoser = (user, opp) => {
-    if (!knockdownRule && (fightOver && roundOver)) {
+    if (!knockdownRule && fightOver) {
       if (user.hp <= 0) {
         updateWinLoss(opp, user);
       } else if (opp.hp <= 0) {
         updateWinLoss(user, opp);
       } else {
+        console.log(`compare scorecards`)
         if (!knockdownRule) compareScorecards(user, opp);
       }
     } 
@@ -249,16 +279,18 @@ const FightEngine = (
       oppTally++
     }
     //Judge Three (Judge Two placeholders for now!)
-    if (judgeTwoOfficialScorecard.user > judgeTwoOfficialScorecard.opp) {
+    if (judgeThreeOfficialScorecard.user > judgeThreeOfficialScorecard.opp) {
       userTally++
-    } else if (judgeTwoOfficialScorecard.user < judgeTwoOfficialScorecard.opp){
+    } else if (judgeThreeOfficialScorecard.user < judgeThreeOfficialScorecard.opp){
       oppTally++
     }
 
-    if (judgeOneOfficialScorecard.user === judgeOneOfficialScorecard.opp) {
-      userTally++
-      oppTally++
-    }
+    // if (judgeOneOfficialScorecard.user === judgeOneOfficialScorecard.opp) {
+    //   userTally++
+    //   oppTally++
+    // }
+
+    console.log(userTally, oppTally)
 
     if (userTally + oppTally >= 3){
       if (userTally > oppTally) {
@@ -278,6 +310,8 @@ const FightEngine = (
     setWinner(winner);
     loser.loss++;
     setLoser(loser);
+
+    console.log(winner, loser)
     setJudgeOne([]);
     setJudgeTwo([]);
     setJudgeOneOfficialScorecard();
@@ -581,6 +615,7 @@ const FightEngine = (
           setFightOver(true);
           over = `${user.firstName} hits the canvas!! This fight is over!`;
           setPbp(prev => [...prev, {text: over, round: newRnd, attacker: enemy, defender: user} ] )
+          checkWinnerAndLoser(user, enemy);
           clearTimeout(fightAction);
           return;
         } else if (enemy.hp <= 0) {
@@ -588,6 +623,7 @@ const FightEngine = (
           enemy.knockdownCount++;
           setFightOver(true);
           over = `${enemy.firstName} is down in round ${newRnd}!! This fight is over!`;
+          checkWinnerAndLoser(user, enemy);
           setPbp(prev => [...prev, {text: over, round: newRnd, attacker: user, defender: enemy} ] )
           clearTimeout(fightAction);
           return;
@@ -641,8 +677,7 @@ const FightEngine = (
 
   //UI JSX for fight night
 
-  const fightNightLoader = () => {
-    return (
+  const fightNightLoader = 
     <>
   
           <BoxerCard boxer={user} path={leftBoxer}
@@ -688,6 +723,7 @@ const FightEngine = (
               setPrevFightNumber={setPrevFightNumber}
               fightNight={fightNight}
               roundCount={roundCount}
+              setRoundCount={setRoundCount}
               setFightNight={setFightNight}
               fightStart={fightStart}
               setFightStart={setFightStart}
@@ -716,8 +752,6 @@ const FightEngine = (
           setFinalTotals={setFinalTotals}
           corner={() => oppReady}/>
     </>
-    )
-  }
 
   return (
     <div className="fight-engine-wrap">
@@ -725,7 +759,7 @@ const FightEngine = (
         <div className="main-container">
 
         {/***  Boxer Card stays in this position as you navigate the page  ***/}
-          { fightNightLoader()}
+          { fightNightLoader }
           
         </div>
       </div>

@@ -21,7 +21,6 @@ const Home = (
   /***  General State  ***/
   const [ url, setUrl ] = useState(urls[1]);
   const [newBoxerList, setNewBoxerList ] = useState([]);
-  const [officialBoxerList, setOfficialBoxerList ] = useState([]);
 
   /***  Toggles, Counters  ***/
   const [hideGenerateBoxerBtn, setHideGenerateBoxerBtn] = useState(false)
@@ -34,25 +33,37 @@ const Home = (
   const [selectedBoxer, setSelectedBoxer] = useState({})
   const [userToggle, setUserToggle] = useState(true);
   const [oppToggle, setOppToggle] = useState(false);
+  const [updatedFightTotals, setUpdatedFightTotals] = useState([]);
 
   /***  Data Retreival ***/
-  const [getHistory, setGetHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
+  const [getHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
   const [updateStatus, setUpdateStatus] = useState("Looking for a fight...");
   const getTrainingEntries = Object.entries(user.train);
   const commentary = Commentary();
   const data = Data();
   const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
+  const finalTotalsFromLocal = JSON.parse(localStorage.getItem('finalTotals'));
 
   useEffect(() => {
+    console.log(`first useEffect ran`)
+    setUpdatedFightTotals(prev => [...prev, finalTotalsFromLocal])
     setGenerateBoxersFunc({ generate: generateBoxer });
-    setDisableFightBtn(true);
+    // setDisableFightBtn(true);
+    return () => {
+      localStorage.setItem('careerTotals', updatedFightTotals)
+    }
   }, [])
+  console.log(updatedFightTotals)
 
   useEffect(() => {
     setFightNight(false)
     user.knockdownCount = 0;
     setDisableFightBtn(true);
   }, [])
+
+  useEffect(() => {
+    if (!fightOver && !fightNight) setDisableFightBtn(true);
+  }, [fightOver, fightNight])
 
   useEffect(() => {
     if (user.hp <= user.maxHp*0.35 || !fightNight) {
@@ -201,7 +212,7 @@ const Home = (
   
   const generateListOfBoxers = //Button that generates a new list of opponents, makes API calls
     <div id={'generator-btn'}>
-      <h5>Searching for Opponents...</h5>
+      <h5>Opponents:</h5>
     </div>
 
   const boxerCardsAtHomePage = (boxer , toggle) => {

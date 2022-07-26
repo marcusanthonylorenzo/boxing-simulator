@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import './SelectMenu.css'
 
 const SelectMenu = (
-  { buttons, roundOver, roundCount,
+  { buttons, roundOver,
+    roundCount, setRoundCount,
     fightStart, setFightStart,
     fightOver, setFightOver,
     fightNight, setFightNight,
@@ -27,6 +28,7 @@ const SelectMenu = (
               setResetFightBtn(false);
               setFightOver(true);
               setPrevFightNumber(fightNumber);
+              setRoundCount(0);
             }
           }>
           Back to Gym.
