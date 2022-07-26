@@ -56,7 +56,6 @@ const Home = (
       localStorage.setItem('careerTotals', updatedFightTotals)
     }
   }, [])
-  console.log(updatedFightTotals)
 
   useEffect(() => {
     setFightNight(false)
@@ -169,10 +168,8 @@ const Home = (
     )
 }
 
-
   const mapOpponents = () => { //Map these badboys onto the DOM
     return newBoxerList.map((each, i) => {
-
       return (
         <button className='boxer-card' disabled={disableBoxer}
         style={showCardStyle}
@@ -389,9 +386,9 @@ const Home = (
           <div className="home-rankings-info">
 
             { boxerCardsAtHomePage(selectedBoxer, oppToggle) }
-
-            <h2>Previous Fight History goes here.</h2>
-            <div className="official-rankings">
+            
+            <div className="official-rankings">              
+              <h2>Previous Fight History goes here.</h2>
               <h6>W (TKO) Fighter Example</h6>
             </div>
           </div>
