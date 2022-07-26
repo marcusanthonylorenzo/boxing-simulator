@@ -3,7 +3,10 @@ import React, { useState, useEffect} from 'react'
 import './BoxerCard.css'
 import Commentary from '../../Helpers/Commentary'
 import goldBelt from '../../../assets/images/goldBelt.png'
-import BoxerStats from '../BoxerStats/BoxerStats'
+import { Bar } from 'react-chartjs-2'
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+
 
 const BoxerCard = ({
   boxer, path, corner,
@@ -155,13 +158,55 @@ const BoxerCard = ({
       }
     }
 
+    const data = {
+      labels: [
+        ""
+      ],
+      datasets: [
+        {
+          data: [ringControl],
+          backgroundColor: [
+            `${boxer.favoriteColor}`,
+          ],
+          borderColor: ['white'],
+          borderWidth: '1',
+          barPercentage: 0.35,
+          animation: 'easeInOutBounce'
+        },
+        {
+          data: [`100`],
+          backgroundColor: [
+            'rgba(255, 255, 255, 0.9)',
+          ],
+          borderColor: [''],
+          borderWidth: '1',
+          barPercentage: 0.4,
+          animation: false
+        },
+      ]
+    }
+
+    const options = {
+      indexAxis: `y`,
+      scales: {
+        y: 
+        {
+            stacked: true,
+            beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: { display: false, position: 'absolute'},
+      },
+    }
     
 
     return (
       <>
-      {/* <BoxerStats stats={{boxerPunchData}} /> */}
+
 
         <div className="fight-stats-punches-data">
+
           <div className="punches-landed-label">
             <h5>Knockdowns:</h5>
           </div>
@@ -171,18 +216,18 @@ const BoxerCard = ({
 
           <div className="punches-landed-label">
             <h5>Accuracy (By Round, Total): </h5>
-          </div>
-          <div className="punches-landed-data">
             <div className="punches-landed-accuracy-round">
               <h5 className="landed-thrown">{totalPunchesLanded} / {totalPunchesThrown} </h5>
               <h5>( { Math.ceil((totalPunchesLanded / totalPunchesThrown)*100)}% )</h5>
             </div>
-            <div className="punches-landed-accuracy-total">
+          </div>
+          <div className="punches-landed-data">
+
+            {/* <div className="punches-landed-accuracy-total">
               <h5 className="landed-thrown">{getTotalPunchesLanded} / {getTotalPunchesThrown} </h5>
               <h5>( {Math.ceil((getTotalPunchesLanded/getTotalPunchesThrown)*100)}% )</h5>
-            </div>
+            </div> */}
           </div>
-
           <div className="punches-landed-label">
             <h5>Engagement Rate:</h5>
           </div>
@@ -192,10 +237,13 @@ const BoxerCard = ({
 
           <div className="punches-landed-label">
             <h5>Ring Control:</h5>
+            <div className={`charts`}>
+              <Bar data={data} options={options} />
+            </div>
           </div>
-          <div className="punches-landed-data">
+          {/* <div className="punches-landed-data">
             <h5>{ringControl}</h5>
-          </div>
+          </div> */}
         </div>
       </>
     )

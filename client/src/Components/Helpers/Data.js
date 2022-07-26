@@ -83,7 +83,7 @@ const data = () => {
     "Grey",
     "Green",
     "GreenYellow",
-    "HoneyDew",
+    // "HoneyDew",
     "HotPink",
     "IndianRed",
     "Indigo",

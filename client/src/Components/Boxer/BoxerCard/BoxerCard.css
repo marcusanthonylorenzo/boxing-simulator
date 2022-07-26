@@ -12,6 +12,19 @@
   color: rgb(255, 255, 255);
 }
 
+.charts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0;
+  background-color: rgb(68, 64, 64, 0.0);
+  height: 5vh;
+  width: 13vw;
+}
+
+
 /* PREFIGHT Boxer Card **/
 
 .intros {

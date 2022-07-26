@@ -5,6 +5,9 @@ import Boxer from '../../Components/Boxer/BoxerClass'
 import Randomize from '../../Components/Helpers/Randomize'
 import Commentary from '../../Components/Helpers/Commentary'
 import Data from '../../Components/Helpers/Data'
+import { Bar } from 'react-chartjs-2'
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 const Home = (
   { user, enemy, urls,
@@ -215,6 +218,57 @@ const Home = (
       <h5>Opponents:</h5>
     </div>
 
+  const getUpdatedBoxerStats = () => {
+    if (updatedFightTotals.hasOwnProperty(user.firstName)) {
+      return updatedFightTotals.reduce((acc, curr, i) => acc = curr.finalTotals[i][user.firstName], 0)
+    } else {
+      return 1;
+    }
+  }
+  console.log(getUpdatedBoxerStats(), updatedFightTotals)
+
+  const dataForHomeStats = {
+    labels: [
+      ""
+    ],
+    datasets: [
+      {
+        data: [getUpdatedBoxerStats()],
+        backgroundColor: [
+          `${user.favoriteColor}`,
+        ],
+        borderColor: ['white'],
+        borderWidth: '1',
+        barPercentage: 0.35,
+        animation: 'easeInOutBounce'
+      },
+      {
+        data: [`100`],
+        backgroundColor: [
+          'rgba(255, 255, 255, 0.9)',
+        ],
+        borderColor: [''],
+        borderWidth: '1',
+        barPercentage: 0.4,
+        animation: false
+      },
+    ]
+  }
+
+  const options = {
+    indexAxis: ``,
+    scales: {
+      y: 
+      {
+          stacked: true,
+          beginAtZero: true
+      }
+    },
+    plugins: {
+      legend: { display: false, position: 'absolute'},
+    },
+  }
+  
   const boxerCardsAtHomePage = (boxer , toggle) => {
     return (
       <>
@@ -234,13 +288,15 @@ const Home = (
           </div>
         }
         </div>
+
         <div className='home-gym-stats'>
-          <h2>Stats go here</h2>
+          { boxer.firstName === user.firstName ? <Bar data={dataForHomeStats} options={options} /> :
+            <h3>Choose your destiny</h3>
+          }
         </div>
       </>
     )
   }
-
 
   return (
     <div className="main-container-wrap" id={`home-gym-container-wrap`} style={{ backgroundImage: url }}>
