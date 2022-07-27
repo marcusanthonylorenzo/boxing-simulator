@@ -7,6 +7,8 @@ import Commentary from '../../Components/Helpers/Commentary'
 import Data from '../../Components/Helpers/Data'
 import { Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js';
+import ChartjsPluginStacked100 from "chartjs-plugin-stacked100";
+Chart.register(ChartjsPluginStacked100);
 Chart.register(...registerables);
 
 const Home = (
@@ -48,10 +50,8 @@ const Home = (
   const finalTotalsFromLocal = JSON.parse(localStorage.getItem('finalTotals'));
 
   useEffect(() => {
-    console.log(`first useEffect ran`)
     setUpdatedFightTotals(prev => [...prev, finalTotalsFromLocal])
     setGenerateBoxersFunc({ generate: generateBoxer });
-    // setDisableFightBtn(true);
     return () => {
       localStorage.setItem('careerTotals', updatedFightTotals)
     }
@@ -150,6 +150,7 @@ const Home = (
           <h5>Rank: {each.rank}</h5>
         </div> 
       </div>
+
       <div className={`boxer-card-details ${toggleCard}`}>
         <h3>Hometown:</h3>
         <h4 className='hometown-h4'>{each.hometown}</h4>
@@ -162,7 +163,9 @@ const Home = (
           <li><h4>Defense: {each.def}</h4></li>
           <li><h4>Chin: {Math.round(each.chin)}</h4></li>
           <li><h4>Heart: {each.heart}</h4></li>
-        </ul> 
+        </ul>
+        
+        <h5 id='close-link'>Close</h5>
       </div>
     </>
     )
@@ -182,19 +185,18 @@ const Home = (
             setOppState(each);
             setShowCardStyle({
               display: 'flex',
-              position: 'absolute',
-              left: `10%`,
+              position: 'fixed',
+              left: `20%`,
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               padding: `10%`,
               height: '30vh',
-              width: `80%`,
+              width: `60%`,
               transitionDuration: `300ms`,
               boxShadow: `2px 2px 8px 1px rgba(25,25,25, 0.1)`
             })
             expandCardOnClick(selectedBoxer, toggleCard);
-            console.log(newBoxerList)
           } else {
             setSelectedBoxer(enemy);
             setToggleCard('hide');
@@ -217,9 +219,8 @@ const Home = (
 
   const getUpdatedBoxerStats = (whatToUpdate) => {
       return updatedFightTotals.reduce((acc, curr, i) => {
-        console.log(curr.finalTotals[i][user.firstName][whatToUpdate]);
-        return acc = curr.finalTotals[i][user.firstName][whatToUpdate]*100
-      }, 0)
+          return acc = curr.finalTotals[i][user.firstName][whatToUpdate]*100
+      }, 0) 
   }
 
   const dataForHomeStats = {
@@ -229,8 +230,8 @@ const Home = (
     datasets: [
       {
         data: [
-          getUpdatedBoxerStats('accuracy'),
-          `1`
+          // getUpdatedBoxerStats('accuracy'),
+          `100`
         ],
         backgroundColor: [
           `white`,
@@ -247,11 +248,16 @@ const Home = (
       {
         data: [
           `100`,
+          `2`
         ],
         backgroundColor: [
           'rgba(255, 255, 255, 0.9)',
+          'rgba(153, 102, 255, 0.2)'
         ],
-        borderColor: [''],
+        borderColor: [
+          'black',
+          'green'
+        ],
         borderWidth: '1',
         barPercentage: 0.4,
         animation: false
@@ -266,10 +272,18 @@ const Home = (
       {
           stacked: true,
           beginAtZero: true
+      },
+      y:
+      {
+        stacked: true,
+        beginAtZero: true,
       }
     },
     plugins: {
-      legend: { display: false, position: 'absolute' },
+      legend: {
+        display: false,
+        // position: 'absolute'
+      },
     },
   }
   
@@ -296,8 +310,8 @@ const Home = (
         <div className='home-gym-stats'>
           { boxer.firstName === user.firstName ?
           <>
-            <h4>Career Stats</h4>
-            <Bar data={dataForHomeStats} options={options} />
+            <h3>Career Stats</h3>
+            { fightNumber > 1 ? <Bar data={dataForHomeStats} options={options} /> : <h4>Still updating until month 2...</h4> }
 
           </>
           :
@@ -372,10 +386,9 @@ const Home = (
                   setHideGenerateBoxerBtn(false);
                   setMonthCounter(monthCounter+1);
                   setTrainingFinished(false);
+                  if (newBoxerList.length === 0) generateBoxer();
                   if (monthCounter === 11) setMonthCounter(0);
                   event.stopPropagation();
-                  console.log(`check selectedBoxer at advance`, selectedBoxer, selectedBoxer.lifeLeft())
-
                 }}>
                   <h2>Advance Month</h2>
                 </button>
@@ -387,7 +400,7 @@ const Home = (
                     setResetFightBtn(true);
                     setFightNumber(fightNumber+1);
                     setTrainingFinished(false);
-                    console.log(`check selectedBoxer at fightBtn`, selectedBoxer, selectedBoxer.lifeLeft())
+                    setAdvanceMonth(false);
                 }}> <h2>Fight Night</h2> </button>
               </div>
             </div>

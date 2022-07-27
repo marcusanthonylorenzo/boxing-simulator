@@ -200,6 +200,7 @@ const BoxerCard = ({
       },
     }
     
+    const calcAccuraccy = Math.ceil((totalPunchesLanded / totalPunchesThrown)*100);
 
     return (
       <>
@@ -218,7 +219,9 @@ const BoxerCard = ({
             <h5>Accuracy (By Round, Total): </h5>
             <div className="punches-landed-accuracy-round">
               <h5 className="landed-thrown">{totalPunchesLanded} / {totalPunchesThrown} </h5>
-              <h5>( { Math.ceil((totalPunchesLanded / totalPunchesThrown)*100)}% )</h5>
+              <h5>(
+                 { isNaN(calcAccuraccy) ? " " : calcAccuraccy + `%` }
+                 )</h5>
             </div>
           </div>
           <div className="punches-landed-data">

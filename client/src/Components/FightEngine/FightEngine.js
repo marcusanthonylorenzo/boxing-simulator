@@ -57,8 +57,8 @@ const FightEngine = (
   const [judgeThree, setJudgeThree] = useState([]);
   const [judgeThreeOfficialScorecard, setJudgeThreeOfficialScorecard] = useState();
 
-  console.log(`roundCount, roundOver, fightStart, fightOver, knockdownRule`)
-  console.log(roundCount, roundOver, fightStart, fightOver, knockdownRule, winner.firstName, loser.firstName)
+  // console.log(`roundCount, roundOver, fightStart, fightOver, knockdownRule`)
+  // console.log(roundCount, roundOver, fightStart, fightOver, knockdownRule, winner.firstName, loser.firstName)
 
   useEffect(() => {
     localStorage.setItem('finalTotals', JSON.stringify(
@@ -284,7 +284,6 @@ const FightEngine = (
     } else if (judgeThreeOfficialScorecard.user < judgeThreeOfficialScorecard.opp){
       oppTally++
     }
-
     // if (judgeOneOfficialScorecard.user === judgeOneOfficialScorecard.opp) {
     //   userTally++
     //   oppTally++
@@ -306,6 +305,7 @@ const FightEngine = (
   /*** Update win/loss record ***/
 
   const updateWinLoss = (winner, loser) => {
+    console.log(`winner/loser`, winner, loser)
     winner.win++;
     setWinner(winner);
     loser.loss++;
