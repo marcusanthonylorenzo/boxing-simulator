@@ -123,7 +123,7 @@ const data = () => {
     "MediumTurquoise",
     "MediumVioletRed",
     "MidnightBlue",
-    "MintCream",
+    // "MintCream",
     "MistyRose",
     "Moccasin",
     "NavajoWhite",

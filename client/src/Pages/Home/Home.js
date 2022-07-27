@@ -215,14 +215,12 @@ const Home = (
       <h5>Opponents:</h5>
     </div>
 
-  const getUpdatedBoxerStats = () => {
-    if (updatedFightTotals.hasOwnProperty(user.firstName)) {
-      return updatedFightTotals.reduce((acc, curr, i) => acc = curr.finalTotals[i][user.firstName], 0)
-    } else {
-      return 1;
-    }
+  const getUpdatedBoxerStats = (whatToUpdate) => {
+      return updatedFightTotals.reduce((acc, curr, i) => {
+        console.log(curr.finalTotals[i][user.firstName][whatToUpdate]);
+        return acc = curr.finalTotals[i][user.firstName][whatToUpdate]*100
+      }, 0)
   }
-  console.log(getUpdatedBoxerStats(), updatedFightTotals)
 
   const dataForHomeStats = {
     labels: [
@@ -230,17 +228,26 @@ const Home = (
     ],
     datasets: [
       {
-        data: [getUpdatedBoxerStats()],
-        backgroundColor: [
-          `${user.favoriteColor}`,
+        data: [
+          getUpdatedBoxerStats('accuracy'),
+          `1`
         ],
-        borderColor: ['white'],
+        backgroundColor: [
+          `white`,
+          'white'
+        ],
+        borderColor: [
+          'white',
+          'black'
+        ],
         borderWidth: '1',
         barPercentage: 0.35,
         animation: 'easeInOutBounce'
       },
       {
-        data: [`100`],
+        data: [
+          `100`,
+        ],
         backgroundColor: [
           'rgba(255, 255, 255, 0.9)',
         ],
@@ -253,16 +260,16 @@ const Home = (
   }
 
   const options = {
-    indexAxis: ``,
+    indexAxis: `x`,
     scales: {
-      y: 
+      x: 
       {
           stacked: true,
           beginAtZero: true
       }
     },
     plugins: {
-      legend: { display: false, position: 'absolute'},
+      legend: { display: false, position: 'absolute' },
     },
   }
   
@@ -287,7 +294,14 @@ const Home = (
         </div>
 
         <div className='home-gym-stats'>
-          { boxer.firstName === user.firstName ? <Bar data={dataForHomeStats} options={options} /> :
+          { boxer.firstName === user.firstName ?
+          <>
+            <h4>Career Stats</h4>
+            <Bar data={dataForHomeStats} options={options} />
+
+          </>
+          :
+
             <h3>Choose your destiny</h3>
           }
         </div>
