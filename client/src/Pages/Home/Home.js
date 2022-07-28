@@ -52,9 +52,7 @@ const Home = (
   useEffect(() => {
     setUpdatedFightTotals(prev => [...prev, finalTotalsFromLocal])
     setGenerateBoxersFunc({ generate: generateBoxer });
-    return () => {
-      localStorage.setItem('careerTotals', updatedFightTotals)
-    }
+    localStorage.setItem('careerTotals', updatedFightTotals)
   }, [])
 
   useEffect(() => {

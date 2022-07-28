@@ -283,10 +283,10 @@ const FightEngine = (
     } else if (judgeThreeOfficialScorecard.user < judgeThreeOfficialScorecard.opp){
       oppTally++
     }
-    // if (judgeOneOfficialScorecard.user === judgeOneOfficialScorecard.opp) {
-    //   userTally++
-    //   oppTally++
-    // }
+    if (judgeOneOfficialScorecard.user === judgeOneOfficialScorecard.opp) {
+      userTally++
+      oppTally++
+    }
 
     console.log(userTally, oppTally)
 
@@ -479,33 +479,39 @@ const FightEngine = (
 
     /*** Fight balance favors defender ***/
 
-    if (difference <= -35){ //Strong counters by defender
+    if (difference <= -55){ //Strong counters by defender
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference
       result.text = `${defender.firstName} returning some BIG, HEAVY counters!`;
 
-    } else if (difference > -35 && difference <= -25){ //Close Counter in favor of defender.
+    } else if (difference > -55 && difference <= -40){ //Close Counter in favor of defender.
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
       result.text = `${defender.firstName} keeping the pressure off and working well on the outside.`;
 
-    } else if (difference > -25 && difference <= -15){ //Close Counter in favor of defender.
+    } else if (difference > -40 && difference <= -30){ //Close Counter in favor of defender.
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
       result.text = `${defender.firstName} making ${attacker.firstName} pay on the way in`;
 
-    } else if (difference > -15 && difference < -5){ //Close Counter in favor of defender.
+    } else if (difference > -30 && difference < -20){ //Close Counter in favor of defender.
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
       result.text = `${defender.firstName} moving well to avoid ${attacker.firstName}'s offense. Peppering jabs in response.`;
 
+    } else if (difference > -20 && difference <= -10){ //Close Counter in favor of defender.
+      hit = attacker.hp += difference; //reduce health
+      setObj(attacker, "hp", hit);
+      result.totalDmg = difference;
+      result.text = `${attacker.firstName} taking shots in the pocket.`;
+
     /***  Fight balance is close  ***/
 
-    } else if (difference >=5 && difference <-2) { //Inside work for defender
+    } else if (difference >=2 && difference <-10) { //Inside work for defender
       hit = attacker.hp -= 2;
       defender.hp -= 1;
       setObj(defender, "hp", hit);
@@ -541,7 +547,7 @@ const FightEngine = (
       hit = defender.hp -= normalOrPowerPunch;
       setObj(defender, "hp", hit)
       result.totalDmg = normalOrPowerPunch;
-      result.text = `A clinical performance by ${attacker.firstName}!`;
+      result.text = `Hard, clean shots by ${attacker.firstName}!`;
 
     } else if (difference > 25) {
       normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
@@ -579,12 +585,14 @@ const FightEngine = (
       resultDmg = calcDamage(user, opp, userDmg, timeout); //determines resulting dmg after engage and exchange
       determineKO(user, opp, userDmg, timeout);
       setUserDmgScale(userDmg);
+      console.log(`userDmg`, userDmg)
 
     } else if (oppOffense > userOffense) {
       let oppDmg = exchange(opp, user);
       resultDmg = calcDamage(opp, user, oppDmg, timeout); //determines resulting dmg after engage and exchange
       determineKO(opp, user, oppDmg, timeout);
       setOppDmgScale(oppDmg);
+      console.log(`oppDmg`, oppDmg)
 
     } else if (oppOffense === userOffense) {
       resultDmg = 0;
@@ -669,6 +677,7 @@ const FightEngine = (
         setDisable(true);
         setRoundStart(true);
         setRoundOver(false);
+        user.roundsFought++;
         fight(user, enemy);
         user.roundRecovery();
         enemy.roundRecovery();
