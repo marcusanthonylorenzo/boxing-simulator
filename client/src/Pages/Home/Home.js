@@ -49,11 +49,21 @@ const Home = (
   const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
   const finalTotalsFromLocal = JSON.parse(localStorage.getItem('finalTotals'));
 
+
   useEffect(() => {
-    setUpdatedFightTotals(prev => [...prev, finalTotalsFromLocal])
+    // console.log(finalTotalsFromLocal, updatedFightTotals)
+    // if (fightNumber > 0 && finalTotalsFromLocal.finalTotals.length > 0) {
+    //     const getStats = finalTotalsFromLocal.finalTotals.reduce((acc, item, i) => {
+    //     return item[user.firstName] 
+    //   }, {})
+    //   console.log(getStats)
+    // setUpdatedFightTotals(prev => [...prev, getStats])
+    // }
     setGenerateBoxersFunc({ generate: generateBoxer });
-    localStorage.setItem('careerTotals', updatedFightTotals)
-  }, [])
+    localStorage.setItem('careerTotals', JSON.stringify(updatedFightTotals))
+  }, []);
+
+  console.log(updatedFightTotals)
 
   useEffect(() => {
     setFightNight(false)
@@ -185,7 +195,7 @@ const Home = (
               display: 'flex',
               position: 'fixed',
               left: `20%`,
-              top: `30%`,
+              top: `18%`,
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
@@ -217,11 +227,16 @@ const Home = (
     </div>
 
   const getUpdatedBoxerStats = (whatToUpdate) => {
-      return updatedFightTotals.reduce((acc, curr, i) => {
-          return acc = curr.finalTotals[i][user.firstName][whatToUpdate]*100
-      }, 0) 
+    const getStats = updatedFightTotals.reduce((acc, curr, i) => {
+      // console.log(curr.finalTotals[0][user.firstName][whatToUpdate])
+      // return acc = curr.finalTotals[0][user.firstName][whatToUpdate]*100
+      console.log(curr[whatToUpdate])
+      return acc = curr[whatToUpdate]*100
+    }, 0) 
+    console.log(updatedFightTotals, typeof getStats, getStats)
+    return getStats;
   }
-  console.log(updatedFightTotals)
+  // console.log(updatedFightTotals, updatedFightTotals.length)
 
   const dataForHomeStats = {
     labels: [
@@ -312,7 +327,7 @@ const Home = (
           { boxer.firstName === user.firstName ?
           <>
             <h3>Career Stats</h3>
-            { updatedFightTotals.length > 0 ? <Bar data={dataForHomeStats} options={options} /> : <h4>Still updating until month 2...</h4> }
+            { updatedFightTotals.length > 0 && finalTotalsFromLocal.length > 0 ? <Bar data={dataForHomeStats} options={options} /> : <h4>Still updating until month 2...</h4> }
 
           </>
           :

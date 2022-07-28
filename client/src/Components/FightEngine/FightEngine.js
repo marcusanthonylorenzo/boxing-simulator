@@ -57,9 +57,6 @@ const FightEngine = (
   const [judgeThree, setJudgeThree] = useState([]);
   const [judgeThreeOfficialScorecard, setJudgeThreeOfficialScorecard] = useState();
 
-  // console.log(`roundCount, roundOver, fightStart, fightOver, knockdownRule`)
-  // console.log(roundCount, roundOver, fightStart, fightOver, knockdownRule, winner.firstName, loser.firstName)
-
   useEffect(() => {
     localStorage.setItem('finalTotals', JSON.stringify(
       {
@@ -71,13 +68,11 @@ const FightEngine = (
   }, [finalTotals])
 
   useEffect(() => {  //Similar to useEffect above, but within a record-altering function
-    if (fightOver && roundOver) {
+    if (fightOver || roundStart) {
       checkWinnerAndLoser(user, enemy);
       updateDataCollections({ pbp: pbp, finalTotals: finalTotals });
     }
-  },[fightOver, roundOver, user.hp, enemy.hp])
-
-  console.log(winner, loser)
+  },[fightOver, roundStart])
 
   useEffect(() =>  { //Check if beginning of a new fight
     if(fightNight && roundCount === 0) {
@@ -129,7 +124,6 @@ const FightEngine = (
 
   useEffect(() => { //toggle specific end-of-round (roundOver) and round start attributes
     if ( (!knockdownRule && fightOver)) {
-      console.log(`!knockdownRule && .... useEffect`)
       judgeDecision(user, enemy, 'control', 'one');
       judgeDecision(user, enemy, 'accuracy', 'two');
       judgeDecision(user, enemy, 'accuracy', 'three');
@@ -178,7 +172,6 @@ const FightEngine = (
   /*** Build logic for Judge criteria ***/
 
   const judgeDecision = (user, enemy, whatToJudge, whichJudge) => {
-    console.log(`judgeDecision`)
     //Use the judges criteria to filter the aggregated stats of each fighter.
     const judgeUser = filterStats(user, whatToJudge); 
     const judgeOpp = filterStats(enemy, whatToJudge);
@@ -250,7 +243,6 @@ const FightEngine = (
       } else if (opp.hp <= 0) {
         updateWinLoss(user, opp);
       } else {
-        console.log(`compare scorecards`)
         if (!knockdownRule) compareScorecards(user, opp);
       }
     } 
@@ -288,8 +280,6 @@ const FightEngine = (
       oppTally++
     }
 
-    console.log(userTally, oppTally)
-
     if (userTally + oppTally >= 3){
       if (userTally > oppTally) {
         updateWinLoss(user, opp)
@@ -310,7 +300,6 @@ const FightEngine = (
     loser.loss++;
     setLoser(loser);
 
-    console.log(winner, loser)
     setJudgeOne([]);
     setJudgeTwo([]);
     setJudgeOneOfficialScorecard();
@@ -402,7 +391,7 @@ const FightEngine = (
         attacker: off,
         defender: def,
         hit: diff,
-        text: `${def.firstName} IS DOWN. DOES HE GET BACK UP?`
+        text: `${def.firstName} IS DOWN. WILL THEY GET BACK UP?`
       }])
       def.energyLoss();
       determineKO(off, def, powerShot) //Post determine KO is where you setKo to false, and implement ref count
@@ -434,6 +423,7 @@ const FightEngine = (
       let atk = attacker.attack(atkCombos);
       let def = defender.defend(defCombos);
       let difference = atk - def;
+      console.log(`attack x def`, atk, def)
 
       //activity of fighters changes length of loop, makes it more or less active
       let attackerPunchesLanded = Math.round(((atk*(atkCombos/100))/rateOfExchange)*attacker.maxCon);
@@ -507,7 +497,7 @@ const FightEngine = (
       hit = attacker.hp += difference; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
-      result.text = `${attacker.firstName} taking shots in the pocket.`;
+      result.text = `${attacker.firstName} trading well in the pocket.`;
 
     /***  Fight balance is close  ***/
 
@@ -580,6 +570,7 @@ const FightEngine = (
       clearTimeout(timeout);
     }
 
+    console.log(`user/opp engage`, userOffense, oppOffense)
     if (userOffense > oppOffense) {
       let userDmg = exchange(user, opp);
       resultDmg = calcDamage(user, opp, userDmg, timeout); //determines resulting dmg after engage and exchange

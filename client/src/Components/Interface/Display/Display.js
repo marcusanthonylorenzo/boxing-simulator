@@ -48,7 +48,7 @@ const Display = ({
           <h4>The fighters walk into the ring...</h4>
         </div>
         <div className={`ref-talk ${hideRules} ${hideRefTalk}`} style={fade}>
-          <h3>Gentlemen, you know the rules.</h3>
+          <h3>Alright you two, you know the rules.</h3>
           <h3>I want a good, clean fight - are we clear?</h3>
           <h3>You break when I say you break, keep your punches above the belt.</h3>
           <h3>Protect yourself at all times!</h3>

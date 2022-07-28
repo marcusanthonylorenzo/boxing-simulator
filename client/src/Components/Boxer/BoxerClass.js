@@ -45,8 +45,9 @@ class Boxer {
 
   //determines who attacks first
   engage = () =>{
-    let initiative = ((this.agr*0.6)+(this.heart*0.2)+(this.sta*0.2))
-    let minInitiative = initiative*this.con;
+    let initiative = ((this.agr*0.6)+(this.heart*0.2)+(this.sta*0.2)*this.con)
+    let minInitiative = 1
+    console.log('min initiative', minInitiative)
     this.energyLoss()
     return randomizer(minInitiative, initiative)
   }
@@ -101,7 +102,7 @@ class Boxer {
   pepTalk = {
 
     getInThere: {
-      1: "There's no reason to be afraid of this guy. Put him away!",
+      1: "There's no reason to be afraid. Put em away!",
       2: () => this.train.speedBag()
     },
     relax: {
