@@ -19,13 +19,19 @@ const Display = ({
   const [hideModal, setHideModal] = useState(`hide`);
   const displayDiv = useRef(null) //auto scroll to bottom
 
+  console.log(fightOver)
+
   useEffect(() => {
     if (fightOver) {
       stopFight.stop() 
     }
   }, [fightOver])
   
-  useEffect(() => { if(roundStart) setHideModal('hide') }, [roundStart])
+  useEffect(() => { if(roundStart) {
+    setHideModal('hide');
+    user.roundsFought++;
+    }
+  }, [roundStart])
 
   useEffect(() => fightStart ? setHideRules(`hide`) : setHideRules(`show`), [fightStart]);
   
@@ -43,7 +49,7 @@ const Display = ({
     setHideRefTalk(`black`);
   }, 6900);
 
-  useEffect(() => { setTimeout(() => { displayDiv.current.scrollTop = displayDiv.current.scrollHeight }, 1500) },[]);
+  useEffect(() => { setTimeout(() => { displayDiv.current.scrollTop = displayDiv.current.scrollHeight }, 1200) },[]);
 
 
   const fightIntroText = () => {
@@ -200,8 +206,8 @@ const Display = ({
 
   return (
     <>
-    <div ref={displayDiv} className={"Display"}>
-      <div className="display-container">
+    <div className={"Display"}>
+      <div  ref={displayDiv} className="display-container">
           { roundCount === 0 ? fightIntroText() : null} {/* show ref intro pre-round 1 */}
           { !fightOver ? mapPbp() : postFightModal()}         
       </div>

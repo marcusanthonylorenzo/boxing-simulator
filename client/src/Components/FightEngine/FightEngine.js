@@ -47,7 +47,7 @@ const FightEngine = (
 
   /*** Match Conditions ***/
   const [knockdownRule, setKnockdownRule] = useState(false);
-  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState();
+  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState(2); //set max knockdowns
 
   /*** Judges Decision state ***/
   const [judgeOne, setJudgeOne] = useState([]);
@@ -71,12 +71,11 @@ const FightEngine = (
   }, [finalTotals])
 
   useEffect(() => {  //Similar to useEffect above, but within a record-altering function
-    console.log('fight over and round over mounted')
     if (fightOver && roundOver) {
       checkWinnerAndLoser(user, enemy);
       updateDataCollections({ pbp: pbp, finalTotals: finalTotals });
     }
-  },[fightOver, roundOver])
+  },[fightOver, roundOver, user.hp, enemy.hp])
 
   console.log(winner, loser)
 
@@ -120,7 +119,7 @@ const FightEngine = (
   }, [fightOver, knockdownRule])
 
   useEffect(() => { //Set button toggle
-    if (roundCount === 1 && roundOver) {
+    if (roundCount === 5 && roundOver) {
       setDisable(true);
       setFightOver(true);
       setFightStart(false);

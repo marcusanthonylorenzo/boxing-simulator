@@ -29,6 +29,7 @@ class Boxer {
     this.champion = false;
     this.id = uuidv4();
     this.knockdownCount = 0;
+    this.roundsFought = 0;
   }
 
   /***

@@ -216,12 +216,12 @@ const BoxerCard = ({
           </div>
 
           <div className="punches-landed-label">
-            <h5>Accuracy (By Round, Total): </h5>
+            <h5>Punch Accuracy: </h5>
             <div className="punches-landed-accuracy-round">
               <h5 className="landed-thrown">{totalPunchesLanded} / {totalPunchesThrown} </h5>
               <h5>(
-                 { isNaN(calcAccuraccy) ? " " : calcAccuraccy + `%` }
-                 )</h5>
+                { isNaN(calcAccuraccy) ? " " : calcAccuraccy + `%` }
+                )</h5>
             </div>
           </div>
           <div className="punches-landed-data">

@@ -222,16 +222,18 @@ const Home = (
           return acc = curr.finalTotals[i][user.firstName][whatToUpdate]*100
       }, 0) 
   }
+  console.log(updatedFightTotals)
 
   const dataForHomeStats = {
     labels: [
-      ""
+      "Rounds Fought",
+      "Accuracy",
     ],
     datasets: [
       {
         data: [
-          // getUpdatedBoxerStats('accuracy'),
-          `100`
+          user.roundsFought,
+          getUpdatedBoxerStats('accuracy'),
         ],
         backgroundColor: [
           `white`,
@@ -242,13 +244,13 @@ const Home = (
           'black'
         ],
         borderWidth: '1',
-        barPercentage: 0.35,
+        barPercentage: 0.45,
         animation: 'easeInOutBounce'
       },
       {
         data: [
-          `100`,
-          `2`
+          user.roundsFought,
+          `100`
         ],
         backgroundColor: [
           'rgba(255, 255, 255, 0.9)',
@@ -261,16 +263,16 @@ const Home = (
         borderWidth: '1',
         barPercentage: 0.4,
         animation: false
-      },
+      }
     ]
   }
 
   const options = {
-    indexAxis: `x`,
+    indexAxis: `y`,
     scales: {
       x: 
       {
-          stacked: true,
+          stacked: false,
           beginAtZero: true
       },
       y:
@@ -311,7 +313,7 @@ const Home = (
           { boxer.firstName === user.firstName ?
           <>
             <h3>Career Stats</h3>
-            { fightNumber > 1 ? <Bar data={dataForHomeStats} options={options} /> : <h4>Still updating until month 2...</h4> }
+            { updatedFightTotals.length > 0 ? <Bar data={dataForHomeStats} options={options} /> : <h4>Still updating until month 2...</h4> }
 
           </>
           :
