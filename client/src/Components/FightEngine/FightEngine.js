@@ -472,7 +472,7 @@ const FightEngine = (
         attacker: attacker,
         defender: defender,
         totalDmg: 0,
-        text: 'The fighters clinch'
+        text: 'The fighters work in the clinch'
       };
       let hit;
       let normalOrPowerPunch;
