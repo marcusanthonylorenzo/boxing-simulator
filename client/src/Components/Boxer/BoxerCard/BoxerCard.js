@@ -116,7 +116,7 @@ const BoxerCard = ({
 
         setTimeout(() => {
           setFade(`75%`);
-        },  7300);
+        },  8000);
       }
    }
   });

@@ -189,7 +189,8 @@ const FightEngine = (
         case "three":
         setJudgeThree(prev => [...prev, [userScore, oppScore]]);
         return;
-        default:
+        default: 
+        setJudgeOne(prev => [...prev, [userScore, oppScore]]);
         return;
       }
     }

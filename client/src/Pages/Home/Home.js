@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './Home.scss'
-import randomUserAPI from '../../Components/API/API'
+import { randomUserAPI, cats } from '../../Components/API/API'
 import Boxer from '../../Components/Boxer/BoxerClass'
 import Randomize from '../../Components/Helpers/Randomize'
 import Commentary from '../../Components/Helpers/Commentary'
@@ -51,13 +51,13 @@ const Home = (
 
 
   useEffect(() => {
-    // console.log(finalTotalsFromLocal, updatedFightTotals)
-    // if (fightNumber > 0 && finalTotalsFromLocal.finalTotals.length > 0) {
-    //     const getStats = finalTotalsFromLocal.finalTotals.reduce((acc, item, i) => {
-    //     return item[user.firstName] 
-    //   }, {})
-    //   console.log(getStats)
-    // setUpdatedFightTotals(prev => [...prev, getStats])
+
+    // if(finalTotalsFromLocal.finalTotals.length > 0){
+    //   finalTotalsFromLocal.finalTotals.filter((item, i) => {
+    //     if(item.hasOwnProperty(user.firstName)){
+    //       setUpdatedFightTotals(prev => [...prev, item])
+    //     }
+    //   })
     // }
     setGenerateBoxersFunc({ generate: generateBoxer });
     localStorage.setItem('careerTotals', JSON.stringify(updatedFightTotals))
@@ -95,6 +95,7 @@ const Home = (
     randomUserAPI.get()
       .then(response => {
         setHideGenerateBoxerBtn(true);
+        
         //create instance of boxer directly, outside of this method will re-instantiate each object.
         const convertRandosToBoxers = [...response.data.results].map(each => {
           const newOne = generateBoxerWithAPI(each)
@@ -114,6 +115,7 @@ const Home = (
   }
   
   const generateBoxerWithAPI = (input) => {
+
     const newUserFromAPI = input
     //create level scaling later
     const firstName = `${newUserFromAPI.name.first}`;
@@ -137,7 +139,8 @@ const Home = (
     newBoxer.win = Randomize(0, 40);
     newBoxer.loss = Randomize(0, 30);
     newBoxer.favoriteColor = data.colorNames[Randomize(0, data.colorNames.length )]
-
+    newBoxer.img = '';
+    cats.getCat().then(response => newBoxer.img = response.data[0].url)
     return newBoxer;
   }
 
@@ -323,7 +326,7 @@ const Home = (
         }
         </div>
 
-        <div className='home-gym-stats'>
+        <div className='home-gym-stats'  style={{ backgroundImage: `url(${boxer.img})`, backgroundSize: 'cover' }}>
           { boxer.firstName === user.firstName ?
           <>
             <h3>Career Stats</h3>
