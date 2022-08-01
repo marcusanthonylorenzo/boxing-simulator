@@ -7,7 +7,7 @@ Blog: https://achefthatcodes.com/
 
 #### Gif of prototype below. UI is *not* finalised, this is just to help me visualize the seperation of components with a variety of colors.
 
-![ezgif com-gif-maker (4)](https://user-images.githubusercontent.com/100096239/180483777-957c5106-3227-40e6-8f61-716a278aa2f7.gif)
+![ezgif com-gif-maker (4)](https://user-images.githubusercontent.com/100096239/182052991-a6f1cf5c-8690-4357-b022-2bcda9c467b6.gif)
 
 - Fight engine tracks realtime 12 round fight, with damage, punch stats, and commentary.
 - Create a boxer and follow their rise or fall in the world rankings
