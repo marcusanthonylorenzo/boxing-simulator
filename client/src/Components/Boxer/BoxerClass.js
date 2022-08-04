@@ -47,7 +47,6 @@ class Boxer {
   engage = () =>{
     let initiative = ((this.agr*0.6)+(this.heart*0.2)+(this.sta*0.2)*this.con)
     let minInitiative = 1
-    console.log('min initiative', minInitiative)
     this.energyLoss()
     return randomizer(minInitiative, initiative)
   }
@@ -123,7 +122,6 @@ class Boxer {
         this.agi *= 1.05;
         this.con *= this.con;
         this.def *= 0.80;
-        console.log(this.con)
       }
     }
   }
@@ -131,8 +129,6 @@ class Boxer {
   lowEnergyWarning = () => {
     if (this.con <= this.maxCon*0.3) {
       console.log("energy low!")
-    } else {
-      console.log("good to go")
     }
   }
 

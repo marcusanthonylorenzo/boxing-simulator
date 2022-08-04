@@ -38,7 +38,12 @@ const SelectMenu = (
   }
   return (
       <div className="select-menu">
-        { !fightOver && resetFightBtn ? buttons : backToHomeButtons() }
+        {
+        !fightOver && resetFightBtn ?
+        buttons
+        : backToHomeButtons()
+        }
+        
         <input type='text' id="notes" placeholder="Fight Notes here" />
       </div>
   );

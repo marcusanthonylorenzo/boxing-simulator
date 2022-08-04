@@ -55,5 +55,10 @@ Blog: https://achefthatcodes.com/
 ### Notes:
 - Boxer conditioning affects most actions, as humans with low rate of recovery will perform actions weaker over a shorter period of time. In this program it represent a percentage of the highest possible value.
   - example: if strength = 100, condition is 60, the highest strength value is 100 but the lowest on any random punch can be as low as 60.
-- Using React Spring for animation library.
 
+
+## To Run The Program:
+- Clone the repo
+- Go to the directory `boxing-simulator/client/`
+- Run `npm install` to install all required dependencies
+- Run `npm start` to load locally

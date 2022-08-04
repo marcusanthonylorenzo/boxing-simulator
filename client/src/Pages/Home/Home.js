@@ -38,7 +38,6 @@ const Home = (
   const [selectedBoxer, setSelectedBoxer] = useState({})
   const [userToggle, setUserToggle] = useState(true);
   const [oppToggle, setOppToggle] = useState(false);
-  const [updatedFightTotals, setUpdatedFightTotals] = useState([]);
 
   /***  Data Retreival ***/
   const [getHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
@@ -48,9 +47,18 @@ const Home = (
   const data = Data();
   const boxerListFromLocal = JSON.parse(localStorage.getItem('boxers'));
   const finalTotalsFromLocal = JSON.parse(localStorage.getItem('finalTotals'));
+  const [updatedFightTotals, setUpdatedFightTotals] = useState([]);
+
 
 
   useEffect(() => {
+
+    /*
+    * Working here:
+    * Setup post request here. 
+    * set finalTotalsFromLocal to the same index as the object reduced in getUpdatedBoxerStats()
+    */
+
     // console.log(finalTotalsFromLocal, updatedFightTotals)
     // if (fightNumber > 0 && finalTotalsFromLocal.finalTotals.length > 0) {
     //     const getStats = finalTotalsFromLocal.finalTotals.reduce((acc, item, i) => {
@@ -62,8 +70,6 @@ const Home = (
     setGenerateBoxersFunc({ generate: generateBoxer });
     localStorage.setItem('careerTotals', JSON.stringify(updatedFightTotals))
   }, []);
-
-  console.log(updatedFightTotals)
 
   useEffect(() => {
     setFightNight(false)
@@ -104,7 +110,7 @@ const Home = (
         setUpdateStatus('Opponents found.');
         setOpponentsFound(true);
       })
-      .catch(err => {
+      .catch(err => { //if Error, notify user of no opponents returned from request.
         setHideGenerateBoxerBtn(true);
         setUpdateStatus(
           <div className='no-luck'>
@@ -184,8 +190,8 @@ const Home = (
       return (
         <button className='boxer-card' disabled={disableBoxer}
         style={showCardStyle}
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={() => {
+          // e.stopPropagation();
           setSelectedBoxer(each);
           setOppToggle(true);
           if (toggleCard === 'hide') {
@@ -236,7 +242,6 @@ const Home = (
     console.log(updatedFightTotals, typeof getStats, getStats)
     return getStats;
   }
-  // console.log(updatedFightTotals, updatedFightTotals.length)
 
   const dataForHomeStats = {
     labels: [
@@ -327,11 +332,12 @@ const Home = (
           { boxer.firstName === user.firstName ?
           <>
             <h3>Career Stats</h3>
-            { updatedFightTotals.length > 0 && finalTotalsFromLocal.length > 0 ? <Bar data={dataForHomeStats} options={options} /> : <h4>Still updating until month 2...</h4> }
-
+            { updatedFightTotals.length > 0 && finalTotalsFromLocal.length > 0 ?
+              <Bar data={dataForHomeStats} options={options} />
+              :
+              <h4>Still updating until month 2...</h4> }
           </>
           :
-
             <h3>Choose your destiny</h3>
           }
         </div>
@@ -402,7 +408,10 @@ const Home = (
                   setHideGenerateBoxerBtn(false);
                   setMonthCounter(monthCounter+1);
                   setTrainingFinished(false);
-                  if (newBoxerList.length === 0) generateBoxer();
+                  if (newBoxerList.length === 0) {
+                    generateBoxer()
+                    setUpdateStatus('Still searching...')
+                  };
                   if (monthCounter === 11) setMonthCounter(0);
                   event.stopPropagation();
                 }}>

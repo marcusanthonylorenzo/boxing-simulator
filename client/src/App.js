@@ -41,7 +41,12 @@ function App() {
       setOppState(enemy);
     } else {   
       setChangeAppBgColor(`black`)
-    }}, [fightNight])
+    }
+
+    return () => {
+      //add all reset values here!
+    }
+  }, [fightNight])
 
   useEffect(() => { persistInLocalStorage("fightHistory", JSON.stringify(fightDataCollection)) }, [fightDataCollection])
 

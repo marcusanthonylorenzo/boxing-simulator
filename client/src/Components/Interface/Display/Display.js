@@ -21,7 +21,7 @@ const Display = ({
 
   useEffect(() => { setTimeout(() => { displayDiv.current.scrollTop = displayDiv.current.scrollHeight }, 1200) });
 
-  useEffect(() => { if (fightOver) { stopFight.stop(); }}, [fightOver])
+  useEffect(() => { if (fightOver) { stopFight.stop(); }}, [fightOver, winner, loser, stopFight])
   
   useEffect(() => { if(roundStart) { setHideModal('hide'); }}, [roundStart])
 
@@ -33,7 +33,7 @@ const Display = ({
     } else if (roundOver){
       setHideModal(`show`);
     }
-  },[roundOver]); //toggle pepTalk buttons for each round
+  },[roundOver, fightStart]); //toggle pepTalk buttons for each round
 
   setTimeout(() => {
     setFade({backgroundColor: `white`});
