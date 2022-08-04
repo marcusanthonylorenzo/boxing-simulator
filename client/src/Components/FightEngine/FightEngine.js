@@ -5,6 +5,7 @@ import Display from '../Interface/Display/Display'
 import leftBoxer from '../../assets/images/redgloves.png'
 import oppBody from '../../assets/images/oppBody.png'
 import SelectMenu from '../Interface/SelectMenu/SelectMenu'
+import { judgeDecision, compareScorecards } from '../Judges/Judges'
 // import randomize from '../Helpers/Randomize'
 
 const FightEngine = (
@@ -29,7 +30,7 @@ const FightEngine = (
   const [oppDmgScale, setOppDmgScale] = useState();
   const [pbp, setPbp] = useState([]); //a combination of above state in objects, for historical fight record
   const [punchCount, setPunchCount] = useState([]); //data for each punch/counter punch thrown, for historical fight record
-  const [rateOfExchange, setRateOfExchange] = useState(10);  //toggle number of punches in one round based on boxer handSpeed
+  const [rateOfExchange, setRateOfExchange] = useState(4);  //toggle number of punches in one round based on boxer handSpeed
   const [incrementor, setIncrementor] = useState(0);
   const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
   const [delay] = useState(1500);  //toggle rate of text ouput
@@ -57,11 +58,36 @@ const FightEngine = (
   const [judgeTwoOfficialScorecard, setJudgeTwoOfficialScorecard] = useState();
   const [judgeThree, setJudgeThree] = useState([]);
   const [judgeThreeOfficialScorecard, setJudgeThreeOfficialScorecard] = useState();
+  const [judgesProps, setJudgesProps] = useState({});
+  const [compareScorecardProps, setCompareScorecardProps] = useState({});
   const [finalResult, setFinalResult] = useState(false)
 
 
-  useEffect(() => { //Set button toggle
+  //End and reset fight depending on which round (roundCount)
+  useEffect(() => { 
     if (roundCount === 1 && roundOver) {
+      setJudgesProps(
+        {
+          user: user,
+          enemy: enemy,
+          filterStats: filterStats,
+          setJudgeOne: setJudgeOne,
+          setJudgeTwo: setJudgeTwo,
+          setJudgeThree: setJudgeThree,
+        }
+      )
+      setCompareScorecardProps(
+        {
+          user: user,
+          opp: enemy,
+
+          /**  **/
+
+          // setFightOver,
+          // setRoundOver,
+          updateWinLoss: updateWinLoss
+        }
+      )
       setDisable(true);
       setFightOver(true);
       setFightStart(false);
@@ -71,6 +97,7 @@ const FightEngine = (
     };
   },[roundOver, roundCount, setFightOver, stopFight])
 
+  //set Final Total Statistics and check Local Storage
   useEffect(() => {
     localStorage.setItem('finalTotals', JSON.stringify(
         {
@@ -125,9 +152,9 @@ const FightEngine = (
       setRateOfExchange(0);
       stopFight.stop();
     } else if (!knockdownRule && fightOver) { //
-      judgeDecision(user, enemy, 'control', 'one');
-      judgeDecision(user, enemy, 'accuracy', 'two');
-      judgeDecision(user, enemy, 'accuracy', 'three');
+      judgeDecision(judgesProps, 'control', 'one');
+      judgeDecision(judgesProps, 'accuracy', 'two');
+      judgeDecision(judgesProps, 'accuracy', 'three');
       user.knockdownCount = 0;
       enemy.knockdownCount = 0;
       setFinalResult(true);
@@ -160,124 +187,27 @@ useEffect(() => {
     }
   };
 
-  /*** Build logic for Judge criteria ***/
-
-  const judgeDecision = (user, enemy, whatToJudge, whichJudge) => {
-    //Use the judges criteria to filter the aggregated stats of each fighter.
-    const judgeUser = filterStats(user, whatToJudge); 
-    const judgeOpp = filterStats(enemy, whatToJudge);
-    let userScore = 9;
-    let oppScore = 9;
-
-    const chooseJudge = (whichJudge) => {
-      switch (whichJudge){
-        case "one":
-        setJudgeOne(prev => [...prev, [userScore, oppScore]]);
-        return;
-        case "two":
-        setJudgeTwo(prev => [...prev, [userScore, oppScore]]);
-        return;
-        case "three":
-        setJudgeThree(prev => [...prev, [userScore, oppScore]]);
-        return;
-        default:
-        return;
-      }
-    }
-    
-    if (enemy.knockdownCount === user.knockdownCount) {
-      //If all counts are equal, judge the winner based on judges criteria filtered above.
-      if (judgeUser > judgeOpp){
-        userScore = 9;
-        oppScore = 10;
-        chooseJudge(whichJudge);
-      } else if (judgeOpp > judgeUser) {
-        oppScore = 9;
-        userScore = 10;
-        chooseJudge(whichJudge);
-      }
-    } else {
-      //For each knockdown, adjust scores
-      if (user.knockdownCount > 0) {
-        userScore -= user.knockdownCount;
-        oppScore++;
-        chooseJudge(whichJudge);
-      }
-      if (enemy.knockdownCount > 0) {
-        oppScore -= enemy.knockdownCount;
-        userScore++;
-        chooseJudge(whichJudge);
-      }
-
-      if (user.knockdownCount > 0 && enemy.knockdownCount > 0) {
-        //If users are both getting knocked down, winner is the one with less knockdowns.
-        if (user.knockdownCount > enemy.knockdownCount) {
-          userScore = 9;
-          oppScore = 10;
-          chooseJudge(whichJudge);
-
-        } else if (enemy.knockdownCount > user.knockdownCount) {
-          oppScore = 9;
-          userScore = 10;
-          chooseJudge(whichJudge);
-        }
-      }
-    }
-  }
+  /****************************************** START ****************************************************** */
 
   /*** Adjust win or loss  ***/
 
   const checkWinnerAndLoser = (user, opp) => {
+    setFightOver(true);
+    setRoundOver(true);
+
+    const judgeObject = {
+      judgeOneOfficialScorecard,
+      judgeTwoOfficialScorecard,
+      judgeThreeOfficialScorecard
+    }
+
     if (user.hp <= 0) {
       updateWinLoss(opp, user);
     } else if (opp.hp <= 0) {
       updateWinLoss(user, opp);
     } else {
-      compareScorecards(user, opp);
+      compareScorecards(compareScorecardProps, judgeObject );
     } 
-  }
-
-  /***  Tally scorecards  ***/
-
-  const compareScorecards = (user, opp) => {
-    //Add commentary for Split (2/3 winner)/Unanimous Decisions (3/3 winner) in future.
-    setFightOver(true);
-    setRoundOver(true);
-    let userTally = 0;
-    let oppTally = 0;
-
-    //Judge One
-    if (judgeOneOfficialScorecard.user > judgeOneOfficialScorecard.opp) {
-      userTally++
-    } else if (judgeOneOfficialScorecard.user < judgeOneOfficialScorecard.opp) {
-      oppTally++
-    }
-    //Judge Two
-    if (judgeTwoOfficialScorecard.user > judgeTwoOfficialScorecard.opp) {
-      userTally++
-    } else if (judgeTwoOfficialScorecard.user < judgeTwoOfficialScorecard.opp){
-      oppTally++
-    }
-    //Judge Three (Judge Two placeholders for now!)
-    if (judgeThreeOfficialScorecard.user > judgeThreeOfficialScorecard.opp) {
-      userTally++
-    } else if (judgeThreeOfficialScorecard.user < judgeThreeOfficialScorecard.opp){
-      oppTally++
-    }
-    if (judgeOneOfficialScorecard.user === judgeOneOfficialScorecard.opp) {
-      userTally++
-      oppTally++
-    }
-
-    if (userTally + oppTally >= 3){
-      if (userTally > oppTally) {
-        updateWinLoss(user, opp)
-      } else if (userTally < oppTally) {
-        updateWinLoss(opp, user)
-      } else if (userTally === oppTally) {
-        console.log(`We have a draw! *Crowd boos*`) //remove later
-      }
-    }
   }
 
   /*** Update win/loss record ***/
@@ -296,6 +226,9 @@ useEffect(() => {
     setJudgeTwoOfficialScorecard();
     setJudgeThreeOfficialScorecard();
   }
+  console.log(winner, loser)
+
+  /****************** END *************************/
 
   /*** Determine if fighter gets up after knockdown or is unconscious ***/
 
@@ -313,10 +246,8 @@ useEffect(() => {
   }
 
   const determineKO = (offense, defense, hit, timeout ) => {
-    // if (defense.knockdownCount === knockdownRuleLimit) { console.log("determineKO first layer") }
     /*** Initialize getUp abilites, update UI ***/
     if (defense.hp <= 0) {
-      // if (defense.knockdownCount === knockdownRuleLimit) { console.log("determineKO second layer") }
       const getUpTimer = setTimeout(() => {
         //slow down getUp post knock out text boxes.
         const takesShot = defense.getUp();

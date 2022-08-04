@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const randomUserAPI = {
+export const randomUserAPI = {
   get: () => {
     return new Promise((resolve, reject) => {
       axios
@@ -14,4 +14,18 @@ const randomUserAPI = {
     });
   }
 };
-export default randomUserAPI;
+
+export const cats = {
+  getCat: () => {
+    return new Promise((resolve, reject) => {
+      axios
+        .get("https://api.thecatapi.com/v1/images/search?limit=1")
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+}
