@@ -163,6 +163,7 @@ useEffect(() => {
 
 /*** Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
   ***/
+ 
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
   const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", false, oppDmgScale)
