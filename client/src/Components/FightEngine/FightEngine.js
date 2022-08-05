@@ -80,20 +80,14 @@ const FightEngine = (
         {
           user: user,
           opp: enemy,
-
-          /**  **/
-
-          // setFightOver,
-          // setRoundOver,
           updateWinLoss: updateWinLoss
         }
       )
       setDisable(true);
       setFightOver(true);
       setFightStart(false);
-      stopFight.stop();
       setFinalResult(true);
-      checkWinnerAndLoser(user, enemy);
+      // checkWinnerAndLoser(user, enemy);
     };
   },[roundOver, roundCount, setFightOver, stopFight])
 
@@ -110,9 +104,7 @@ const FightEngine = (
   }, [finalTotals])
 
   useEffect(() => {  //Similar to useEffect above, but within a record-altering function
-    if (fightOver || roundStart) {
-      updateDataCollections({ pbp: pbp, finalTotals: finalTotals });
-    }
+    if (fightOver || roundStart) { updateDataCollections({ pbp: pbp, finalTotals: finalTotals }) }
   },[fightOver, roundStart, roundOver])
 
   useEffect(() =>  { //Check if beginning of a new fight
@@ -149,31 +141,27 @@ const FightEngine = (
 
   useEffect(() => { //This is where you stop the fight if Koed or too many downs
     if (fightOver && knockdownRule){
+      console.log(`fightOver and knockdown render`)
       setRateOfExchange(0);
       stopFight.stop();
-    } else if (!knockdownRule && fightOver) { //
+    } else if (fightOver && !knockdownRule) {
+      console.log(`fightOver and NOT knockdown render`)
       judgeDecision(judgesProps, 'control', 'one');
       judgeDecision(judgesProps, 'accuracy', 'two');
       judgeDecision(judgesProps, 'accuracy', 'three');
       user.knockdownCount = 0;
       enemy.knockdownCount = 0;
-      setFinalResult(true);
+      // setFinalResult(true);
+      console.log(winner, loser)
     }
-  },[fightOver, knockdownRule])
+  },[fightOver])
 
 useEffect(() => {
-  const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
-  const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
-  setJudgeOneOfficialScorecard({ user: judgeOneUserScore, opp: judgeOneOppScore });
-  const judgeTwoUserScore = judgeTwo.reduce((acc, curr, i) => acc += curr[0], 0);
-  const judgeTwoOppScore = judgeTwo.reduce((acc, curr, i) => acc += curr[1], 0);
-  setJudgeTwoOfficialScorecard({ user: judgeTwoUserScore, opp: judgeTwoOppScore });
-  const judgeThreeUserScore = judgeThree.reduce((acc, curr, i) => acc += curr[0], 0);
-  const judgeThreeOppScore = judgeThree.reduce((acc, curr, i) => acc += curr[1], 0);
-  setJudgeThreeOfficialScorecard({ user: judgeThreeUserScore, opp: judgeThreeOppScore });
-}, [judgeOne, judgeTwo, judgeThree])
+  console.log(`setting official scorecards`)
+  setScorecardsFunc();
+}, [fightOver])
 
-  /*** Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
+/*** Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
   ***/
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
@@ -187,16 +175,28 @@ useEffect(() => {
     }
   };
 
-  /****************************************** START ****************************************************** */
+  const setScorecardsFunc = () => {
+    console.log(judgeOne, judgeTwo, judgeThree)
+    const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
+    const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
+    setJudgeOneOfficialScorecard({ user: judgeOneUserScore, opp: judgeOneOppScore });
+    const judgeTwoUserScore = judgeTwo.reduce((acc, curr, i) => acc += curr[0], 0);
+    const judgeTwoOppScore = judgeTwo.reduce((acc, curr, i) => acc += curr[1], 0);
+    setJudgeTwoOfficialScorecard({ user: judgeTwoUserScore, opp: judgeTwoOppScore });
+    const judgeThreeUserScore = judgeThree.reduce((acc, curr, i) => acc += curr[0], 0);
+    const judgeThreeOppScore = judgeThree.reduce((acc, curr, i) => acc += curr[1], 0);
+    setJudgeThreeOfficialScorecard({ user: judgeThreeUserScore, opp: judgeThreeOppScore });
+  };
 
   /*** Adjust win or loss  ***/
 
   const checkWinnerAndLoser = (user, opp) => {
     setFightOver(true);
     setRoundOver(true);
+    setScorecardsFunc();
 
     const judgeObject = {
-      judgeOneOfficialScorecard,
+      judgeOneOfficialScorecard: 
       judgeTwoOfficialScorecard,
       judgeThreeOfficialScorecard
     }
@@ -206,29 +206,29 @@ useEffect(() => {
     } else if (opp.hp <= 0) {
       updateWinLoss(user, opp);
     } else {
-      compareScorecards(compareScorecardProps, judgeObject );
+      compareScorecards(compareScorecardProps, judgeObject);
+      console.log(`checkWinnerAndLoser()`, winner, loser) //updates third
     } 
   }
 
   /*** Update win/loss record ***/
 
   const updateWinLoss = (winner, loser) => {
-    console.log(`winner/loser`, winner, loser)
+    console.log(`updateWinLoss() beginning`, winner, loser) //updates
     winner.win++;
     setWinner(winner);
     loser.loss++;
     setLoser(loser);
-
-    setJudgeOne([]);
-    setJudgeTwo([]);
-    setJudgeThree([]);
-    setJudgeOneOfficialScorecard();
-    setJudgeTwoOfficialScorecard();
-    setJudgeThreeOfficialScorecard();
+    // setJudgeOne([]);
+    // setJudgeTwo([]);
+    // setJudgeThree([]);
+    // setJudgeOneOfficialScorecard();
+    // setJudgeTwoOfficialScorecard();
+    // setJudgeThreeOfficialScorecard();
+    console.log(`updateWinLoss() end`, winner, loser) //updates last
   }
-  console.log(winner, loser)
-
-  /****************** END *************************/
+  console.log(judgeOneOfficialScorecard, judgeTwoOfficialScorecard, judgeThreeOfficialScorecard)
+  console.log(`func scope`, winner, loser) //updates second
 
   /*** Determine if fighter gets up after knockdown or is unconscious ***/
 
@@ -245,32 +245,32 @@ useEffect(() => {
     }
   }
 
+  /***  Update pbp text cards with this func  ***/
+  const setPbpFunc = (off, def, hit, text) => {
+    setPbp(prev => [...prev, { 
+      //push to play-by-play array with new object.
+        attacker: off,
+        defender: def,
+        hit: hit,
+        text: text}
+      ])
+  };
+
   const determineKO = (offense, defense, hit, timeout ) => {
     /*** Initialize getUp abilites, update UI ***/
     if (defense.hp <= 0) {
       const getUpTimer = setTimeout(() => {
+
         //slow down getUp post knock out text boxes.
         const takesShot = defense.getUp();
         const getUp = defense.getUp();
-
-        setPbp(prev => [...prev, { 
-        //push to play-by-play array with new object.
-          attacker: offense,
-          defender: defense,
-          hit: hit,
-          text: `${defense.firstName} down with the count!`}
-        ])
+        setPbpFunc(offense, defense, hit, `${defense.firstName} down with the count!`);
         defense.knockdownCount++;
 
         if (getUp > takesShot) {
         // Check getUp, if greater than first "will" to get up, boxer gets up.          
           setKo(false)          
-          setPbp(prev => [...prev, {
-            attacker: offense,
-            defender:defense,
-            hit: hit,
-            text: `${defense.firstName} stands back up!`
-          }])
+          setPbpFunc(offense, defense, hit, `${defense.firstName} stands back up!`)
           defense.hp*=1.2;
           return determineKO;
           
@@ -278,55 +278,45 @@ useEffect(() => {
           //fight is over, clear timeout, set the play-by-play to notify user and return
           setFightOver(true); 
           clearTimeout(timeout)
-          setPbp(prev => [prev, {
-            attacker: offense,
-            defender: defense,
-            hit: 0, //Change here for ko damage trailing
-            text: `THIS FIGHT IS OVER. The ref waves it off! ${offense.firstName} PUTS ${defense.firstName} AWAY.`
-          }])
+          setPbpFunc(offense, defense, 0, `THIS FIGHT IS OVER. The ref waves it off! ${offense.firstName} PUTS ${defense.firstName} AWAY.`)
           return determineKO;
         }
-      }, 600);
+
+      }, 2000);
       clearTimeout(getUpTimer)
     }
   };
 
 
   const determinePowerShot = (off, def, diff) => {
+
     if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
     let powerShot = off.ko(def); //determine powershot, then if KO
-    if (powerShot > def.chin){  //check if powershot is stronger than chin
-      setPbp(prev => [...prev, {
-        attacker: off,
-        defender: def,
-        hit: diff,
-        text: `A BIG SHOT BY ${off.firstName}. ${def.firstName} stumbles!`
-      }])
 
-    const consciousness = def.getUp();
-    if (consciousness < powerShot){  //check if powershot is stronger than def ability to getUp (take a shot)
-      if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
-      setKo(true);
-      def.knockdownCount++;
-      setPbp(prev => [...prev, {
-        attacker: off,
-        defender: def,
-        hit: diff,
-        text: `${def.firstName} IS DOWN. WILL THEY GET BACK UP?`
-      }])
-      def.energyLoss();
-      determineKO(off, def, powerShot) //Post determine KO is where you setKo to false, and implement ref count
-      setKo(false) //if determineKO does not persist ko state, (setKo(false)), then continue pbp.
-      setPbp(prev => [...prev, {
-        attacker: off,
-        defender: def,
-        hit: diff,
-        text: `${def.firstName} beats the count!`
-      }])
-      }
-      return powerShot + diff //if not return a heavier shot
-    } else {
-      return diff
+    if (powerShot > def.chin) {  //check if powershot is stronger than chin
+      setPbpFunc(off, def, diff, `A BIG SHOT BY ${off.firstName}. ${def.firstName} stumbles!`);
+
+      const consciousness = def.getUp();
+      const getUpTimer = setTimeout(() => {
+
+        if (consciousness < powerShot){  //check if powershot is stronger than def ability to getUp (take a shot)
+          if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
+          setKo(true);
+          def.knockdownCount++;
+          def.energyLoss();
+          setPbpFunc(off, def, diff, `${def.firstName} IS DOWN. WILL THEY GET BACK UP?`);
+          determineKO(off, def, powerShot)
+          
+          //Post determine KO is where you setKo to false, and implement ref count (if func success, below does not run as fightOver === true)
+          setKo(false) //if determineKO does not persist ko state, (setKo(false)), then continue pbp.
+          setPbpFunc(off, def, diff, `${def.firstName} beats the count!`)
+
+          return powerShot + diff //if not return a heavier shot
+        } else {
+          return diff
+        }
+
+      }, 3000);
     }
   }
   
@@ -338,13 +328,14 @@ useEffect(() => {
       setKnockdownRule(true)
       setFightOver(true)
       return 0;
+
     } else {
+
       let atkCombos = attacker.handSpeed(); //determine punch volume
       let defCombos = defender.handSpeed();
       let atk = attacker.attack(atkCombos);
       let def = defender.defend(defCombos);
       let difference = atk - def;
-      // console.log(`attack x def`, atk, def)
 
       //activity of fighters changes length of loop, makes it more or less active
       let attackerPunchesLanded = Math.round(((atk*(atkCombos/100))/rateOfExchange)*attacker.maxCon);
@@ -370,10 +361,10 @@ useEffect(() => {
           difference: difference,
           round: roundCount+1
         }])
+
       return difference
       }
   };
-
 
  //Phase 2 = wrap both attack and defense with output text in one single obj, easier to package for output
 
@@ -391,19 +382,22 @@ useEffect(() => {
     /*** Fight balance favors defender ***/
 
     if (difference <= -55){ //Strong counters by defender
-      hit = attacker.hp += difference; //reduce health
+      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+      hit = attacker.hp += normalOrPowerPunch; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference
       result.text = `${defender.firstName} returning some BIG, HEAVY counters!`;
 
-    } else if (difference > -55 && difference <= -40){ //Close Counter in favor of defender.
-      hit = attacker.hp += difference; //reduce health
+    } else if (difference > -55 && difference <= -40){ //
+      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+      hit = attacker.hp += normalOrPowerPunch; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
       result.text = `${defender.firstName} keeping the pressure off and working well on the outside.`;
 
-    } else if (difference > -40 && difference <= -30){ //Close Counter in favor of defender.
-      hit = attacker.hp += difference; //reduce health
+    } else if (difference > -40 && difference <= -30){ //
+      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+      hit = attacker.hp += normalOrPowerPunch; //reduce health
       setObj(attacker, "hp", hit);
       result.totalDmg = difference;
       result.text = `${defender.firstName} making ${attacker.firstName} pay on the way in`;
@@ -438,8 +432,9 @@ useEffect(() => {
       result.text = `Both fighters work in the clinch...Ref decides to break.`;
 
     } else if (difference > 2 && difference <= 5) { // Close in favor of Attacker
-      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      hit = defender.hp -= normalOrPowerPunch;
+      // normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+      // hit = defender.hp -= normalOrPowerPunch;
+      hit = defender.hp -= difference;
       setObj(defender, "hp", hit)
       result.totalDmg = normalOrPowerPunch;
       result.text = `Solid work and steady shots by ${attacker.firstName}`;
@@ -447,8 +442,9 @@ useEffect(() => {
     /***  Fight balance favors attacker  ***/
 
     } else if (difference > 5 && difference <= 15) {
-      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      hit = defender.hp -= normalOrPowerPunch;
+      // normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+      // hit = defender.hp -= normalOrPowerPunch;
+      hit = defender.hp -= difference;
       setObj(defender, "hp", hit)
       result.totalDmg = normalOrPowerPunch;
       result.text = `${attacker.firstName} working great in the mid-range!`;
@@ -470,13 +466,10 @@ useEffect(() => {
     
     if (attacker.knockdownCount === knockdownRuleLimit || defender.knockdownCount === knockdownRuleLimit) {
       setKnockdownRule(true);
-      // console.log(`down`, knockdownRule)
       return;
     } else {
-      // console.log(` not down `, knockdownRule, attacker.knockdownCount, defender.knockdownCount)
       return result      
     }
-
   };
 
   //Phase 3: tie everything together
@@ -508,7 +501,6 @@ useEffect(() => {
     }
     return resultDmg;
   };
-
 
   const fight = (user, enemy) => {
     roundUpdate();
@@ -596,7 +588,6 @@ useEffect(() => {
 
   const fightNightLoader = 
     <>
-  
           <BoxerCard boxer={user} path={leftBoxer}
             setIncrementor={setIncrementor}
             pbp={pbp} fightNight={fightNight}

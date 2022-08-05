@@ -1,7 +1,4 @@
 const judgeDecision = ( passedObjects, whatToJudge, whichJudge) => {
-
-  console.log(passedObjects)
-
   const {
     user,
     enemy,
