@@ -84,9 +84,8 @@ class Boxer {
     return randomizer(1, max)
   }
 
-  ko = (defender) => { //if ko > defender.chin
-    let lowKO = this.pow*(defender.chin/100);
-    let randKO = randomizer(lowKO, defender.hp*this.con+defender.chin);
+  ko = () => { //if ko > defender.chin
+    let randKO = randomizer(1, this.pow);
     this.energyLoss();
     return randKO;
   }

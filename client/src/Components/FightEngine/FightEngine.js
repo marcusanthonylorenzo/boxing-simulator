@@ -30,7 +30,6 @@ const FightEngine = (
   const [oppDmgScale, setOppDmgScale] = useState();
   const [pbp, setPbp] = useState([]); //a combination of above state in objects, for historical fight record
   const [punchCount, setPunchCount] = useState([]); //data for each punch/counter punch thrown, for historical fight record
-  const [rateOfExchange, setRateOfExchange] = useState(4);  //toggle number of punches in one round based on boxer handSpeed
   const [incrementor, setIncrementor] = useState(0);
   const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
   const [delay] = useState(1500);  //toggle rate of text ouput
@@ -49,6 +48,7 @@ const FightEngine = (
 
   /*** Match Conditions ***/
   const [knockdownRule, setKnockdownRule] = useState(false);
+  const [rateOfExchange, setRateOfExchange] = useState(12);  //toggle number of punches in one round based on boxer handSpeed
   const [knockdownRuleLimit, setKnockdownRuleLimit] = useState(3); //set max knockdowns
 
   /*** Judges Decision state ***/
@@ -65,7 +65,7 @@ const FightEngine = (
 
   //End and reset fight depending on which round (roundCount)
   useEffect(() => { 
-    if (roundCount === 1 && roundOver) {
+    if (roundCount === 2 && roundOver) {
       setJudgesProps(
         {
           user: user,
@@ -226,10 +226,7 @@ useEffect(() => {
     // setJudgeOneOfficialScorecard();
     // setJudgeTwoOfficialScorecard();
     // setJudgeThreeOfficialScorecard();
-    console.log(`updateWinLoss() end`, winner, loser) //updates last
   }
-  console.log(judgeOneOfficialScorecard, judgeTwoOfficialScorecard, judgeThreeOfficialScorecard)
-  console.log(`func scope`, winner, loser) //updates second
 
   /*** Determine if fighter gets up after knockdown or is unconscious ***/
 
@@ -247,6 +244,7 @@ useEffect(() => {
   }
 
   /***  Update pbp text cards with this func  ***/
+
   const setPbpFunc = (off, def, hit, text) => {
     setPbp(prev => [...prev, { 
       //push to play-by-play array with new object.
@@ -288,50 +286,20 @@ useEffect(() => {
     }
   };
 
-
-  const determinePowerShot = (off, def, diff) => {
-
-    if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
-    let powerShot = off.ko(def); //determine powershot, then if KO
-
-    if (powerShot > def.chin) {  //check if powershot is stronger than chin
-      setPbpFunc(off, def, diff, `A BIG SHOT BY ${off.firstName}. ${def.firstName} stumbles!`);
-
-      const consciousness = def.getUp();
-      const getUpTimer = setTimeout(() => {
-
-        if (consciousness < powerShot){  //check if powershot is stronger than def ability to getUp (take a shot)
-          if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
-          setKo(true);
-          def.knockdownCount++;
-          def.energyLoss();
-          setPbpFunc(off, def, diff, `${def.firstName} IS DOWN. WILL THEY GET BACK UP?`);
-          determineKO(off, def, powerShot)
-          
-          //Post determine KO is where you setKo to false, and implement ref count (if func success, below does not run as fightOver === true)
-          setKo(false) //if determineKO does not persist ko state, (setKo(false)), then continue pbp.
-          setPbpFunc(off, def, diff, `${def.firstName} beats the count!`)
-
-          return powerShot + diff //if not return a heavier shot
-        } else {
-          return diff
-        }
-
-      }, 3000);
-    }
-  }
   
-   //Phase 1 = exchange() determines who wins the trading of blows
+  //Phase 1 = exchange() determines who wins the trading of blows
+
 
   const exchange = (attacker, defender) => {
-    /***  Important: This is the mean line where you can stop all extra damage after the KO. Fight should end on KO or too many Knockdowns  ***/
+    /***  Important:
+     * This is the mean line where you can stop all extra damage after the KO.
+     * Fight should end on KO or too many Knockdowns  ***/
     if (defender.knockdownCount === knockdownRuleLimit || attacker.knockdownCount === knockdownRuleLimit) {
       setKnockdownRule(true)
       setFightOver(true)
       return 0;
 
     } else {
-
       let atkCombos = attacker.handSpeed(); //determine punch volume
       let defCombos = defender.handSpeed();
       let atk = attacker.attack(atkCombos);
@@ -362,109 +330,137 @@ useEffect(() => {
           difference: difference,
           round: roundCount+1
         }])
-
       return difference
       }
   };
 
- //Phase 2 = wrap both attack and defense with output text in one single obj, easier to package for output
 
-  const calcDamage = (attacker, defender, difference, timeout) => {
+//Phase 2 = wrap both attack and defense with output text in one single obj, easier to package for output
 
-      let result = { //an object template to populate the pbp
-        attacker: attacker,
-        defender: defender,
-        totalDmg: 0,
-        text: 'The fighters work in the clinch'
-      };
+
+  const determinePowerShot = (off, def, diff) => {
+
+    if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
+
+    let powerShot = off.ko(); //determine powershot, then if KO
+    console.log(`check powerShot*off.con`, powerShot, `def chin`, def.chin)
+
+    if (powerShot > def.chin*def.con) {  //check if powershot is stronger than chin
+      setPbpFunc(off, def, diff, `A BIG SHOT BY ${off.firstName}!`);
+      setPbpFunc(off, def, 0, ` `);
+
+      const consciousness = def.getUp();
+      console.log(`check consciousness`, consciousness)
+      if (consciousness < powerShot){  //check if powershot is stronger than def ability to getUp (take a shot)
+        if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
+
+        setKo(true);
+        def.knockdownCount++;
+        def.energyLoss();
+        setPbpFunc(off, def, diff, `${def.firstName} IS DOWN. WILL THEY GET BACK UP?`);
+        setPbpFunc(off, def, 0, ``);
+        determineKO(off, def, powerShot);
+        setPbpFunc(off, def, 0, ``);
+        
+        //Post determine KO is where you setKo to false, and implement ref count (if func success, below does not run as fightOver === true)
+        setKo(false) //if determineKO does not persist ko state, (setKo(false)), then continue pbp.
+        setPbpFunc(off, def, diff, `${def.firstName} beats the count!`);
+        setPbpFunc(off, def, 0, ``);
+        return powerShot += diff //if not return a heavier shot
+      } else {
+        return diff
+      }
+    } else {
+      return diff
+    }
+  }
+
+  const calcDamage = (attacker, defender, difference) => {
+
+    let result = { //an object template to populate the pbp
+      attacker: attacker,
+      defender: defender,
+      totalDmg: 0,
+      text: 'The fighters work in the clinch'
+    };
+
+    const setObjFunc = (who, textSummary) => {
+      console.log(who.firstName, who.hp)
       let hit;
-      let normalOrPowerPunch;
+      let normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
+
+      console.log(normalOrPowerPunch)
+      hit = who.hp += normalOrPowerPunch;
+      setObj(who, "hp", hit);
+      result.totalDmg = normalOrPowerPunch;
+      result.text = textSummary;
+    };
 
     /*** Fight balance favors defender ***/
 
     if (difference <= -55){ //Strong counters by defender
-      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      hit = attacker.hp += normalOrPowerPunch; //reduce health
-      setObj(attacker, "hp", hit);
-      result.totalDmg = difference
-      result.text = `${defender.firstName} returning some BIG, HEAVY counters!`;
-
+      setObjFunc(
+        attacker,
+        `${defender.firstName} returning some BIG, HEAVY counters!`
+        )
     } else if (difference > -55 && difference <= -40){ //
-      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      hit = attacker.hp += normalOrPowerPunch; //reduce health
-      setObj(attacker, "hp", hit);
-      result.totalDmg = difference;
-      result.text = `${defender.firstName} keeping the pressure off and working well on the outside.`;
-
+      setObjFunc(
+        attacker,
+        `${defender.firstName} keeping the pressure off and working well on the outside.`
+        )
     } else if (difference > -40 && difference <= -30){ //
-      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      hit = attacker.hp += normalOrPowerPunch; //reduce health
-      setObj(attacker, "hp", hit);
-      result.totalDmg = difference;
-      result.text = `${defender.firstName} making ${attacker.firstName} pay on the way in`;
-
+      setObjFunc(
+        attacker,
+        `${defender.firstName} making ${attacker.firstName} pay on the way in`
+        )
     } else if (difference > -30 && difference < -20){ //Close Counter in favor of defender.
-      hit = attacker.hp += difference; //reduce health
-      setObj(attacker, "hp", hit);
-      result.totalDmg = difference;
-      result.text = `${defender.firstName} moving well to avoid ${attacker.firstName}'s offense. Peppering jabs in response.`;
-
+      setObjFunc(
+        attacker,
+        `${defender.firstName} moving well to avoid ${attacker.firstName}'s offense. Peppering jabs in response.`
+        )
     } else if (difference > -20 && difference <= -10){ //Close Counter in favor of defender.
-      hit = attacker.hp += difference; //reduce health
-      setObj(attacker, "hp", hit);
-      result.totalDmg = difference;
-      result.text = `${attacker.firstName} trading well in the pocket.`;
+      setObjFunc(
+        attacker,
+        `${attacker.firstName} trading well in the pocket.`
+        )
 
     /***  Fight balance is close  ***/
 
     } else if (difference >=2 && difference <-10) { //Inside work for defender
-      hit = attacker.hp -= 2;
       defender.hp -= 1;
-      setObj(defender, "hp", hit);
-      result.totalDmg = 2;
-      result.text = `Both fighters work inside...${defender.firstName} getting the best of the scrap.`;
-
+      setObjFunc(
+        attacker,
+        `Both fighters work inside...${defender.firstName} getting the best of the scrap.`
+        )
     } else if (difference >= 2 && difference <= 2) {
-      hit = attacker.hp -= 0;
-      attacker.roundRecovery();
-      defender.roundRecovery();
-      setObj(attacker, "hp", hit);
-      result.totalDmg = 0;
-      result.text = `Both fighters work in the clinch...Ref decides to break.`;
-
+      setObjFunc(
+        defender,
+        `Both fighters work in the clinch...Ref decides to break.`
+        )
     } else if (difference > 2 && difference <= 5) { // Close in favor of Attacker
-      // normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      // hit = defender.hp -= normalOrPowerPunch;
-      hit = defender.hp -= difference;
-      setObj(defender, "hp", hit)
-      result.totalDmg = normalOrPowerPunch;
-      result.text = `Solid work and steady shots by ${attacker.firstName}`;
+      setObjFunc(
+        defender,
+        `Solid work and steady shots by ${attacker.firstName}`
+        )
 
     /***  Fight balance favors attacker  ***/
 
     } else if (difference > 5 && difference <= 15) {
-      // normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      // hit = defender.hp -= normalOrPowerPunch;
-      hit = defender.hp -= difference;
-      setObj(defender, "hp", hit)
-      result.totalDmg = normalOrPowerPunch;
-      result.text = `${attacker.firstName} working great in the mid-range!`;
-
+      setObjFunc(
+        defender,
+        `${attacker.firstName} working great in the mid-range!`
+        )
     } else if (difference > 15 && difference <= 25) {
-      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      hit = defender.hp -= normalOrPowerPunch;
-      setObj(defender, "hp", hit)
-      result.totalDmg = normalOrPowerPunch;
-      result.text = `Hard, clean shots by ${attacker.firstName}!`;
-
+      setObjFunc(
+        defender,
+        `Hard, clean shots by ${attacker.firstName}!`
+        )
     } else if (difference > 25) {
-      normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-      hit = defender.hp -= normalOrPowerPunch;
-      setObj(defender, "hp", hit)
-      result.totalDmg = normalOrPowerPunch;
-      result.text = `${attacker.firstName} laying some hard, clean shots with ${defender.firstName} trapped in the corner!`;
-    }
-    
+      setObjFunc(
+        defender
+        `${attacker.firstName} laying some hard, clean shots with ${defender.firstName} trapped in the corner!`
+        )
+    } 
     if (attacker.knockdownCount === knockdownRuleLimit || defender.knockdownCount === knockdownRuleLimit) {
       setKnockdownRule(true);
       return;
