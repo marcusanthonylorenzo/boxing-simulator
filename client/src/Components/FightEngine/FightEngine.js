@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react'
-import Functions from '../Helpers/Functions'
-import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
-import Display from '../Interface/Display/Display'
-import leftBoxer from '../../assets/images/redgloves.png'
+import { useEffect, useState } from 'react'
 import oppBody from '../../assets/images/oppBody.png'
+import leftBoxer from '../../assets/images/redgloves.png'
+import BoxerCard from '../Boxer/BoxerCard/BoxerCard'
+import Functions from '../Helpers/Functions'
+import Display from '../Interface/Display/Display'
 import SelectMenu from '../Interface/SelectMenu/SelectMenu'
-import { judgeDecision, compareScorecards } from '../Judges/Judges'
-// import randomize from '../Helpers/Randomize'
+import { compareScorecards, judgeRound, setScorecardsFunc } from '../Judges/JudgesDecisionLogic'
+import MatchData from "../MatchData"
 
 const FightEngine = (
   { user, enemy, urls,
@@ -22,62 +22,63 @@ const FightEngine = (
 
   const { setObj, setCorner } = Functions(); //unpack functions from Helpers/Functions
 
-  /*** General state ***/
-  const [ url, setUrl ] = useState(urls[1])
-  const [userActive, setUserActive] = useState(user); //point to an updated state of user attributes
-  const [oppActive, setOppActive] = useState(enemy);
-  const [userDmgScale, setUserDmgScale] = useState(); //store values for each total damage output for data
-  const [oppDmgScale, setOppDmgScale] = useState();
-  const [pbp, setPbp] = useState([]); //a combination of above state in objects, for historical fight record
-  const [punchCount, setPunchCount] = useState([]); //data for each punch/counter punch thrown, for historical fight record
-  const [incrementor, setIncrementor] = useState(0);
-  const [exchangeCount, setExchangeCount] = useState(0);  //count number of times boxers enter a scrap
-  const [delay] = useState(1500);  //toggle rate of text ouput
+  /*
+  MAKE SURE TO SET HANDLERS NEXT WEEK ! =D
+  */
+ 
+  const {
+    ko, setKo,
+    disable, setDisable,
+    roundStart, setRoundStart,
+    fightStart, setFightStart,
+    totalRingControl, setTotalRingControl,
+    totalAccuracy, setTotalAccuracy,
+    finalTotals, setFinalTotals,
+    aggregatedFinalTotals, setAggregatedFinalTotals,
+    winner, setWinner,
+    loser, setLoser,
 
-  /***  Match specific state ***/
-  const [ko, setKo] = useState(false);
-  const [disable, setDisable] = useState(false);
-  const [roundStart, setRoundStart] = useState(false);
-  const [fightStart, setFightStart] = useState(false);
-  const [totalRingControl, setTotalRingControl] = useState([]);
-  const [totalAccuracy, setTotalAccuracy] = useState([]);
-  const [finalTotals, setFinalTotals] = useState([]); //data for UI stat output
-  const [aggregatedFinalTotals, setAggregatedFinalTotals] = useState([])
-  const [winner, setWinner] = useState({});
-  const [loser, setLoser] = useState({});
+    /*** Match Conditions ***/
+    knockdownRule, setKnockdownRule,
+    rateOfExchange, setRateOfExchange,
+    knockdownRuleLimit, setKnockdownRuleLimit,
 
-  /*** Match Conditions ***/
-  const [knockdownRule, setKnockdownRule] = useState(false);
-  const [rateOfExchange, setRateOfExchange] = useState(12);  //toggle number of punches in one round based on boxer handSpeed
-  const [knockdownRuleLimit, setKnockdownRuleLimit] = useState(3); //set max knockdowns
+    //Extract later !
+    url, setUrl,
+    userActive, setUserActive,
+    oppActive, setOppActive,
+    userDmgScale, setUserDmgScale,
+    oppDmgScale, setOppDmgScale,
+    pbp, setPbp,
+    punchCount, setPunchCount,
+    incrementor, setIncrementor,
+    exchangeCount, setExchangeCount,
+    delay
+  } = MatchData(user, enemy);
+
 
   /*** Judges Decision state ***/
   const [judgeOne, setJudgeOne] = useState([]);
-  const [judgeOneOfficialScorecard, setJudgeOneOfficialScorecard] = useState();
   const [judgeTwo, setJudgeTwo] = useState([]);
-  const [judgeTwoOfficialScorecard, setJudgeTwoOfficialScorecard] = useState();
   const [judgeThree, setJudgeThree] = useState([]);
-  const [judgeThreeOfficialScorecard, setJudgeThreeOfficialScorecard] = useState();
   const [judgesProps, setJudgesProps] = useState({});
   const [compareScorecardProps, setCompareScorecardProps] = useState({});
+  const [judgesOfficialDecision, setJudgesOfficialDecision] = useState({});
   const [finalResult, setFinalResult] = useState(false)
 
 
   //End and reset fight depending on which round (roundCount)
   useEffect(() => { 
-    if (roundCount === 2 && roundOver) {
-      setJudgesProps(
-        {
+    if (roundCount === 1 && roundOver) {
+      setJudgesProps({
           user: user,
           enemy: enemy,
           filterStats: filterStats,
           setJudgeOne: setJudgeOne,
           setJudgeTwo: setJudgeTwo,
           setJudgeThree: setJudgeThree,
-        }
-      )
-      setCompareScorecardProps(
-        {
+        })
+      setCompareScorecardProps({
           user: user,
           opp: enemy,
           updateWinLoss: updateWinLoss
@@ -88,7 +89,7 @@ const FightEngine = (
       setFightStart(false);
       setFinalResult(true);
       // checkWinnerAndLoser(user, enemy);
-    };
+    }
   },[roundOver, roundCount, setFightOver, stopFight])
 
   //set Final Total Statistics and check Local Storage
@@ -104,8 +105,10 @@ const FightEngine = (
   }, [finalTotals])
 
   useEffect(() => {  //Similar to useEffect above, but within a record-altering function
-    if (fightOver || roundStart) { updateDataCollections({ pbp: pbp, finalTotals: finalTotals }) }
-  },[fightOver, roundStart, roundOver])
+    if (fightOver || roundStart) {
+      updateDataCollections({ pbp: pbp, finalTotals: finalTotals})
+    }
+  },[fightOver, roundStart])
 
   useEffect(() =>  { //Check if beginning of a new fight
     if(fightNight && roundCount === 0) {
@@ -145,25 +148,30 @@ const FightEngine = (
       setRateOfExchange(0);
       stopFight.stop();
     } else if (fightOver && !knockdownRule) {
-      console.log(`fightOver and NOT knockdown render`)
-      judgeDecision(judgesProps, 'control', 'one');
-      judgeDecision(judgesProps, 'accuracy', 'two');
-      judgeDecision(judgesProps, 'accuracy', 'three');
+      console.log(judgeOne, judgeTwo, judgeThree)
+      //reduce scores from each round AKA "Set Scorecards"
+      const getOfficialScoresAsObject = setScorecardsFunc(judgeOne, judgeTwo, judgeThree)
+
+
+      //set these results in state here
+      setJudgesOfficialDecision(getOfficialScoresAsObject);
+      //use this object to destructure and compare values for an official decision
+      checkWinnerAndLoser(user, enemy);
       user.knockdownCount = 0;
       enemy.knockdownCount = 0;
-      // setFinalResult(true);
-      console.log(winner, loser)
+    } else if (!fightOver && roundOver) {
+      console.log(judgesProps)
+      judgeRound(judgesProps, 'control', 'one');
+      judgeRound(judgesProps, 'accuracy', 'two');
+      judgeRound(judgesProps, 'accuracy', 'three');
     }
   },[fightOver])
 
-useEffect(() => {
-  console.log(`setting official scorecards`)
-  setScorecardsFunc();
-}, [fightOver])
+/*** check here ***/
+/***
+ * Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
+***/
 
-/*** Here you set the fighters fight attributes which change depending on the match, randomize cornerColors in future.
-  ***/
- 
   const cornerColor = { red: `rgba(139, 0, 0, 1)`, blue: `rgba(10, 30, 103, 1)` }
   const userReady = setCorner(user, cornerColor.red, "red", "left", false, userDmgScale)
   const oppReady = setCorner(enemy, cornerColor.blue, "blue", "right", false, oppDmgScale)
@@ -176,38 +184,19 @@ useEffect(() => {
     }
   };
 
-  const setScorecardsFunc = () => {
-    console.log(judgeOne, judgeTwo, judgeThree)
-    const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
-    const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
-    setJudgeOneOfficialScorecard({ user: judgeOneUserScore, opp: judgeOneOppScore });
-    const judgeTwoUserScore = judgeTwo.reduce((acc, curr, i) => acc += curr[0], 0);
-    const judgeTwoOppScore = judgeTwo.reduce((acc, curr, i) => acc += curr[1], 0);
-    setJudgeTwoOfficialScorecard({ user: judgeTwoUserScore, opp: judgeTwoOppScore });
-    const judgeThreeUserScore = judgeThree.reduce((acc, curr, i) => acc += curr[0], 0);
-    const judgeThreeOppScore = judgeThree.reduce((acc, curr, i) => acc += curr[1], 0);
-    setJudgeThreeOfficialScorecard({ user: judgeThreeUserScore, opp: judgeThreeOppScore });
-  };
-
   /*** Adjust win or loss  ***/
 
   const checkWinnerAndLoser = (user, opp) => {
     setFightOver(true);
     setRoundOver(true);
-    setScorecardsFunc();
-
-    const judgeObject = {
-      judgeOneOfficialScorecard: 
-      judgeTwoOfficialScorecard,
-      judgeThreeOfficialScorecard
-    }
 
     if (user.hp <= 0) {
       updateWinLoss(opp, user);
     } else if (opp.hp <= 0) {
       updateWinLoss(user, opp);
     } else {
-      compareScorecards(compareScorecardProps, judgeObject);
+      // //use this object to destructure and compare values for an official decision
+      compareScorecards(compareScorecardProps, judgesOfficialDecision);
       console.log(`checkWinnerAndLoser()`, winner, loser) //updates third
     } 
   }
@@ -215,17 +204,10 @@ useEffect(() => {
   /*** Update win/loss record ***/
 
   const updateWinLoss = (winner, loser) => {
-    console.log(`updateWinLoss() beginning`, winner, loser) //updates
     winner.win++;
     setWinner(winner);
     loser.loss++;
     setLoser(loser);
-    // setJudgeOne([]);
-    // setJudgeTwo([]);
-    // setJudgeThree([]);
-    // setJudgeOneOfficialScorecard();
-    // setJudgeTwoOfficialScorecard();
-    // setJudgeThreeOfficialScorecard();
   }
 
   /*** Determine if fighter gets up after knockdown or is unconscious ***/
@@ -256,11 +238,10 @@ useEffect(() => {
   };
 
   const determineKO = (offense, defense, hit, timeout ) => {
-    /*** Initialize getUp abilites, update UI ***/
     if (defense.hp <= 0) {
       const getUpTimer = setTimeout(() => {
 
-        //slow down getUp post knock out text boxes.
+        //Runs boxer.getUp twice, representing first and second wind after knockdown.
         const takesShot = defense.getUp();
         const getUp = defense.getUp();
         setPbpFunc(offense, defense, hit, `${defense.firstName} down with the count!`);
@@ -280,12 +261,10 @@ useEffect(() => {
           setPbpFunc(offense, defense, 0, `THIS FIGHT IS OVER. The ref waves it off! ${offense.firstName} PUTS ${defense.firstName} AWAY.`)
           return determineKO;
         }
-
       }, 2000);
       clearTimeout(getUpTimer)
     }
   };
-
   
   //Phase 1 = exchange() determines who wins the trading of blows
 
@@ -343,14 +322,12 @@ useEffect(() => {
     if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
 
     let powerShot = off.ko(); //determine powershot, then if KO
-    console.log(`check powerShot*off.con`, powerShot, `def chin`, def.chin)
 
     if (powerShot > def.chin*def.con) {  //check if powershot is stronger than chin
       setPbpFunc(off, def, diff, `A BIG SHOT BY ${off.firstName}!`);
       setPbpFunc(off, def, 0, ` `);
 
       const consciousness = def.getUp();
-      console.log(`check consciousness`, consciousness)
       if (consciousness < powerShot){  //check if powershot is stronger than def ability to getUp (take a shot)
         if (def.knockdownCount === knockdownRuleLimit) { return determinePowerShot; }
 
@@ -361,7 +338,7 @@ useEffect(() => {
         setPbpFunc(off, def, 0, ``);
         determineKO(off, def, powerShot);
         setPbpFunc(off, def, 0, ``);
-        
+
         //Post determine KO is where you setKo to false, and implement ref count (if func success, below does not run as fightOver === true)
         setKo(false) //if determineKO does not persist ko state, (setKo(false)), then continue pbp.
         setPbpFunc(off, def, diff, `${def.firstName} beats the count!`);
@@ -376,20 +353,15 @@ useEffect(() => {
   }
 
   const calcDamage = (attacker, defender, difference) => {
-
     let result = { //an object template to populate the pbp
       attacker: attacker,
       defender: defender,
       totalDmg: 0,
       text: 'The fighters work in the clinch'
     };
-
     const setObjFunc = (who, textSummary) => {
-      console.log(who.firstName, who.hp)
       let hit;
       let normalOrPowerPunch = determinePowerShot(attacker, defender, difference)
-
-      console.log(normalOrPowerPunch)
       hit = who.hp += normalOrPowerPunch;
       setObj(who, "hp", hit);
       result.totalDmg = normalOrPowerPunch;
@@ -397,7 +369,6 @@ useEffect(() => {
     };
 
     /*** Fight balance favors defender ***/
-
     if (difference <= -55){ //Strong counters by defender
       setObjFunc(
         attacker,
@@ -425,7 +396,6 @@ useEffect(() => {
         )
 
     /***  Fight balance is close  ***/
-
     } else if (difference >=2 && difference <-10) { //Inside work for defender
       defender.hp -= 1;
       setObjFunc(
@@ -444,7 +414,6 @@ useEffect(() => {
         )
 
     /***  Fight balance favors attacker  ***/
-
     } else if (difference > 5 && difference <= 15) {
       setObjFunc(
         defender,
@@ -475,24 +444,27 @@ useEffect(() => {
     let userOffense = user.engage();
     let oppOffense = opp.engage();
     let resultDmg;
+    
     if (fightOver || knockdownRule) {
       stopFight.stop();
       clearTimeout(timeout);
     }
+
+    const engageThenExchangeThenCalcDmg = (offensiveBoxer, defensiveBoxer) => {
+      let exchangeDmg = exchange(offensiveBoxer, defensiveBoxer);
+      resultDmg = calcDamage(offensiveBoxer, defensiveBoxer, exchangeDmg, timeout); //determines resulting dmg after engage and exchange
+      determineKO(offensiveBoxer, defensiveBoxer, exchangeDmg, timeout);
+      return exchangeDmg
+    }
+
     if (userOffense > oppOffense) {
-      let userDmg = exchange(user, opp);
-      resultDmg = calcDamage(user, opp, userDmg, timeout); //determines resulting dmg after engage and exchange
-      determineKO(user, opp, userDmg, timeout);
+      let userDmg = engageThenExchangeThenCalcDmg(user, opp)
       setUserDmgScale(userDmg);
-      console.log(`userDmg`, userDmg)
 
     } else if (oppOffense > userOffense) {
-      let oppDmg = exchange(opp, user);
-      resultDmg = calcDamage(opp, user, oppDmg, timeout); //determines resulting dmg after engage and exchange
-      determineKO(opp, user, oppDmg, timeout);
+      let oppDmg = engageThenExchangeThenCalcDmg(opp, user)
       setOppDmgScale(oppDmg);
-      console.log(`oppDmg`, oppDmg)
-
+      
     } else if (oppOffense === userOffense) {
       resultDmg = 0;
     }
@@ -557,7 +529,7 @@ useEffect(() => {
       update = `This fight is officially underway!`;
       setPbp((prev) => [ ...prev, {
         text: update
-      },]);
+        },]);
     } else if (roundStart && roundCount > 0) {
       setRoundStart(true);
       update = `The bell sounds for round ${roundCount}!`;
@@ -616,8 +588,7 @@ useEffect(() => {
             stopFight={stopFight}
             ko={ko}
             knockdownRule={knockdownRule}
-            judgeOneOfficialScorecard={judgeOneOfficialScorecard}
-            judgeTwoOfficialScorecard={judgeTwoOfficialScorecard}
+            judgesOfficialDecision={judgesOfficialDecision}
             winner={winner}
             loser={loser}
             buttons={fightBtn}/>

@@ -1,4 +1,4 @@
-const judgeDecision = ( passedObjects, whatToJudge, whichJudge) => {
+const judgeRound = ( passedObjects, whatToJudge, whichJudge) => {
   const {
     user,
     enemy,
@@ -7,6 +7,8 @@ const judgeDecision = ( passedObjects, whatToJudge, whichJudge) => {
     setJudgeTwo,
     setJudgeThree,
   } = passedObjects;
+
+  console.log(passedObjects)
 
   //Use the judges criteria to filter the aggregated stats of each fighter.
   const judgeUser = filterStats(user, whatToJudge); 
@@ -71,6 +73,36 @@ const judgeDecision = ( passedObjects, whatToJudge, whichJudge) => {
   }
 }
 
+const setScorecardsFunc = (judgeOne, judgeTwo, judgeThree) => {
+  console.log(judgeOne, judgeTwo, judgeThree)
+
+  const judgeOneUserScore = judgeOne.reduce((acc, curr, i) => acc += curr[0], 0);
+  const judgeOneOppScore = judgeOne.reduce((acc, curr, i) => acc += curr[1], 0);
+  // setJudgeOneOfficialScorecard({ user: judgeOneUserScore, opp: judgeOneOppScore });
+  const judgeTwoUserScore = judgeTwo.reduce((acc, curr, i) => acc += curr[0], 0);
+  const judgeTwoOppScore = judgeTwo.reduce((acc, curr, i) => acc += curr[1], 0);
+  // setJudgeTwoOfficialScorecard({ user: judgeTwoUserScore, opp: judgeTwoOppScore });
+  const judgeThreeUserScore = judgeThree.reduce((acc, curr, i) => acc += curr[0], 0);
+  const judgeThreeOppScore = judgeThree.reduce((acc, curr, i) => acc += curr[1], 0);
+  // setJudgeThreeOfficialScorecard({ user: judgeThreeUserScore, opp: judgeThreeOppScore });
+
+  return {
+    judgeOneOfficialScorecard: {
+      user: judgeOneUserScore,
+      opp: judgeOneOppScore,
+    },
+    judgeTwoOfficialScorecard: {
+      user: judgeTwoUserScore,
+      opp: judgeTwoOppScore,
+    },
+    judgeThreeOfficialScorecard: {
+      user: judgeThreeUserScore,
+      opp: judgeThreeOppScore,
+    }
+  }
+};  
+
+
 /***  Tally scorecards  ***/
 
 const compareScorecards = (compareScorecardsProps, judgeObject) => {
@@ -90,6 +122,8 @@ const compareScorecards = (compareScorecardsProps, judgeObject) => {
   let userTally = 0;
   let oppTally = 0;
 
+  console.log(`compareScorecards() check props`,compareScorecardsProps, judgeObject)
+
   //Judge One
   if (judgeOneOfficialScorecard.user > judgeOneOfficialScorecard.opp) {
     userTally++
@@ -108,10 +142,15 @@ const compareScorecards = (compareScorecardsProps, judgeObject) => {
   } else if (judgeThreeOfficialScorecard.user < judgeThreeOfficialScorecard.opp){
     oppTally++
   }
+
+  console.log(`judges tally overall`, userTally, oppTally)
+
   if (judgeOneOfficialScorecard.user === judgeOneOfficialScorecard.opp) {
     userTally++
     oppTally++
   }
+
+  console.log(`compareScorecards() check props`,compareScorecardsProps, judgeObject)
 
   if (userTally + oppTally >= 3){
     if (userTally > oppTally) {
@@ -123,4 +162,5 @@ const compareScorecards = (compareScorecardsProps, judgeObject) => {
     }
   }
 }
-export { judgeDecision, compareScorecards }
+export { judgeRound, setScorecardsFunc, compareScorecards };
+

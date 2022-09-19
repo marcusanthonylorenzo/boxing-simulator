@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css'
-import Landing from './Pages/Landing/Landing'
-import Home from './Pages/Home/Home'
-import Navbar from './Components/Interface/Navbar/Navbar'
 import FightEngine from './Components/FightEngine/FightEngine'
 import data from './Components/Helpers/Data'
+import Navbar from './Components/Interface/Navbar/Navbar'
+import Home from './Pages/Home/Home'
+import Landing from './Pages/Landing/Landing'
 
 function App() {
 
@@ -48,7 +48,9 @@ function App() {
     }
   }, [fightNight])
 
-  useEffect(() => { persistInLocalStorage("fightHistory", JSON.stringify(fightDataCollection)) }, [fightDataCollection])
+  useEffect(() => { 
+    persistInLocalStorage("fightHistory", JSON.stringify(fightDataCollection))
+  }, [fightDataCollection])
 
   const updateDataCollections = (input) => { setFightDataCollection(prev => [...prev, { matchDetails: input, matchId: fightNumber }])}
 

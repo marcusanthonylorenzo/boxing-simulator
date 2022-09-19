@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './Landing.css'
 import oppBody from '../../assets/images/oppBody.png'
 
-const Landing = ({setLandingPage, generateBoxerFunc}) => {
-
-  // useEffect(() => { console.log(generateBoxerFunc) },[])
-
-  // console.log(generateBoxerFunc)
+const Landing = ({setLandingPage}) => {
 
   return (
     <>

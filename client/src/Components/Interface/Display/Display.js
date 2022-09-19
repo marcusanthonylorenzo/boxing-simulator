@@ -1,14 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react'
-import './Display.css'
-import SelectMenu from '../SelectMenu/SelectMenu'
+import React, { useEffect, useRef, useState } from 'react';
+// import SelectMenu from '../SelectMenu/SelectMenu';
+import './Display.css';
 
 const Display = ({
   ko, pbp, user, opp,
   fightNight, setFightNight,
   fightStart, fightOver, setRateOfExchange,
   roundStart, roundOver, roundCount,
-  judgeOneOfficialScorecard, judgeTwoOfficialScorecard,
-  winner, loser, knockdownRule, stopFight
+  winner, loser, knockdownRule, stopFight,
+  judgesOfficialDecision
 }) => {
 
   const [fade, setFade] = useState({backgroundColor:`gray`});
@@ -18,10 +18,20 @@ const Display = ({
   const [disableBtns, setDisableBtns] = useState(false);
   const [hideModal, setHideModal] = useState(`hide`);
   const displayDiv = useRef(null) //auto scroll to bottom
+  
+  const {
+    judgeOneOfficialScorecard,
+    judgeTwoOfficialScorecard,
+    judgeThreeOfficialScorecard
+  } = judgesOfficialDecision;
 
   useEffect(() => { setTimeout(() => { displayDiv.current.scrollTop = displayDiv.current.scrollHeight }, 1200) });
 
-  useEffect(() => { if (fightOver) { stopFight.stop(); }}, [fightOver, winner, loser, stopFight])
+  useEffect(() => { if (fightOver) {
+    stopFight.stop()
+    console.log(judgeOneOfficialScorecard, judgeTwoOfficialScorecard, judgeThreeOfficialScorecard)
+
+  }}, [fightOver, winner, loser, stopFight])
   
   useEffect(() => { if(roundStart) { setHideModal('hide'); }}, [roundStart])
 
@@ -152,7 +162,8 @@ const Display = ({
         <>
           <div className="scorecards">
             <div className="scorecard" id="judge-one">
-              <h4 className="judge-label">Judge One scores it:</h4>
+
+              {/* <h4 className="judge-label">Judge One scores it:</h4>
               <h4 className="scores">{judgeOneOfficialScorecard.user} - {judgeOneOfficialScorecard.opp}</h4>
             </div>
             <div className="scorecard" id="judge-two">
@@ -161,7 +172,8 @@ const Display = ({
             </div>
             <div className="scorecard" id="judge-three">
               <h4 className="judge-label">Judge Three scores it:</h4>
-              <h4 className="scores">{judgeOneOfficialScorecard.user} - {judgeOneOfficialScorecard.opp}</h4>
+              <h4 className="scores">{judgeThreeOfficialScorecard.user} - {judgeThreeOfficialScorecard.opp}</h4> */}
+
             </div>
             <div className="scorecard" id="winner">
               <h4>For the winner, by decision...</h4>

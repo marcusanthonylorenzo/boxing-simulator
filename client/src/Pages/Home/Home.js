@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import './Home.scss'
-import { randomUserAPI, cats } from '../../Components/API/API'
+import { Chart, registerables } from 'chart.js'
+import ChartjsPluginStacked100 from "chartjs-plugin-stacked100"
+import React, { useEffect, useState } from 'react'
+import { Bar } from 'react-chartjs-2'
+import { cats, randomUserAPI } from '../../Components/API/API'
 import Boxer from '../../Components/Boxer/BoxerClass'
-import Randomize from '../../Components/Helpers/Randomize'
 import Commentary from '../../Components/Helpers/Commentary'
 import Data from '../../Components/Helpers/Data'
-import { Bar } from 'react-chartjs-2'
-import { Chart, registerables } from 'chart.js';
-import ChartjsPluginStacked100 from "chartjs-plugin-stacked100";
+import Randomize from '../../Components/Helpers/Randomize'
+import ChangeUserModal from './ChangeUserModal'
+import './Home.scss'
 Chart.register(ChartjsPluginStacked100);
 Chart.register(...registerables);
 
@@ -37,6 +38,7 @@ const Home = (
   const [selectedBoxer, setSelectedBoxer] = useState({})
   const [userToggle, setUserToggle] = useState(true);
   const [oppToggle, setOppToggle] = useState(false);
+  const [toggleOpacityOfHomeUserCard, setToggleOpacityOfHomeUserCard] = useState(`100%`)
 
   /***  Data Retreival ***/
   const [getHistory] = useState(JSON.parse(localStorage.getItem('fightHistory')));
@@ -122,6 +124,7 @@ const Home = (
 
     const newUserFromAPI = input
     //create level scaling later
+    //later: unwrap input object
     const firstName = `${newUserFromAPI.name.first}`;
     const nickname = '';
     const lastName = `${newUserFromAPI.name.last}`;
@@ -185,6 +188,7 @@ const Home = (
     </>
     )
 }
+
 
   const mapOpponents = () => { //Map these badboys onto the DOM
     return newBoxerList.map((each, i) => {
@@ -310,9 +314,18 @@ const Home = (
   }
   
   const boxerCardsAtHomePage = (boxer , toggle) => {
+
     return (
       <>
-        <div className='home-gym-user'>
+        <div className='home-gym-user' id={`user-card-home`}
+        style={{
+        opacity: toggleOpacityOfHomeUserCard
+        }}
+        onClick={()=> {
+        setToggleOpacityOfHomeUserCard(toggleOpacityOfHomeUserCard ? `80%` : `100%`);
+        console.log(`clicky boi`)
+        
+      }}>
           { toggle ? 
           <div className='home-gym-boxer-info'>
             <h2>{boxer.firstName}</h2>
@@ -399,6 +412,8 @@ const Home = (
               <div className='boxer-list'>
                 { mapOpponents() }                
               </div>
+
+            {/* <ChangeUserModal newUser={setUserState}/> */}
 
             </div>
 

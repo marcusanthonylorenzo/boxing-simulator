@@ -1,5 +1,5 @@
+import homegym from '../../assets/images/homegym.jpg';
 import Boxer from '../Boxer/BoxerClass';
-import homegym from '../../assets/images/homegym.jpg'
 
 const data = () => {
 
@@ -27,15 +27,11 @@ const data = () => {
 
   const colorNames = [
     "Black",
-    "BlanchedAlmond",
+    // "BlanchedAlmond",
     "Blue",
     "Brown",
-    "BurlyWood",
-    "CadetBlue",
-    "Chartreuse",
     "Chocolate",
     "Coral",
-    "CornflowerBlue",
     "Crimson",
     "Cyan",
     "DarkBlue",
@@ -68,7 +64,7 @@ const data = () => {
     "Lavender",
     "LawnGreen",
     "LimeGreen",
-    "Linen",
+    // "Linen",
     "Magenta",
     "Maroon",
     "MediumAquaMarine",
@@ -82,9 +78,6 @@ const data = () => {
     "MediumVioletRed",
     "MidnightBlue",
     "Navy",
-    "OldLace",
-    "Olive",
-    "OliveDrab",
     "Orange",
     "OrangeRed",
     "Orchid",
@@ -107,7 +100,6 @@ const data = () => {
     "Tomato",
     "Turquoise",
     "Violet",
-    "YellowGreen",
   ];
 
   return { user, enemy, urls, monthNames, colorNames }

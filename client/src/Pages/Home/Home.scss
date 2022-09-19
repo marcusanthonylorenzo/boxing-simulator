@@ -319,6 +319,22 @@ ul {
 }
 
 
+/*
+* Change User Modal
+*/
+
+.change-user-modal {
+  background-color: white;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 25vw;
+  height: 30vh;
+  padding: 10%;
+}
+
+
 /*** Ticker ***/
 $duration: 20s;
 
