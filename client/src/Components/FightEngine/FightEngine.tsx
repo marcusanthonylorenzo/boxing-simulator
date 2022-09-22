@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ClickyBoi from "../Button/ClickyBoi.tsx";
 import Data from "../Helpers/Data";
 import { calcEngagement } from "./calcEngagement.tsx";
 import useFightState from "./useFightState.tsx";
@@ -17,9 +18,12 @@ const FightEngine: React.FC = () => {
   console.log(calcEngagementResults); //check results
 
 
+  const handleBtn = () => console.log("clicked") //use for fight start events!
+
   return (
     <div>
       FightEngine
+      <ClickyBoi buttonText="clickerz" buttonCallback={handleBtn} />
     </div>
   )
 };
