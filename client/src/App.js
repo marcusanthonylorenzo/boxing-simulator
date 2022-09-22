@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './App.css'
-import FightEngine from './Components/FightEngine/FightEngine'
+import FightEngine from './Components/FightEngine/FightEngine.tsx'
 import data from './Components/Helpers/Data'
 import Navbar from './Components/Interface/Navbar/Navbar'
 import Home from './Pages/Home/Home'
@@ -80,23 +80,25 @@ function App() {
 
         :
 
-        <FightEngine user={userState} enemy={oppState} urls={urls}
-          roundCount={roundCount} setRoundCount={setRoundCount}
-          roundOver={roundOver} setRoundOver={setRoundOver}
-          fightNight={fightNight} setFightNight={setFightNight}
-          fightOver={fightOver} setFightOver={setFightOver}
-          resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}
-          fightNumber={fightNumber} prevFightNumber={prevFightNumber}
-          setPrevFightNumber={setPrevFightNumber}
-          stopFight={stopFight} setStopFight={setStopFight}
-          updateDataCollections={updateDataCollections}/>
+        <FightEngine
+          // user={userState} enemy={oppState} urls={urls}
+          // roundCount={roundCount} setRoundCount={setRoundCount}
+          // roundOver={roundOver} setRoundOver={setRoundOver}
+          // fightNight={fightNight} setFightNight={setFightNight}
+          // fightOver={fightOver} setFightOver={setFightOver}
+          // resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}
+          // fightNumber={fightNumber} prevFightNumber={prevFightNumber}
+          // setPrevFightNumber={setPrevFightNumber}
+          // stopFight={stopFight} setStopFight={setStopFight}
+          // updateDataCollections={updateDataCollections}
+          />
 
         }
       </>
 
   return (
     <div className="App" style={{ backgroundColor: changeAppBgColor }}>
-      {
+      {/* {
         landingPage ?
 
         <Landing landingPage={landingPage} setLandingPage={setLandingPage} generateBoxerFunc={generateBoxerFunc}
@@ -107,7 +109,8 @@ function App() {
         <>
           { loadGame }
         </>
-      }    
+      }     */}
+      <FightEngine />
     </div>
   )
 }

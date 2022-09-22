@@ -1,14 +1,14 @@
-const judgeRound = ( passedObjects, whatToJudge, whichJudge) => {
-  const {
-    user,
-    enemy,
-    filterStats,
-    setJudgeOne,
-    setJudgeTwo,
-    setJudgeThree,
-  } = passedObjects;
+import { useState } from "react";
 
-  console.log(passedObjects)
+export const useJudges = ({ user, enemy, whatToJudge, filterStats, whichJudge }) => {
+  /*** Judges Decision state ***/
+  const [judgeOne, setJudgeOne] = useState([]);
+  const [judgeTwo, setJudgeTwo] = useState([]);
+  const [judgeThree, setJudgeThree] = useState([]);
+  const [judgesProps, setJudgesProps] = useState({});
+  const [compareScorecardProps, setCompareScorecardProps] = useState({});
+  const [judgesOfficialDecision, setJudgesOfficialDecision] = useState({});
+  const [finalResult, setFinalResult] = useState(false);
 
   //Use the judges criteria to filter the aggregated stats of each fighter.
   const judgeUser = filterStats(user, whatToJudge); 
@@ -71,7 +71,6 @@ const judgeRound = ( passedObjects, whatToJudge, whichJudge) => {
       }
     }
   }
-}
 
 const setScorecardsFunc = (judgeOne, judgeTwo, judgeThree) => {
   console.log(judgeOne, judgeTwo, judgeThree)
@@ -122,8 +121,6 @@ const compareScorecards = (compareScorecardsProps, judgeObject) => {
   let userTally = 0;
   let oppTally = 0;
 
-  console.log(`compareScorecards() check props`,compareScorecardsProps, judgeObject)
-
   //Judge One
   if (judgeOneOfficialScorecard.user > judgeOneOfficialScorecard.opp) {
     userTally++
@@ -162,5 +159,16 @@ const compareScorecards = (compareScorecardsProps, judgeObject) => {
     }
   }
 }
-export { judgeRound, setScorecardsFunc, compareScorecards };
 
+return {
+  setScorecardsFunc, compareScorecards,
+  judgeOne, setJudgeOne,
+  judgeTwo, setJudgeTwo,
+  judgeThree, setJudgeThree,
+  judgesProps, setJudgesProps,
+  compareScorecardProps, setCompareScorecardProps,
+  judgesOfficialDecision, setJudgesOfficialDecision,
+  finalResult, setFinalResult
+};
+
+};

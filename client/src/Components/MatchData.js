@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import data from './Helpers/Data';
 
-const MatchData = ({ user, enemy }) => {
+const MatchData = () => {
+
+  const { user, enemy, urls } = data(); //import new fighters here
 
   const [ko, setKo] = useState(false);
   const [disable, setDisable] = useState(false);

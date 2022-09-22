@@ -1,0 +1,1 @@
+// -Opponent: createOpponent, getOpponent, generateDivision (many), updateRecord, levelUp

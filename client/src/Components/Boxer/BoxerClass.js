@@ -1,17 +1,20 @@
 import { v4 as uuidv4 } from 'uuid';
-import randomizer from '../Helpers/Randomize.js'
+import randomizer from '../Helpers/Randomize.js';
 class Boxer {
 
   constructor(
     firstName, nickname, lastName,
     hometown, weightClass, favoriteColor,
-    sta, agr, agi, str, def, hrt
+    sta, agr, agi, str, def, hrt,
+    eva, counter
   ){
     this.firstName = firstName; this.nickname = nickname; this.lastName = lastName;
     this.hometown = hometown; this.weightClass = weightClass; this.favoriteColor = favoriteColor;
     
     this.sta = sta; this.agr = agr; this.agi = agi; this.str = str; this.def = def;
-    this.pow = (this.str*0.7)+(this.agi*0.3)
+    this.pow = (this.str*0.7)+(this.agi*0.3);
+    this.eva = eva;
+    this.counter = counter;
 
     //eventually determine by survey at create page
     this.heart = hrt

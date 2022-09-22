@@ -1,0 +1,1 @@
+// -Judges: createJudge, getJudge, setJudgesForFight, setJudgeDecision, getAllJudgesDecision
