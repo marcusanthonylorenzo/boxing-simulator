@@ -1,11 +1,12 @@
 ## Boxing Simulator
+## * Currently migrating from JS to TypeScript, while completely refactoring the code.
+
 
 Blog: https://achefthatcodes.com/
 
 ### A comprehensive, simulation based project in React.
 #### Notes: The randomization of a sequence of events has yielded a strong demand for data management. Rather than focusing on a game, I want to focus on the collecting and outputing the data, and creating a historical directory of fight metrics locally and on the cloud.
 
-### Gif of prototype below. UI is *not* finalised.
 
 ![ezgif com-gif-maker (4)](https://user-images.githubusercontent.com/100096239/182052991-a6f1cf5c-8690-4357-b022-2bcda9c467b6.gif)
 
