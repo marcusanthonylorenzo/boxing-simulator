@@ -1,117 +1,126 @@
-import React, { useEffect, useState } from 'react'
-import './App.css'
-import FightEngine from './Components/FightEngine/FightEngine.tsx'
-import data from './Components/Helpers/Data'
-import Navbar from './Components/Interface/Navbar/Navbar'
-import Home from './Pages/Home/Home'
-import Landing from './Pages/Landing/Landing'
+// import React, { useEffect, useState } from 'react'
+// import './App.css'
+// import FightEngine from './Components/FightEngine/FightEngine.tsx'
+// import data from './Components/Helpers/Data'
+// import Navbar from './Components/Interface/Navbar/Navbar'
+// import Home from './Pages/Home/Home'
+// import Landing from './Pages/Landing/Landing'
+import Display from "./Components/Interface/Display/Display.tsx";
 
 function App() {
 
-  /*** Main  ***/
-  const { user, enemy, urls } = data(); //import new fighters here
-  const [landingPage, setLandingPage] = useState(true);
-  const [generateBoxerFunc, setGenerateBoxersFunc] = useState();
+//   /*** Main  ***/
+//   const { user, enemy, urls } = data(); //import new fighters here
+//   const [landingPage, setLandingPage] = useState(true);
+//   const [generateBoxerFunc, setGenerateBoxersFunc] = useState();
 
-  /***  User and Opponent to pass down as state  ***/
-  const [userState, setUserState ] = useState(user);
-  const [oppState, setOppState ] = useState(enemy);
+//   /***  User and Opponent to pass down as state  ***/
+//   const [userState, setUserState ] = useState(user);
+//   const [oppState, setOppState ] = useState(enemy);
 
-  /*** Counters and Switches ***/
-  const [changeAppBgColor, setChangeAppBgColor] = useState(`rgb(234, 234, 234)`);
-  const [fightNumber, setFightNumber] = useState(0);
-  const [prevFightNumber, setPrevFightNumber] = useState(fightNumber);
-  const [monthCounter, setMonthCounter] = useState(0);
-  const [advanceMonth, setAdvanceMonth] = useState(false);
+//   /*** Counters and Switches ***/
+//   const [changeAppBgColor, setChangeAppBgColor] = useState(`rgb(234, 234, 234)`);
+//   const [fightNumber, setFightNumber] = useState(0);
+//   const [prevFightNumber, setPrevFightNumber] = useState(fightNumber);
+//   const [monthCounter, setMonthCounter] = useState(0);
+//   const [advanceMonth, setAdvanceMonth] = useState(false);
 
-  /*** Match specific state ***/
-  const [roundCount, setRoundCount] = useState(0);
-  const [fightNight, setFightNight ] = useState(false);  
-  const [resetFightBtn, setResetFightBtn] = useState(false);
-  const [roundOver, setRoundOver] = useState(false);
-  const [fightOver, setFightOver] = useState(false);
-  const [fightDataCollection, setFightDataCollection] = useState([]);
-  const [stopFight, setStopFight] = useState({});
+//   /*** Match specific state ***/
+//   const [roundCount, setRoundCount] = useState(0);
+//   const [fightNight, setFightNight ] = useState(false);  
+//   const [resetFightBtn, setResetFightBtn] = useState(false);
+//   const [roundOver, setRoundOver] = useState(false);
+//   const [fightOver, setFightOver] = useState(false);
+//   const [fightDataCollection, setFightDataCollection] = useState([]);
+//   const [stopFight, setStopFight] = useState({});
 
-  useEffect(() => { if (!landingPage) generateBoxerFunc.generate() },[generateBoxerFunc])
+//   useEffect(() => { if (!landingPage) generateBoxerFunc.generate() },[generateBoxerFunc])
 
-  useEffect(() => { 
-    if(!fightNight) {
-      setChangeAppBgColor(`rgb(234, 234, 234)`)
-      setOppState(enemy);
-    } else {   
-      setChangeAppBgColor(`black`)
-    }
+//   useEffect(() => { 
+//     if(!fightNight) {
+//       setChangeAppBgColor(`rgb(234, 234, 234)`)
+//       setOppState(enemy);
+//     } else {   
+//       setChangeAppBgColor(`black`)
+//     }
 
-    return () => {
-      //add all reset values here!
-    }
-  }, [fightNight])
+//     return () => {
+//       //add all reset values here!
+//     }
+//   }, [fightNight])
 
-  useEffect(() => { 
-    persistInLocalStorage("fightHistory", JSON.stringify(fightDataCollection))
-  }, [fightDataCollection])
+//   useEffect(() => { 
+//     persistInLocalStorage("fightHistory", JSON.stringify(fightDataCollection))
+//   }, [fightDataCollection])
 
-  const updateDataCollections = (input) => { setFightDataCollection(prev => [...prev, { matchDetails: input, matchId: fightNumber }])}
+//   const updateDataCollections = (input) => { setFightDataCollection(prev => [...prev, { matchDetails: input, matchId: fightNumber }])}
 
-  const persistInLocalStorage = (key, item) => { localStorage.setItem(key, item) }
+//   const persistInLocalStorage = (key, item) => { localStorage.setItem(key, item) }
 
-  const loadGame = 
-      <>
-        <Navbar
-          roundCount={roundCount} roundOver={roundOver}
-          monthCounter={monthCounter} fightNight={fightNight}/>
+//   const loadGame = 
+//       <>
+//         <Navbar
+//           roundCount={roundCount} roundOver={roundOver}
+//           monthCounter={monthCounter} fightNight={fightNight}/>
 
-        {
+//         {
           
-        !fightNight ?
+//         !fightNight ?
 
-        <Home user={userState} enemy={oppState} urls={urls}
-          landingPage={landingPage} setGenerateBoxersFunc={setGenerateBoxersFunc}
-          setUserState={setUserState} setOppState={setOppState}
-          monthCounter={monthCounter} setMonthCounter={setMonthCounter}
-          advanceMonth={advanceMonth} setAdvanceMonth={setAdvanceMonth}
-          stopFight={stopFight} setStopFight={setStopFight}
-          roundCount={roundCount} setRoundCount={setRoundCount}
-          fightNight={fightNight} setFightNight={setFightNight}
-          fightOver={fightOver} setFightOver={setFightOver}
-          resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}
-          fightNumber={fightNumber} setFightNumber={setFightNumber} />
+//         <Home user={userState} enemy={oppState} urls={urls}
+//           landingPage={landingPage} setGenerateBoxersFunc={setGenerateBoxersFunc}
+//           setUserState={setUserState} setOppState={setOppState}
+//           monthCounter={monthCounter} setMonthCounter={setMonthCounter}
+//           advanceMonth={advanceMonth} setAdvanceMonth={setAdvanceMonth}
+//           stopFight={stopFight} setStopFight={setStopFight}
+//           roundCount={roundCount} setRoundCount={setRoundCount}
+//           fightNight={fightNight} setFightNight={setFightNight}
+//           fightOver={fightOver} setFightOver={setFightOver}
+//           resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}
+//           fightNumber={fightNumber} setFightNumber={setFightNumber} />
 
-        :
+//         :
 
-        <FightEngine
-          // user={userState} enemy={oppState} urls={urls}
-          // roundCount={roundCount} setRoundCount={setRoundCount}
-          // roundOver={roundOver} setRoundOver={setRoundOver}
-          // fightNight={fightNight} setFightNight={setFightNight}
-          // fightOver={fightOver} setFightOver={setFightOver}
-          // resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}
-          // fightNumber={fightNumber} prevFightNumber={prevFightNumber}
-          // setPrevFightNumber={setPrevFightNumber}
-          // stopFight={stopFight} setStopFight={setStopFight}
-          // updateDataCollections={updateDataCollections}
-          />
+//         <FightEngine
+//           // user={userState} enemy={oppState} urls={urls}
+//           // roundCount={roundCount} setRoundCount={setRoundCount}
+//           // roundOver={roundOver} setRoundOver={setRoundOver}
+//           // fightNight={fightNight} setFightNight={setFightNight}
+//           // fightOver={fightOver} setFightOver={setFightOver}
+//           // resetFightBtn={resetFightBtn} setResetFightBtn={setResetFightBtn}
+//           // fightNumber={fightNumber} prevFightNumber={prevFightNumber}
+//           // setPrevFightNumber={setPrevFightNumber}
+//           // stopFight={stopFight} setStopFight={setStopFight}
+//           // updateDataCollections={updateDataCollections}
+//           />
 
-        }
-      </>
+//         }
+//       </>
+
+//   return (
+//     <div className="App" style={{ backgroundColor: changeAppBgColor }}>
+//       {/* {
+//         landingPage ?
+
+//         <Landing landingPage={landingPage} setLandingPage={setLandingPage} generateBoxerFunc={generateBoxerFunc}
+//         />
+
+//         :
+        
+//         <>
+//           { loadGame }
+//         </>
+//       }     */}
+//       <FightEngine />
+//     </div>
+//   )
 
   return (
-    <div className="App" style={{ backgroundColor: changeAppBgColor }}>
-      {/* {
-        landingPage ?
-
-        <Landing landingPage={landingPage} setLandingPage={setLandingPage} generateBoxerFunc={generateBoxerFunc}
-        />
-
-        :
-        
-        <>
-          { loadGame }
-        </>
-      }     */}
-      <FightEngine />
+    <div>
+      <Display />
     </div>
   )
+
 }
 export default App;
+

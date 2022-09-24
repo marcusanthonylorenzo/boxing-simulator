@@ -1,31 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import ClickyBoi from "../Button/ClickyBoi.tsx";
 import Data from "../Helpers/Data";
 import { calcEngagement } from "./calcEngagement.tsx";
 import useFightState from "./useFightState.tsx";
 
-const { user, enemy } = Data(); //Replace later
+type Boxer = import("../Boxer/BoxerClass").Boxer;
 
-const FightEngine: React.FC = () => {
+const FightEngine = (boxerOne: Boxer, boxerTwo: Boxer) => {
 
   const { aggressor, counterStriker, calcAggressor } = useFightState();
+  const [PBP, setPBP] = useState<Array<object>>();
 
-  //fight flow
-  console.log(`check aggressor pre`, aggressor, `cs`, counterStriker); //check pre
-  calcAggressor(user, enemy);
-  console.log(`check aggressor res`, aggressor, `cs`, counterStriker); //check post
-  const calcEngagementResults = calcEngagement(aggressor, counterStriker);
-  console.log(calcEngagementResults); //check results
+  /*
+  FIGHT FLOW
 
+  !! Need to abstract one single function that passes two Boxer objects, and can run independently for simulation of npc. i.e. fight() ?
+  */
 
-  const handleBtn = () => console.log("clicked") //use for fight start events!
+  const updatePBP = (calcs: object) => {
+    console.log(PBP); //THIS IS WHERE YOU MUTATE THE BOXER OBJECT
+    PBP !== undefined ? setPBP((prev => [...prev, calcs])) : setPBP([calcs])
+  }
 
-  return (
-    <div>
-      FightEngine
-      <ClickyBoi buttonText="clickerz" buttonCallback={handleBtn} />
-    </div>
-  )
+  const fight = async () => {
+    await calcAggressor(boxerOne, boxerTwo);
+    console.log(`check aggressor res`, aggressor, `cs`, counterStriker); //check post
+    const calcEngagementResults = await calcEngagement(aggressor, counterStriker);
+    console.log(calcEngagementResults); //check results
+    updatePBP(calcEngagementResults);
+  };
+
+  return { fight, PBP }
 };
 
 export default FightEngine

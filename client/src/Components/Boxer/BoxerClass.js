@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import randomizer from '../Helpers/Randomize.js';
-class Boxer {
+export class Boxer {
 
   constructor(
     firstName, nickname, lastName,
