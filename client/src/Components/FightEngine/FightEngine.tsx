@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import Data from "../Helpers/Data";
+import { useState } from 'react';
+// import Data from "../Helpers/Data";
 import { calcEngagement } from "./calcEngagement.tsx";
 import useFightState from "./useFightState.tsx";
 
 type Boxer = import("../Boxer/BoxerClass").Boxer;
 
 const FightEngine = (boxerOne: Boxer, boxerTwo: Boxer) => {
-
+  // const { user, enemy } = Data(); //Data Fetch (hardcoded)
   const { aggressor, counterStriker, calcAggressor } = useFightState();
   const [PBP, setPBP] = useState<Array<object>>();
 
@@ -21,15 +21,26 @@ const FightEngine = (boxerOne: Boxer, boxerTwo: Boxer) => {
     PBP !== undefined ? setPBP((prev => [...prev, calcs])) : setPBP([calcs])
   }
 
+  const automateFight = (definedLength: number, callbackAutomated: any) => { //specify type later
+    // for (let i = 1; i < definedLength; i++) {
+    if (PBP && PBP.length <= definedLength) {
+      console.log(`check definiteLength value`, definedLength, PBP.length);
+      callbackAutomated()
+    } else if (!PBP) {
+      console.log('length undef');
+    } else {
+      console.log("round over");
+      return;
+    }
+  }
+
   const fight = async () => {
     await calcAggressor(boxerOne, boxerTwo);
-    console.log(`check aggressor res`, aggressor, `cs`, counterStriker); //check post
     const calcEngagementResults = await calcEngagement(aggressor, counterStriker);
-    console.log(calcEngagementResults); //check results
-    updatePBP(calcEngagementResults);
+    await updatePBP(calcEngagementResults)
   };
 
-  return { fight, PBP }
+  return { automateFight, fight, PBP }
 };
 
 export default FightEngine

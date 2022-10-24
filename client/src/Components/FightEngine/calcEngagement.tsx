@@ -7,11 +7,11 @@
 export const calcEngagement = async (attacker, defender) => {//results of engagement
   //primary attack
   const attack = await attacker.handSpeed() * attacker.pow;
-  const defense = await defender.eva;
+  const defense = defender.eva;
 
   //secondary attack
-  const counter = await defender.counter * attacker.pow; //THESE NEED TO BE FUNCTIONS
-  const recounter = await attacker.eva;
+  const counter = defender.counter * attacker.pow; //THESE NEED TO BE FUNCTIONS
+  const recounter = attacker.eva;
 
   //calc primary and secondary atk results
   const primaryDamage = attack - defense;

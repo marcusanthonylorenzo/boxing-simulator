@@ -7,15 +7,15 @@ import Data from "../../Helpers/Data";
 const Display = () => { //UI for match
 
   const { user, enemy } = Data(); //Data Fetch (hardcoded)
-  const { fight, PBP } = FightEngine(user, enemy); //Game Engine
+  const { automateFight, fight, PBP } = FightEngine(user, enemy); //Game Engine
 
   return (
     <div>
       {/* <Navbar /> */}
-      <ClickyBoi buttonText={"clickerz"} buttonCallback={() => fight()} />
+      <ClickyBoi buttonText={"clickerz"} buttonCallback={() => automateFight(10, fight())} />
 
-      {PBP ? PBP.map(each => {
-        console.log(each)
+      {PBP ? PBP.map((each) => {
+        const getEntries = Object.entries(each);
         return (
           <div className={`display-pbp`}
             style={{
@@ -23,7 +23,7 @@ const Display = () => { //UI for match
               display: `flex`, flexDirection: `column`, width: `30vw` //TEMP
             }}
           >
-            {Object.entries(each)}
+            {getEntries}
           </div>
         )
       }) : null}
